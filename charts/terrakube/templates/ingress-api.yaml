@@ -35,7 +35,7 @@ spec:
       {{- end }}
       secretName: {{ .Values.ingress.api.tlsSecretName }}
   {{- end }}
-{{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
+{{- else if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -43,12 +43,37 @@ metadata:
   labels:
     app: {{ .Values.name }}-api
   annotations:
-    {{- range $key, $value := .Values.ingress.aws.annotations }}
+    # GKE shared load balancer annotations
+    {{- if .Values.ingress.gke.sharedLoadBalancer.enabled }}
+    {{- if .Values.ingress.gke.sharedLoadBalancer.staticIPName }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.gke.sharedLoadBalancer.staticIPName }}
+    {{- else if .Values.ingress.gke.sharedLoadBalancer.staticIPAddress }}
+    kubernetes.io/ingress.global-static-ip: {{ .Values.ingress.gke.sharedLoadBalancer.staticIPAddress }}
+    {{- end }}
+    {{- end }}
+    # Apply managed certificate if enabled
+    {{- if .Values.ingress.gke.managedCertificate.create }}
+    networking.gke.io/managed-certificates: {{ .Values.name }}-certificate
+    {{- else if and .Values.ingress.gke.managedCertificate.useExisting .Values.ingress.gke.managedCertificate.existingCertName }}
+    networking.gke.io/managed-certificates: {{ .Values.ingress.gke.managedCertificate.existingCertName }}
+    {{- end }}
+    # Apply frontend config if enabled
+    {{- if .Values.ingress.gke.frontendConfig.create }}
+    networking.gke.io/v1beta1.FrontendConfig: {{ .Values.name }}-frontend-config
+    {{- end }}
+    # Apply backend config if enabled
+    {{- if .Values.ingress.gke.backendConfig.create }}
+    cloud.google.com/backend-config: '{"default": "{{ .Values.name }}-backend-config"}'
+    {{- end }}
+    # Apply ExternalDNS proxy configuration
+    {{- if .Values.ingress.gke.externalDNS }}
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "{{ .Values.ingress.gke.externalDNS.proxyEnabled }}"
+    {{- end }}
+    # Apply GKE annotations
+    {{- range $key, $value := .Values.ingress.gke.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
     {{- end }}
-    {{- if .Values.ingress.aws.certificateArn }}
-    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.aws.certificateArn }}
-    {{- end }}
+    # Apply API specific annotations
     {{- range $key, $value := .Values.ingress.api.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
     {{- end }}
@@ -64,7 +89,7 @@ spec:
                 name: {{ .Values.name }}-api-service
                 port:
                   number: 8080
-{{- else if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled }}
+{{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -72,23 +97,11 @@ metadata:
   labels:
     app: {{ .Values.name }}-api
   annotations:
-    {{- range $key, $value := .Values.ingress.gke.annotations }}
+    {{- range $key, $value := .Values.ingress.aws.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
     {{- end }}
-    {{- if .Values.ingress.gke.sharedLoadBalancer.enabled }}
-    {{- if .Values.ingress.gke.sharedLoadBalancer.staticIPName }}
-    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.gke.sharedLoadBalancer.staticIPName }}
-    {{- else if .Values.ingress.gke.sharedLoadBalancer.staticIPAddress }}
-    kubernetes.io/ingress.global-static-ip: {{ .Values.ingress.gke.sharedLoadBalancer.staticIPAddress }}
-    {{- end }}
-    {{- end }}
-    {{- if .Values.ingress.gke.managedCertificate.create }}
-    networking.gke.io/managed-certificates: {{ .Values.name }}-certificate
-    {{- else if and .Values.ingress.gke.managedCertificate.useExisting .Values.ingress.gke.managedCertificate.existingCertName }}
-    networking.gke.io/managed-certificates: {{ .Values.ingress.gke.managedCertificate.existingCertName }}
-    {{- end }}
-    {{- if .Values.ingress.gke.backendConfig.create }}
-    cloud.google.com/backend-config: '{"default": "{{ .Values.name }}-backend-config"}'
+    {{- if .Values.ingress.aws.certificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.aws.certificateArn }}
     {{- end }}
     {{- range $key, $value := .Values.ingress.api.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
