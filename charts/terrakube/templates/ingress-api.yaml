@@ -79,7 +79,7 @@ spec:
             pathType: {{ .Values.ingress.dex.pathType | quote }}
             backend:
               service:
-                name: {{ .Values.Name }}-dex
+                name: {{ .Release.Name }}-dex
                 port:
                   number: 5556
 {{- else if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled }}
@@ -148,7 +148,9 @@ spec:
       {{- if .Values.ingress.includeTlsHosts }}
         - {{ .Values.ingress.api.domain }}
       {{- end }}
+      {{- if not .Values.ingress.gke.managedCertificate.create }}
       secretName: {{ .Values.ingress.api.tlsSecretName }}
+      {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}
