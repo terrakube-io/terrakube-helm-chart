@@ -30,9 +30,7 @@ spec:
   {{- if .Values.ingress.useTls }}
   tls:
     - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.ui.domain }}
-      {{- end }}
+      - {{ .Values.ingress.ui.domain | quote }}
       secretName: {{ .Values.ingress.ui.tlsSecretName }}
   {{- end }}
 {{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
