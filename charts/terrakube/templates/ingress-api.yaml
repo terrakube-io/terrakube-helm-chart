@@ -17,16 +17,17 @@ spec:
   ingressClassName: {{ .Values.ingress.api.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.ingress.api.domain }}
+    - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.api.path }}
-            pathType: {{ .Values.ingress.api.pathType }}
+          - path: {{ .Values.ingress.api.path | quote }}
+            pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-api-service
                 port:
                   number: 8080
+          {{- if .Values.ingress.dex.enabled }}
           - path: {{ .Values.ingress.dex.path | quote }}
             pathType: {{ .Values.ingress.dex.pathType | quote }}
             backend:
@@ -34,12 +35,11 @@ spec:
                 name: {{ .Release.Name }}-dex
                 port:
                   number: 5556
-  {{- if .Values.ingress.useTls }}
+          {{- end }}
+  {{- if and .Values.ingress.api.useTls .Values.ingress.api.tlsSecretName }}
   tls:
     - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.api.domain }}
-      {{- end }}
+        - {{ .Values.ingress.api.domain | quote }}
       secretName: {{ .Values.ingress.api.tlsSecretName }}
   {{- end }}
 {{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
@@ -50,7 +50,6 @@ metadata:
   labels:
     app: {{ .Values.name }}-api
   annotations:
-    # For AWS shared load balancer
     {{- if and .Values.ingress.aws.sharedLoadBalancer.enabled .Values.ingress.aws.sharedLoadBalancer.groupName }}
     alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.aws.sharedLoadBalancer.groupName }}
     {{- end }}
@@ -65,16 +64,17 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.api.domain }}
+    - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.api.path }}
-            pathType: {{ .Values.ingress.api.pathType }}
+          - path: {{ .Values.ingress.api.path | quote }}
+            pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-api-service
                 port:
                   number: 8080
+          {{- if .Values.ingress.dex.enabled }}
           - path: {{ .Values.ingress.dex.path | quote }}
             pathType: {{ .Values.ingress.dex.pathType | quote }}
             backend:
@@ -82,6 +82,7 @@ spec:
                 name: {{ .Release.Name }}-dex
                 port:
                   number: 5556
+          {{- end }}
 {{- else if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -100,12 +101,7 @@ metadata:
     networking.gke.io/v1beta1.FrontendConfig: {{ .Values.name }}-api-frontend-config
     {{- end }}
     {{- if .Values.ingress.gke.backendConfig.create }}
-    cloud.google.com/neg: '{"ingress": true}'
-    cloud.google.com/backend-config: |
-      {
-        "default": "{{ .Values.name }}-api-backend-config",
-        "/dex/*": "{{ .Values.name }}-dex-backend-config"
-      }
+    cloud.google.com/backend-config: '{"ports": {"8080":"{{ .Values.name }}-api-backend-config", "5556":"{{ .Values.name }}-dex-backend-config"}}'
     {{- end }}
     {{- if .Values.ingress.gke.externalDNS }}
     {{- if .Values.ingress.gke.externalDNS.perIngressProxy }}
@@ -120,34 +116,28 @@ metadata:
     {{- range $key, $value := .Values.ingress.api.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
     {{- end }}
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   ingressClassName: gce
   rules:
-    - host: {{ .Values.ingress.api.domain }}
+    - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.api.path }}
-            pathType: {{ .Values.ingress.api.pathType }}
+          - path: {{ .Values.ingress.api.path | quote }}
+            pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-api-service
                 port:
                   number: 8080
           {{- if .Values.ingress.dex.enabled }}
-          - path: {{ .Values.ingress.dex.path }}
-            pathType: {{ .Values.ingress.dex.pathType }}
+          - path: {{ .Values.ingress.dex.path | quote }}
+            pathType: {{ .Values.ingress.dex.pathType | quote }}
             backend:
               service:
                 name: {{ .Release.Name }}-dex
                 port:
                   number: 5556
           {{- end }}
-  {{- if .Values.ingress.useTls }}
-  tls:
-    - hosts:
-      - {{ .Values.ingress.ui.domain | quote }}
-      secretName: {{ .Values.ingress.ui.tlsSecretName }}
-      {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}

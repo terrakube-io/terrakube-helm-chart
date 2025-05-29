@@ -17,22 +17,20 @@ spec:
   ingressClassName: {{ .Values.ingress.executor.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.ingress.executor.domain }}
+    - host: {{ .Values.ingress.executor.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.executor.path }}
-            pathType: {{ .Values.ingress.executor.pathType }}
+          - path: {{ .Values.ingress.executor.path | quote }}
+            pathType: {{ .Values.ingress.executor.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-executor-service
                 port:
                   number: 8090
-  {{- if .Values.ingress.useTls }}
+  {{- if and .Values.ingress.executor.useTls .Values.ingress.executor.tlsSecretName }}
   tls:
     - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.executor.domain }}
-      {{- end }}
+        - {{ .Values.ingress.executor.domain | quote }}
       secretName: {{ .Values.ingress.executor.tlsSecretName }}
   {{- end }}
 {{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
@@ -43,6 +41,9 @@ metadata:
   labels:
     app: {{ .Values.name }}-executor
   annotations:
+    {{- if and .Values.ingress.aws.sharedLoadBalancer.enabled .Values.ingress.aws.sharedLoadBalancer.groupName }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.aws.sharedLoadBalancer.groupName }}
+    {{- end }}
     {{- range $key, $value := .Values.ingress.aws.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}
     {{- end }}
@@ -54,11 +55,11 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.executor.domain }}
+    - host: {{ .Values.ingress.executor.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.executor.path }}
-            pathType: {{ .Values.ingress.executor.pathType }}
+          - path: {{ .Values.ingress.executor.path | quote }}
+            pathType: {{ .Values.ingress.executor.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-executor-service
@@ -101,25 +102,15 @@ metadata:
 spec:
   ingressClassName: gce
   rules:
-    - host: {{ .Values.ingress.executor.domain }}
+    - host: {{ .Values.ingress.executor.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.executor.path }}
-            pathType: {{ .Values.ingress.executor.pathType }}
+          - path: {{ .Values.ingress.executor.path | quote }}
+            pathType: {{ .Values.ingress.executor.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-executor-service
                 port:
                   number: 8090
-  {{- if .Values.ingress.useTls }}
-  tls:
-    - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.executor.domain }}
-      {{- end }}
-      {{- if and .Values.ingress.executor.tlsSecretName (not .Values.ingress.gke.managedCertificate.create) }}
-      secretName: {{ .Values.ingress.executor.tlsSecretName }}
-      {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}

@@ -17,22 +17,20 @@ spec:
   ingressClassName: {{ .Values.ingress.registry.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.ingress.registry.domain }}
+    - host: {{ .Values.ingress.registry.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.registry.path }}
-            pathType: {{ .Values.ingress.registry.pathType }}
+          - path: {{ .Values.ingress.registry.path | quote }}
+            pathType: {{ .Values.ingress.registry.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-registry-service
                 port:
                   number: 8075
-  {{- if .Values.ingress.useTls }}
+  {{- if and .Values.ingress.registry.useTls .Values.ingress.registry.tlsSecretName }}
   tls:
     - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.registry.domain }}
-      {{- end }}
+        - {{ .Values.ingress.registry.domain | quote }}
       secretName: {{ .Values.ingress.registry.tlsSecretName }}
   {{- end }}
 {{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
@@ -43,7 +41,6 @@ metadata:
   labels:
     app: {{ .Values.name }}-registry
   annotations:
-    # For AWS shared load balancer
     {{- if and .Values.ingress.aws.sharedLoadBalancer.enabled .Values.ingress.aws.sharedLoadBalancer.groupName }}
     alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.aws.sharedLoadBalancer.groupName }}
     {{- end }}
@@ -58,11 +55,11 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.registry.domain }}
+    - host: {{ .Values.ingress.registry.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.registry.path }}
-            pathType: {{ .Values.ingress.registry.pathType }}
+          - path: {{ .Values.ingress.registry.path | quote }}
+            pathType: {{ .Values.ingress.registry.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-registry-service
@@ -105,22 +102,15 @@ metadata:
 spec:
   ingressClassName: gce
   rules:
-    - host: {{ .Values.ingress.registry.domain }}
+    - host: {{ .Values.ingress.registry.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.registry.path }}
-            pathType: {{ .Values.ingress.registry.pathType }}
+          - path: {{ .Values.ingress.registry.path | quote }}
+            pathType: {{ .Values.ingress.registry.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-registry-service
                 port:
                   number: 8075
-  {{- if .Values.ingress.useTls }}
-  tls:
-    - hosts:
-      - {{ .Values.ingress.ui.domain | quote }}
-      secretName: {{ .Values.ingress.ui.tlsSecretName }}
-      {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}
