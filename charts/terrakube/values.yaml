@@ -367,7 +367,7 @@ ingress:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
   executor:
-    enabled: false
+    enabled: true
     domain: "terrakube-executor.minikube.net"
     path: "/"
     pathType: "Prefix"
