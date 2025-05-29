@@ -17,20 +17,20 @@ spec:
   ingressClassName: {{ .Values.ingress.ui.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.ingress.ui.domain }}
+    - host: {{ .Values.ingress.ui.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.ui.path }}
-            pathType: {{ .Values.ingress.ui.pathType }}
+          - path: {{ .Values.ingress.ui.path | quote }}
+            pathType: {{ .Values.ingress.ui.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-ui-service
                 port:
                   number: 8080
-  {{- if .Values.ingress.useTls }}
+  {{- if and .Values.ingress.ui.useTls .Values.ingress.ui.tlsSecretName }}
   tls:
     - hosts:
-      - {{ .Values.ingress.ui.domain | quote }}
+        - {{ .Values.ingress.ui.domain | quote }}
       secretName: {{ .Values.ingress.ui.tlsSecretName }}
   {{- end }}
 {{- else if and (eq .Values.ingress.controller "aws") .Values.ingress.aws.enabled }}
@@ -41,7 +41,6 @@ metadata:
   labels:
     app: {{ .Values.name }}-ui
   annotations:
-    # For AWS shared load balancer
     {{- if and .Values.ingress.aws.sharedLoadBalancer.enabled .Values.ingress.aws.sharedLoadBalancer.groupName }}
     alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.aws.sharedLoadBalancer.groupName }}
     {{- end }}
@@ -56,11 +55,11 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.ui.domain }}
+    - host: {{ .Values.ingress.ui.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.ui.path }}
-            pathType: {{ .Values.ingress.ui.pathType }}
+          - path: {{ .Values.ingress.ui.path | quote }}
+            pathType: {{ .Values.ingress.ui.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-ui-service
@@ -103,25 +102,15 @@ metadata:
 spec:
   ingressClassName: gce
   rules:
-    - host: {{ .Values.ingress.ui.domain }}
+    - host: {{ .Values.ingress.ui.domain | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.ui.path }}
-            pathType: {{ .Values.ingress.ui.pathType }}
+          - path: {{ .Values.ingress.ui.path | quote }}
+            pathType: {{ .Values.ingress.ui.pathType | quote }}
             backend:
               service:
                 name: {{ .Values.name }}-ui-service
                 port:
                   number: 8080
-  {{- if .Values.ingress.useTls }}
-  tls:
-    - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.ui.domain }}
-      {{- end }}
-      {{- if and .Values.ingress.ui.tlsSecretName (not .Values.ingress.gke.managedCertificate.create) }}
-      secretName: {{ .Values.ingress.ui.tlsSecretName }}
-      {{- end }}
-  {{- end }}
 {{- end }}
 {{- end }}
