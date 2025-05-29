@@ -145,11 +145,8 @@ spec:
   {{- if .Values.ingress.useTls }}
   tls:
     - hosts:
-      {{- if .Values.ingress.includeTlsHosts }}
-        - {{ .Values.ingress.api.domain }}
-      {{- end }}
-      {{- if and .Values.ingress.api.tlsSecretName (not .Values.ingress.gke.managedCertificate.create) }}
-      secretName: {{ .Values.ingress.api.tlsSecretName }}
+      - {{ .Values.ingress.ui.domain | quote }}
+      secretName: {{ .Values.ingress.ui.tlsSecretName }}
       {{- end }}
   {{- end }}
 {{- end }}
