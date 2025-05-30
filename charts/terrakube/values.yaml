@@ -330,31 +330,70 @@ ui:
 ingress:
   useTls: false
   includeTlsHosts: true
+  controller: "generic"  # Options: "generic", "aws", "gke"
+  
+  gke:
+    enabled: false
+    backendConfig:
+      create: false
+      timeout: 30
+      securityPolicy: ""  # Cloud Armor security policy name (optional)
+    managedCertificate:
+      create: false
+    frontendConfig:
+      create: false
+    externalDNS:
+      proxyEnabled: "false"
+      perIngressProxy:
+        ui: "false"
+        api: "false"
+        registry: "false"
+        executor: "false"
+    annotations: {}
+    uiStaticIPName: ""
+    apiStaticIPName: ""
+    registryStaticIPName: ""
+    executorStaticIPName: ""
+  
+  aws:
+    enabled: false
+    certificateArn: ""
+    sharedLoadBalancer:
+      enabled: false
+      groupName: ""
+    annotations: {}
+  
   ui:
     enabled: true
     domain: "terrakube-ui.minikube.net"
     path: "/"
     pathType: "Prefix"
     ingressClassName: "nginx"
+    useTls: true
     tlsSecretName: tls-secret-ui-terrakube
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
+    annotations: {}
+  
   api:
     enabled: true
     domain: "terrakube-api.minikube.net"
     path: "/"
     pathType: "Prefix"
     ingressClassName: "nginx"
+    useTls: false
     tlsSecretName: tls-secret-api-terrakube
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
+
   registry:
     enabled: true
     domain: "terrakube-reg.minikube.net"
     path: "/"
     pathType: "Prefix"
     ingressClassName: "nginx"
+    useTls: false
     tlsSecretName: tls-secret-reg-terrakube
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
@@ -415,6 +454,7 @@ ingress:
     backendConfig:
       create: false
       timeout: 30
+      securityPolicy: "none"  # Cloud Armor security policy name (optional)
     frontendConfig:
       create: false
       redirectToHttps: true
