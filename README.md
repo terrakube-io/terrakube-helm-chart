@@ -380,7 +380,10 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.gke.managedCertificate.create     | No       | Create GCP managed SSL certificates (default: false)                  |
 | ingress.gke.backendConfig.create          | No       | Create BackendConfig resources for health checks (default: false)     |
 | ingress.gke.backendConfig.timeout         | No       | Backend timeout in seconds (default: 30)                              |
-| ingress.gke.backendConfig.securityPolicy  | No       | Cloud Armor security policy name (optional)                           |
+| ingress.gke.backendConfig.uiSecurityPolicy      | No       | Cloud Armor security policy for UI service (restrict user access)     |
+| ingress.gke.backendConfig.apiSecurityPolicy     | No       | Cloud Armor security policy for API service (usually empty)           |
+| ingress.gke.backendConfig.registrySecurityPolicy | No       | Cloud Armor security policy for Registry service (usually empty)      |
+| ingress.gke.backendConfig.executorSecurityPolicy | No       | Cloud Armor security policy for Executor service (usually empty)      '
 | ingress.gke.frontendConfig.create         | No       | Create FrontendConfig resources (default: false)                      |
 | ingress.gke.externalDNS.proxyEnabled      | No       | Enable Cloudflare proxy for external-dns (default: "false")           |
 | ingress.gke.externalDNS.perIngressProxy   | No       | Per-service Cloudflare proxy settings                                 |
@@ -501,6 +504,24 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.dex.pathType                      | Yes      | ImplementationSpecific/Exact/Prefix                                    |
 | ingress.dex.annontations                  | Yes      | Ingress annotations                                                    |
 
+
+#### Per-Service Security Policies
+
+You can apply Cloud Armor security policies to individual services:
+
+```yaml
+ingress:
+  controller: "gke"
+  gke:
+    enabled: true
+    backendConfig:
+      create: true
+      timeout: 30
+      # Only restrict UI access - keep APIs open for external agents
+      uiSecurityPolicy: "terrakube-ui-security-policy"
+      # apiSecurityPolicy: ""          # Empty - external agents need access
+      # registrySecurityPolicy: ""     # Empty - module downloads need access
+```
 
 ### 4.2 Node Affinity, NodeSelector, Taints and Tolerations.
 

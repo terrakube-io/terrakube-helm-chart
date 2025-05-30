@@ -7,9 +7,9 @@ metadata:
     {{- include "terrakube.labels" . | nindent 4 }}
 spec:
   timeoutSec: {{ .Values.ingress.gke.backendConfig.timeout }}
-  {{- if .Values.ingress.gke.backendConfig.securityPolicy }}
+  {{- if .Values.ingress.gke.backendConfig.apiSecurityPolicy }}
   securityPolicy:
-    name: {{ .Values.ingress.gke.backendConfig.securityPolicy }}
+    name: {{ .Values.ingress.gke.backendConfig.apiSecurityPolicy }}
   {{- end }}
   healthCheck:
     checkIntervalSec: 15
@@ -29,10 +29,7 @@ metadata:
     {{- include "terrakube.labels" . | nindent 4 }}
 spec:
   timeoutSec: {{ .Values.ingress.gke.backendConfig.timeout }}
-  {{- if .Values.ingress.gke.backendConfig.securityPolicy }}
-  securityPolicy:
-    name: {{ .Values.ingress.gke.backendConfig.securityPolicy }}
-  {{- end }}
+  # NO security policy for Dex - GitHub needs access
   healthCheck:
     checkIntervalSec: 15
     timeoutSec: 5

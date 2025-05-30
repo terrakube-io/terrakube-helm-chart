@@ -337,7 +337,11 @@ ingress:
     backendConfig:
       create: false
       timeout: 30
-      securityPolicy: ""  # Cloud Armor security policy name (optional)
+      # Per-service security policies (optional)
+      uiSecurityPolicy: ""           # Cloud Armor policy for UI (user access restriction)
+      apiSecurityPolicy: ""          # Cloud Armor policy for API (usually empty - external access needed)
+      registrySecurityPolicy: ""     # Cloud Armor policy for Registry (usually empty - external access needed)
+      executorSecurityPolicy: ""     # Cloud Armor policy for Executor (usually empty if exposed)
     managedCertificate:
       create: false
     frontendConfig:
