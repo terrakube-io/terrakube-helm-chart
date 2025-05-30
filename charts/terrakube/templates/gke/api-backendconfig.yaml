@@ -3,8 +3,14 @@ apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: {{ .Values.name }}-api-backend-config
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
 spec:
   timeoutSec: {{ .Values.ingress.gke.backendConfig.timeout }}
+  {{- if .Values.ingress.gke.backendConfig.securityPolicy }}
+  securityPolicy:
+    name: {{ .Values.ingress.gke.backendConfig.securityPolicy }}
+  {{- end }}
   healthCheck:
     checkIntervalSec: 15
     timeoutSec: 5
@@ -19,8 +25,14 @@ apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: {{ .Values.name }}-dex-backend-config
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
 spec:
   timeoutSec: {{ .Values.ingress.gke.backendConfig.timeout }}
+  {{- if .Values.ingress.gke.backendConfig.securityPolicy }}
+  securityPolicy:
+    name: {{ .Values.ingress.gke.backendConfig.securityPolicy }}
+  {{- end }}
   healthCheck:
     checkIntervalSec: 15
     timeoutSec: 5
