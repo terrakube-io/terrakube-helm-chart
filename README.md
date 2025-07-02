@@ -106,7 +106,7 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 
 Once Helm has been set up correctly, add the repo as follows:
 
-  helm repo add terrakube-repo https://AzBuilder.github.io/terrakube-helm-chart
+  helm repo add terrakube-repo https://terrakube-io.github.io/terrakube-helm-chart
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
@@ -284,7 +284,7 @@ Terrakube require an Azure Storage account to save the state/output for the jobs
 - tfstate (private)
 - tfoutput (private)
 
-To create the Azure storage account you can use the following [terraform module](https://github.com/AzBuilder/terraform-azurerm-terrakube-cloud-storage).
+To create the Azure storage account you can use the following [terraform module](https://github.com/terrakube-io/terraform-azurerm-terrakube-cloud-storage).
 
 #### 3.2 AWS S3
 
@@ -444,14 +444,14 @@ Once you have completed the above steps you can complete the file values.yaml to
 | executor.version                          | Yes      | Terrakube Executor version                                             |
 | executor.replicaCount                     | Yes      | Number of Executor pod replicas                                        |
 | executor.serviceAccountName               | No       | Kubernetes Service Account name                                        |
-| executor.serviceType                      | Yes      | Kubernetes service type (ClusterIP/NodePort/LoadBalancer)             |
-| executor.env                              | No       | Environment variables for Executor pods                                |
-| executor.volumes                          | No       | Volume mounts for Executor pods                                        |
-| executor.volumeMounts                     | No       | Volume mount points for Executor pods                                  |
-| executor.properties.toolsRepository       | Yes      | Git repository for Terraform tools (e.g., GitHub extensions repo)     |
-| executor.properties.toolsBranch           | Yes      | Git branch for tools repository (typically "main")                    |
-| executor.securityContext                  | No       | Pod security context for Executor                                     |
-| executor.containerSecurityContext         | No       | Container security context for Executor                               |
+| executor.serviceType                      | Yes      | ClusterIP/NodePort/LoadBalancer/ExternalName                           |
+| executor.env                              | No       |                                                                        |
+| executor.volumes                          | No       |                                                                        |
+| executor.volumeMounts                     | No       |                                                                        |
+| executor.properties.toolsRepository       | Yes      | Example: https://github.com/terrakube-io/terrakube-extensions          |
+| executor.properties.toolsBranch           | Yes      | Example: main                                                          |
+| executor.securityContext                  | No       | Fill securityContext field                                             |
+| executor.containerSecurityContext         | No       | Fill securityContext field in the container spec                       |
 | executor.imagePullSecrets                 | No       | Specific Secret used to pull images from private repository            |
 | executor.initContainers                   | No       | Init containers for executor deployment                                |
 | registry.enabled                          | Yes      | Enable Registry component deployment                                   |
@@ -640,7 +640,7 @@ executor:
     mountPath: /mnt/platform/bindings/ca-certificates
     readOnly: true
   properties:
-    toolsRepository: "https://github.com/AzBuilder/terrakube-extensions"
+    toolsRepository: "https://github.com/terrakube-io/terrakube-extensions"
     toolsBranch: "main"
 
 ## Registry properties
@@ -729,7 +729,7 @@ Now you have all the information to deploy Terrakube, you can use the following 
 
 Clone the helm chart repository and fill the values.yaml file
 ```bash
-git clone https://github.com/AzBuilder/terrakube-helm-chart.git
+git clone https://github.com/terrakube-io/terrakube-helm-chart.git
 ```
 Create the kubernetes namespace:
 ```bash
