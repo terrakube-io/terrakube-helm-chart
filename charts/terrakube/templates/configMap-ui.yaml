@@ -9,7 +9,7 @@ data:
     server {
         listen 0.0.0.0:8080;
         {{- if .Values.enableIPv6 }}
-        listen [::]:80 default_server;
+        listen [::]:8080 default_server;
         {{- end }}
 
       location / {
