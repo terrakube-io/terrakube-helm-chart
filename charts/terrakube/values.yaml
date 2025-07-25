@@ -442,9 +442,16 @@ ingress:
       dexTargetGroupARN: ""
     securityGroups: []
     subnets: []
-
     certificateArn: ""
-    
+    targetGroupBinding:
+      create: false
+      apiTargetGroupARN: ""
+      uiTargetGroupARN: ""
+      registryTargetGroupARN: ""
+      dexTargetGroupARN: ""
+    securityGroups: []
+    subnets: []
+
   # GKE specific configuration
   gke:
     enabled: false
