@@ -4,6 +4,8 @@ name: "terrakube"
 global:
   imagePullSecrets: []
 
+enableIPv6: true
+
 ## Azure Active Directory Security
 security:
   useOpenLDAP: true
@@ -179,6 +181,7 @@ api:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  automountServiceAccountToken: true
   otel:
     enabled: false
     metrics:
@@ -430,6 +433,15 @@ ingress:
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
       alb.ingress.kubernetes.io/ssl-redirect: '443'
+    certificateArn: ""
+    targetGroupBinding:
+      create: false
+      apiTargetGroupARN: ""
+      uiTargetGroupARN: ""
+      registryTargetGroupARN: ""
+      dexTargetGroupARN: ""
+    securityGroups: []
+    subnets: []
     certificateArn: ""
     targetGroupBinding:
       create: false

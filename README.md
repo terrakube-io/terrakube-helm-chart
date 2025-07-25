@@ -425,7 +425,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | api.image                                 | No       | API image repository                                                   |
 | api.version                               | Yes      | Terrakube API version                                                  |
 | api.replicaCount                          | Yes      | Number of API pod replicas                                             |
-| api.serviceAccountName                    | No       | Kubernetes Service Account name                                        |
+| api.serviceAccountName                    | No       | Kubernetes Service Account name 
 | api.serviceType                           | Yes      | Kubernetes service type (ClusterIP/NodePort/LoadBalancer)             |
 | api.env                                   | No       | Environment variables for API pods                                     |
 | api.volumes                               | No       | Volume mounts for API pods                                             |
