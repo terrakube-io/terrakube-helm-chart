@@ -36,7 +36,7 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 2
     type: HTTP
-    requestPath: "/dex/healthz"
+    requestPath: "/healthz"
     port: 5556
 {{- end }}
 {{- end }}
