@@ -13,7 +13,7 @@ data:
         {{- end }}
 
       location / {
-        root   /app;
+        root   /usr/share/nginx/html;
         index  index.html index.htm;
         try_files $uri $uri/ /index.html;
       }
