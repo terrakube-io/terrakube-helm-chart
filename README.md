@@ -4,7 +4,7 @@ This Helm chart deploys Terrakube, an open-source Terraform management platform,
 
 ## Features
 
-- **Multi-Cloud Ingress Support**: Generic, AWS ALB, and GKE ingress controllers
+- **Multi-Cloud Ingress Support**: Generic (NGINX), AWS ALB, GKE ingress controllers and AWS ALB (WIP) 
 - **TLS/SSL Configuration**: Per-service TLS configuration with custom certificates
 - **Google Cloud Integration**: GKE managed certificates, Cloud Armor, and BackendConfig support
 - **AWS Integration**: ALB ingress with shared load balancer support
@@ -25,7 +25,7 @@ This Helm chart deploys Terrakube, an open-source Terraform management platform,
 ### Basic Installation
 
 ```bash
-helm repo add terrakube https://charts.terrakube.io
+helm repo add terrakube https://terrakube-io.github.io/terrakube-helm-chart
 helm repo update
 helm install terrakube terrakube/terrakube
 ```
@@ -57,7 +57,7 @@ ingress:
     enabled: false
 ```
 
-#### AWS ALB Ingress
+#### AWS ALB Ingress (WIP)
 
 Uses AWS Application Load Balancer for ingress:
 
