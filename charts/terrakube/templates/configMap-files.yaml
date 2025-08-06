@@ -1,3 +1,4 @@
+{{- if (.Files.Glob "otherFiles/*") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,4 +7,4 @@ metadata:
     {{- include "terrakube.labels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "otherFiles/*").AsConfig | indent 2 }}
-  
+{{- end }}

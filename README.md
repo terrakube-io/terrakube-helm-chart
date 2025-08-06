@@ -14,6 +14,12 @@ This Helm chart deploys Terrakube, an open-source Terraform management platform,
 - **Module Registry**: Private Terraform module registry
 - **Workspace Management**: Terraform workspace execution and management
 
+## Secret Files
+
+All files included in `otherFiles` directory  will be inside the kubernetes ConfigMap ***terrakube-other-files***. Kubernetes has a ConfigMap size limit of 1MB.
+
+> This is useful when we need to upload some extra files to the helm chart.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
