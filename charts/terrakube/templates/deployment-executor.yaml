@@ -7,6 +7,7 @@ metadata:
     {{- include "terrakube.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.executor.replicaCount }}
+  revisionHistoryLimit: {{ .Values.executor.revisionHistoryLimit | default 3 }}
   selector:
     matchLabels:
       {{- include "terrakube-executor.labels" . | nindent 6 }}

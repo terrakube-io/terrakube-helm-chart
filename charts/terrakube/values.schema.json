@@ -1,563 +1,1261 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
     "properties": {
-      "name": {
-        "description": "Service name",
-        "type": "string"
-      },
-      "security": {
-        "type": "object",
-        "required": ["patSecret", "internalSecret", "dexIssuerUri", "adminGroup", "useOpenLDAP"],
-        "properties": {
-          "useOpenLDAP": {
-            "description": "patSecret in base64 encoding",
-            "type": "boolean"
-          },
-          "patSecret": {
-            "description": "patSecret in base64 encoding",
-            "type": "string"
-          },
-          "internalSecret": {
-            "description": "internalSecret in base64 encoding",
-            "type": "string"
-          },
-          "gcpCredentials": {
-            "description": "gcp credentilas json base64 encoding",
-            "type": "string"
-          },
-          "dexIssuerUri": {
-            "description": "Dex URL",
-            "type": "string"
-          },
-          "dexClientId": {
-            "description": "Dex Client Id",
-            "type": "string"
-          },
-          "dexClientScope": {
-            "description": "Dex Client Scope",
-            "type": "string"
-          },
-          "adminGroup": {
-            "description": "Terrakube Administrators Group",
-            "type": "string"
-          },
-          "caCerts": {
+        "api": {
             "type": "object",
-            "items": {
-              "type": "object"
-            }
-          }
-        }
-      },
-      "storage": {
-        "type": "object",
-        "properties": {
-          "defaultStorage": {
-            "description": "Enable Default Storage",
-            "type": "boolean"
-          },
-          "azure": {
-            "type": "object",
-            "required": ["storageAccountName", "storageAccountResourceGroup", "storageAccountAccessKey"],
             "properties": {
-              "storageAccountName": {
-                "description": "Storage Account Name",
-                "type": "string"
-              },
-              "storageAccountResourceGroup": {
-                "description": "Storage Account Resource Group",
-                "type": "string"
-              },
-              "storageAccountAccessKey": {
-                "description": "Storage Account Access Key",
-                "type": "string"
-              }
+                "automountServiceAccountToken": {
+                    "type": "boolean"
+                },
+                "cache": {
+                    "type": "object",
+                    "properties": {
+                        "moduleCacheMaxIdle": {
+                            "type": "string"
+                        },
+                        "moduleCacheMaxTotal": {
+                            "type": "string"
+                        },
+                        "moduleCacheMinIdle": {
+                            "type": "string"
+                        },
+                        "moduleCacheSchedule": {
+                            "type": "string"
+                        },
+                        "moduleCacheTimeout": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "containerSecurityContext": {
+                    "type": "object"
+                },
+                "defaultDatabase": {
+                    "type": "boolean"
+                },
+                "defaultRedis": {
+                    "type": "boolean"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "array"
+                },
+                "livenessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "loadSampleData": {
+                    "type": "boolean"
+                },
+                "otel": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "metrics": {
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "traces": {
+                            "type": "object",
+                            "properties": {
+                                "endpoint": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podLabels": {
+                    "type": "object"
+                },
+                "properties": {
+                    "type": "object",
+                    "properties": {
+                        "databaseHostname": {
+                            "type": "string"
+                        },
+                        "databaseName": {
+                            "type": "string"
+                        },
+                        "databasePassword": {
+                            "type": "string"
+                        },
+                        "databasePort": {
+                            "type": "string"
+                        },
+                        "databaseSchema": {
+                            "type": "string"
+                        },
+                        "databaseSslMode": {
+                            "type": "string"
+                        },
+                        "databaseType": {
+                            "type": "string"
+                        },
+                        "databaseUser": {
+                            "type": "string"
+                        },
+                        "executorUrl": {
+                            "type": "string"
+                        },
+                        "redisHostname": {
+                            "type": "string"
+                        },
+                        "redisPassword": {
+                            "type": "string"
+                        },
+                        "redisPort": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "rbac": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "roleBindingName": {
+                            "type": "string"
+                        },
+                        "roleName": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "replicaCount": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "object"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "serviceAccountName": {
+                    "type": "string"
+                },
+                "serviceType": {
+                    "type": "string"
+                },
+                "startupProbe": {
+                    "type": "object",
+                    "properties": {
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "terraformReleasesUrl": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
             }
-          },
-          "aws": {
-            "type": "object",
-            "required": ["accessKey", "secretKey", "bucketName", "region"],
-            "properties": {
-              "accessKey": {
-                "description": "AWS Access Key",
-                "type": "string"
-              },
-              "secretKey": {
-                "description": "AWS Secret Key",
-                "type": "string"
-              },
-              "bucketName": {
-                "description": "AWS Bucket name",
-                "type": "string"
-              },
-              "region": {
-                "description": "AWS Region",
-                "type": "string"
-              }
-            }
-          },
-          "minio": {
-            "type": "object",
-            "required": ["accessKey", "secretKey", "bucketName", "endpoint"],
-            "properties": {
-              "accessKey": {
-                "description": "AWS Access Key",
-                "type": "string"
-              },
-              "secretKey": {
-                "description": "AWS Secret Key",
-                "type": "string"
-              },
-              "bucketName": {
-                "description": "AWS Bucket name",
-                "type": "string"
-              },
-              "endpoint": {
-                "description": "Custom S3 Endpoint",
-                "type": "string"
-              }
-            }
-          },
-          "gcp": {
-            "type": "object",
-            "required": ["projectId", "bucketName", "credentials"],
-            "properties": {
-              "projectId": {
-                "description": "GCP Project Id",
-                "type": "string"
-              },
-              "bucketName": {
-                "description": "GCP Storage Bucket Name",
-                "type": "string"
-              },
-              "credentials": {
-                "description": "GCP Credentials JSON in Base64 encoding",
-                "type": "string"
-              }
-            }
-          }
         },
-        "default": {
-          "type": "object",
-          "required": ["bucketName", "region"],
-          "properties": {
-            "region": {
-              "description": "AWS Region",
-              "type": "string"
-            },
-            "endpoint": {
-              "description": "Custom S3 Endpoint",
-              "type": "string"
-            }
-          }
-        }
-      },
-      "api": {
-        "type": "object",
-        "required": ["enabled", "replicaCount", "properties", "defaultDatabase", "defaultRedis", "loadSampleData", "terraformReleasesUrl"],
-        "properties": {
-          "enabled": {
-            "description": "Enable API",
-            "type": "boolean"
-          },
-          "version": {
-            "description": "API Version",
-            "type": "string"
-          },
-          "replicaCount": {
-            "description": "Replica count for API",
-            "type": "string"
-          },
-          "loadSampleData": {
-            "description": "Load Sample Terrakube Data",
-            "type": "boolean"
-          },
-          "serviceType": {
-            "description": "Kubernetes service type",
-            "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-          },
-          "terraformReleasesUrl": {
-            "description": "custom terraform releases url",
-            "type": "string"
-          },
-          "resources": {
-            "type": "object"
-          },
-          "affinity": {
-            "type": "object"
-          },
-          "nodeSelector": {
-            "type": "object"
-          },
-          "tolerations": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "podLabels": {
-            "type": "object"
-          },
-          "env": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "volumes": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "volumeMounts": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "defaultDatabase": {
-            "description": "Enable Default Database",
-            "type": "boolean"
-          },
-          "defaultRedis": {
-            "description": "Enable Default Redis",
-            "type": "boolean"
-          },
-          "properties": {
+        "dex": {
             "type": "object",
-            "required": ["databaseType", "databaseHostname", "databaseName", "databaseUser", "databasePassword"],
             "properties": {
-              "databaseType": {
-                "description": "Supported databse types",
-                "enum": ["H2", "SQL_AZURE", "POSTGRESQL", "MYSQL"]
-              },
-              "databaseHostname": {
-                "description": "Database hostname. Example: terrakube-sample-db.database.windows.net",
-                "type": "string"
-              },
-              "databaseName": {
-                "description": "Database name. Example: terrakube-db",
-                "type": "string"
-              },
-              "databaseUser": {
-                "description": "Database user. Example: SuperAdmin",
-                "type": "string"
-              },
-              "databasePassword": {
-                "description": "Database password. Example: SuperPassword",
-                "type": "string"
-              }
+                "config": {
+                    "type": "object",
+                    "properties": {
+                        "connectors": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "config": {
+                                        "type": "object",
+                                        "properties": {
+                                            "bindDN": {
+                                                "type": "string"
+                                            },
+                                            "bindPW": {
+                                                "type": "string"
+                                            },
+                                            "groupSearch": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "baseDN": {
+                                                        "type": "string"
+                                                    },
+                                                    "filter": {
+                                                        "type": "string"
+                                                    },
+                                                    "nameAttr": {
+                                                        "type": "string"
+                                                    },
+                                                    "userMatchers": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "groupAttr": {
+                                                                    "type": "string"
+                                                                },
+                                                                "userAttr": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "host": {
+                                                "type": "string"
+                                            },
+                                            "insecureNoSSL": {
+                                                "type": "boolean"
+                                            },
+                                            "userSearch": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "baseDN": {
+                                                        "type": "string"
+                                                    },
+                                                    "emailAttr": {
+                                                        "type": "string"
+                                                    },
+                                                    "filter": {
+                                                        "type": "string"
+                                                    },
+                                                    "idAttr": {
+                                                        "type": "string"
+                                                    },
+                                                    "nameAttr": {
+                                                        "type": "string"
+                                                    },
+                                                    "username": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "usernamePrompt": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "oauth2": {
+                            "type": "object",
+                            "properties": {
+                                "responseTypes": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "staticClients": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "public": {
+                                        "type": "boolean"
+                                    },
+                                    "redirectURIs": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "storage": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "web": {
+                            "type": "object",
+                            "properties": {
+                                "allowedOrigins": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "http": {
+                                    "type": "string"
+                                },
+                                "skipApprovalScreen": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "volumeMount": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "mountPath": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "readOnly": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "secret": {
+                                "type": "object",
+                                "properties": {
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "secretName": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      },
-      "openldap": {
-        "type": "object",
-        "properties": {
-          "podLabels": {
-            "type": "object"
-          }
-        }
-      },
-      "executor": {
-        "type": "object",
-        "required": ["enabled", "replicaCount", "properties"],
-        "properties": {
-          "enabled": {
-            "description": "Enable Executor",
+        },
+        "enableIPv6": {
             "type": "boolean"
-          },
-          "version": {
-            "description": "Executor Docker Version",
-            "type": "string"
-          },
-          "apiServiceUrl": {
-            "description": "Terrakube service where the executor will connect",
-            "type": "string"
-          },
-          "replicaCount": {
-            "description": "Replica count for API",
-            "type": "string"
-          },
-          "serviceType": {
-            "description": "Kubernetes service type",
-            "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-          },
-          "resources": {
-            "type": "object"
-          },
-          "affinity": {
-            "type": "object"
-          },
-          "nodeSelector": {
-            "type": "object"
-          },
-          "tolerations": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "podLabels": {
-            "type": "object"
-          },
-          "podAnnotations": {
-            "type": "object"
-          },
-          "env": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "volumes": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "volumeMounts": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "properties": {
+        },
+        "executor": {
             "type": "object",
-            "required": ["toolsRepository", "toolsBranch"],
             "properties": {
-              "toolsRepository": {
-                "description": "Terrakube Tools repository. Example: https://github.com/terrakube-io/terrakube-extensions",
-                "type": "string"
-              },
-              "toolsBranch": {
-                "description": "Terraukbe Tools branch. Example: main",
-                "type": "string"
-              }
+                "apiServiceUrl": {
+                    "type": "string"
+                },
+                "containerSecurityContext": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "array"
+                },
+                "livenessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "otel": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "metrics": {
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "traces": {
+                            "type": "object",
+                            "properties": {
+                                "endpoint": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podLabels": {
+                    "type": "object"
+                },
+                "properties": {
+                    "type": "object",
+                    "properties": {
+                        "toolsBranch": {
+                            "type": "string"
+                        },
+                        "toolsRepository": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "replicaCount": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "object"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "serviceAccountName": {
+                    "type": "string"
+                },
+                "serviceType": {
+                    "type": "string"
+                },
+                "startupProbe": {
+                    "type": "object",
+                    "properties": {
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
             }
-          }
+        },
+        "global": {
+            "type": "object",
+            "properties": {
+                "imagePullSecrets": {
+                    "type": "array"
+                }
+            }
+        },
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "api": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/proxy-set-headers": {
+                                    "type": "string"
+                                },
+                                "nginx.ingress.kubernetes.io/use-regex": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "pathType": {
+                            "type": "string"
+                        },
+                        "tlsSecretName": {
+                            "type": "string"
+                        },
+                        "useTls": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "aws": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "alb.ingress.kubernetes.io/listen-ports": {
+                                    "type": "string"
+                                },
+                                "alb.ingress.kubernetes.io/scheme": {
+                                    "type": "string"
+                                },
+                                "alb.ingress.kubernetes.io/ssl-redirect": {
+                                    "type": "string"
+                                },
+                                "alb.ingress.kubernetes.io/target-type": {
+                                    "type": "string"
+                                },
+                                "kubernetes.io/ingress.class": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "certificateArn": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "securityGroups": {
+                            "type": "array"
+                        },
+                        "subnets": {
+                            "type": "array"
+                        },
+                        "targetGroupBinding": {
+                            "type": "object",
+                            "properties": {
+                                "apiTargetGroupARN": {
+                                    "type": "string"
+                                },
+                                "create": {
+                                    "type": "boolean"
+                                },
+                                "dexTargetGroupARN": {
+                                    "type": "string"
+                                },
+                                "registryTargetGroupARN": {
+                                    "type": "string"
+                                },
+                                "uiTargetGroupARN": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "controller": {
+                    "type": "string"
+                },
+                "dex": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/proxy-set-headers": {
+                                    "type": "string"
+                                },
+                                "nginx.ingress.kubernetes.io/use-regex": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "pathType": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "executor": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/use-regex": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "pathType": {
+                            "type": "string"
+                        },
+                        "tlsSecretName": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "gke": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "kubernetes.io/ingress.class": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "apiStaticIPName": {
+                            "type": "string"
+                        },
+                        "backendConfig": {
+                            "type": "object",
+                            "properties": {
+                                "create": {
+                                    "type": "boolean"
+                                },
+                                "securityPolicy": {
+                                    "type": "string"
+                                },
+                                "timeout": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "executorStaticIPName": {
+                            "type": "string"
+                        },
+                        "externalDNS": {
+                            "type": "object",
+                            "properties": {
+                                "perIngressProxy": {
+                                    "type": "object",
+                                    "properties": {
+                                        "api": {
+                                            "type": "boolean"
+                                        },
+                                        "dex": {
+                                            "type": "boolean"
+                                        },
+                                        "executor": {
+                                            "type": "boolean"
+                                        },
+                                        "registry": {
+                                            "type": "boolean"
+                                        },
+                                        "ui": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "proxyEnabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "frontendConfig": {
+                            "type": "object",
+                            "properties": {
+                                "create": {
+                                    "type": "boolean"
+                                },
+                                "redirectToHttps": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "managedCertificate": {
+                            "type": "object",
+                            "properties": {
+                                "create": {
+                                    "type": "boolean"
+                                },
+                                "domains": {
+                                    "type": "array"
+                                },
+                                "existingCertName": {
+                                    "type": "string"
+                                },
+                                "useExisting": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "registryStaticIPName": {
+                            "type": "string"
+                        },
+                        "uiStaticIPName": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "includeTlsHosts": {
+                    "type": "boolean"
+                },
+                "registry": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/proxy-set-headers": {
+                                    "type": "string"
+                                },
+                                "nginx.ingress.kubernetes.io/use-regex": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "pathType": {
+                            "type": "string"
+                        },
+                        "tlsSecretName": {
+                            "type": "string"
+                        },
+                        "useTls": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "ui": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/use-regex": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "pathType": {
+                            "type": "string"
+                        },
+                        "tlsSecretName": {
+                            "type": "string"
+                        },
+                        "useTls": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "useTls": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "minio": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "rootPassword": {
+                            "type": "string"
+                        },
+                        "rootUser": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "defaultBuckets": {
+                    "type": "string"
+                }
+            }
+        },
+        "name": {
+            "type": "string"
+        },
+        "openldap": {
+            "type": "object",
+            "properties": {
+                "adminPass": {
+                    "type": "string"
+                },
+                "adminUser": {
+                    "type": "string"
+                },
+                "baseRoot": {
+                    "type": "string"
+                },
+                "containerSecurityContext": {
+                    "type": "object"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "array"
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podLabels": {
+                    "type": "object"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "postgresql": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "database": {
+                            "type": "string"
+                        },
+                        "password": {
+                            "type": "string"
+                        },
+                        "username": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "redis": {
+            "type": "object",
+            "properties": {
+                "architecture": {
+                    "type": "string"
+                },
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "password": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "registry": {
+            "type": "object",
+            "properties": {
+                "containerSecurityContext": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "array"
+                },
+                "otel": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "metrics": {
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "traces": {
+                            "type": "object",
+                            "properties": {
+                                "endpoint": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podLabels": {
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "object"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "serviceAccountName": {
+                    "type": "string"
+                },
+                "serviceType": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "security": {
+            "type": "object",
+            "properties": {
+                "adminGroup": {
+                    "type": "string"
+                },
+                "dexClientId": {
+                    "type": "string"
+                },
+                "dexClientScope": {
+                    "type": "string"
+                },
+                "dexIssuerUri": {
+                    "type": "string"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "internalSecret": {
+                    "type": "string"
+                },
+                "ldapConfigSecretName": {
+                    "type": "string"
+                },
+                "patSecret": {
+                    "type": "string"
+                },
+                "useOpenLDAP": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "storage": {
+            "type": "object",
+            "properties": {
+                "aws": {
+                    "type": "object",
+                    "properties": {
+                        "accessKey": {
+                            "type": "string"
+                        },
+                        "bucketName": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        },
+                        "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "azure": {
+                    "type": "object",
+                    "properties": {
+                        "storageAccountAccessKey": {
+                            "type": "string"
+                        },
+                        "storageAccountName": {
+                            "type": "string"
+                        },
+                        "storageAccountResourceGroup": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "default": {
+                    "type": "object",
+                    "properties": {
+                        "endpoint": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "defaultStorage": {
+                    "type": "boolean"
+                },
+                "gcp": {
+                    "type": "object",
+                    "properties": {
+                        "bucketName": {
+                            "type": "string"
+                        },
+                        "credentials": {
+                            "type": "string"
+                        },
+                        "projectId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "minio": {
+                    "type": "object",
+                    "properties": {
+                        "accessKey": {
+                            "type": "string"
+                        },
+                        "bucketName": {
+                            "type": "string"
+                        },
+                        "endpoint": {
+                            "type": "string"
+                        },
+                        "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "ui": {
+            "type": "object",
+            "properties": {
+                "containerSecurityContext": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initContainers": {
+                    "type": "array"
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podLabels": {
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "object"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "serviceAccountName": {
+                    "type": "string"
+                },
+                "serviceType": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
         }
-      },
-      "registry": {
-        "type": "object",
-        "required": ["enabled", "replicaCount"],
-        "properties": {
-          "enabled": {
-            "description": "Enable Executor",
-            "type": "boolean"
-          },
-          "version": {
-            "description": "Registry Docker Version",
-            "type": "string"
-          },
-          "replicaCount": {
-            "description": "Replica count for Registry",
-            "type": "string"
-          },
-          "serviceType": {
-            "description": "Kubernetes service type",
-            "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-          },
-          "resources": {
-            "type": "object"
-          },
-          "affinity": {
-            "type": "object"
-          },
-          "nodeSelector": {
-            "type": "object"
-          },
-          "podLabels": {
-            "type": "object"
-          },
-          "tolerations": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            },
-            "env": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              }
-            },
-            "volumes": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              }
-            },
-            "volumeMounts": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          },
-          "properties": {
-            "type": "object",
-            "required": ["DexClientId"],
-            "properties": {
-              "DexClientId": {
-                "description": "Dex client id for the terraform login",
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "ui": {
-        "type": "object",
-        "required": ["enabled", "replicaCount"],
-        "properties": {
-          "enabled": {
-            "description": "Enable Executor",
-            "type": "boolean"
-          },
-          "version": {
-            "description": "UI Docker Version",
-            "type": "string"
-          },
-          "replicaCount": {
-            "description": "Replica count for UI",
-            "type": "string"
-          },
-          "serviceType": {
-            "description": "Kubernetes service type",
-            "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-          },
-          "resources": {
-            "type": "object"
-          },
-          "affinity": {
-            "type": "object"
-          },
-          "nodeSelector": {
-            "type": "object"
-          },
-          "tolerations": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          },
-          "podLabels": {
-            "type": "object"
-          }
-        }
-      },
-      "ingress": {
-        "type": "object",
-        "required": ["ui", "api", "registry", "useTls"],
-        "properties": {
-          "useTls": {
-            "description": "Enable Https Ingress",
-                "type": "boolean"
-          },
-          "includeTlsHosts": {
-            "description": "Include spec.tls.hosts inside ingress config",
-                "type": "boolean"
-          },
-          "ui": {
-            "type": "object",
-            "required": ["enabled", "annotations", "path", "pathType"],
-            "properties": {
-              "enabled": {
-                "description": "Enable ingress UI",
-                "type": "boolean"
-              },
-              "domain": {
-                "description": "UI domain",
-                "type": "string"
-              },
-              "path": {
-                "description": "Ingress UI path",
-                "type": "string"
-              },
-              "pathType": {
-                "description": "Ingress UI path type",
-                "enum": ["ImplementationSpecific", "Exact", "Prefix"]
-              },
-              "annotations": {
-                "type": "object"
-              }
-            }
-          },
-          "api": {
-            "type": "object",
-            "required": ["enabled", "domain", "annotations", "path", "pathType"],
-            "properties": {
-              "enabled": {
-                "description": "Enable ingress API",
-                "type": "boolean"
-              },
-              "domain": {
-                "description": "API domain",
-                "type": "string"
-              },
-              "path": {
-                "description": "Ingress API path",
-                "type": "string"
-              },
-              "pathType": {
-                "description": "Ingress API path type",
-                "enum": ["ImplementationSpecific", "Exact", "Prefix"]
-              },
-              "annotations": {
-                "type": "object"
-              }
-            }
-          },
-          "dex": {
-            "type": "object",
-            "required": ["enabled", "annotations", "path", "pathType"],
-            "properties": {
-              "enabled": {
-                "description": "Enable Dex API",
-                "type": "boolean"
-              },
-              "path": {
-                "description": "Ingress Dex path",
-                "type": "string"
-              },
-              "pathType": {
-                "description": "Ingress Dex path type",
-                "enum": ["ImplementationSpecific", "Exact", "Prefix"]
-              },
-              "annotations": {
-                "type": "object"
-              }
-            }
-          },
-          "registry": {
-            "type": "object",
-            "required": ["enabled", "annotations", "path", "pathType"],
-            "properties": {
-              "enabled": {
-                "description": "Enable ingress UI",
-                "type": "boolean"
-              },
-              "domain": {
-                "description": "Registry domain",
-                "type": "string"
-              },
-              "path": {
-                "description": "Ingress registry path",
-                "type": "string"
-              },
-              "pathType": {
-                "description": "Ingress registry path type",
-                "enum": ["ImplementationSpecific", "Exact", "Prefix"]
-              },
-              "annotations": {
-                "type": "object"
-              }
-            }
-          }
-        }
-      }
-    },
-    "title": "Terrakube Chart Values",
-    "type": "object"
-  }
+    }
+}
