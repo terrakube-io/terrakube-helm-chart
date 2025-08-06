@@ -35,7 +35,7 @@ dependencies:
   repository: "https://charts.bitnami.com/bitnami"
 
 - name: dex
-  version: "0.22.1"
+  version: "0.23.0"
   condition: dex.enabled
   repository: "https://charts.dexidp.io"
 
