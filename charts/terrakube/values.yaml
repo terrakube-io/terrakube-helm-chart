@@ -31,11 +31,13 @@ openldap:
   podAnnotations: {}
   securityContext: {}
   containerSecurityContext: {}
+  revisionHistoryLimit: 3
 
 ## Dex
 dex:
   enabled: true
   existingSecret: false
+  revisionHistoryLimit: 3
   config:
     issuer: http://terrakube-api.minikube.net/dex
 
@@ -181,6 +183,7 @@ api:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  revisionHistoryLimit: 3
   automountServiceAccountToken: true
   otel:
     enabled: false
@@ -252,6 +255,7 @@ executor:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  revisionHistoryLimit: 3
   secrets:
    - terrakube-executor-secrets
   otel:
@@ -293,6 +297,7 @@ registry:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  revisionHistoryLimit: 3
   secrets:
    - terrakube-registry-secrets
   otel:
@@ -320,6 +325,7 @@ ui:
   version: ""
   replicaCount: "1"
   serviceType: ClusterIP
+  revisionHistoryLimit: 3
   serviceAccountName: ""
   resources: {}
   podLabels: {}
@@ -380,7 +386,6 @@ ingress:
     tlsSecretName: tls-secret-ui-terrakube
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-    annotations: {}
   
   api:
     enabled: true
@@ -421,7 +426,6 @@ ingress:
     tlsSecretName: tls-secret-executor-terrakube    
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-  controller: "generic" # Options: generic, aws, gke
   
   # AWS specific configuration
   aws:
