@@ -4,7 +4,7 @@ This Helm chart deploys Terrakube, an open-source Terraform management platform,
 
 ## Features
 
-- **Multi-Cloud Ingress Support**: Generic (NGINX), AWS ALB, GKE ingress controllers and AWS ALB (WIP) 
+- **Multi-Cloud Ingress Support**: Generic (NGINX), AWS ALB, GKE ingress controllers and AWS ALB (WIP) and Gateway API
 - **TLS/SSL Configuration**: Per-service TLS configuration with custom certificates
 - **Google Cloud Integration**: GKE managed certificates, Cloud Armor, and BackendConfig support
 - **AWS Integration**: ALB ingress with shared load balancer support
@@ -24,7 +24,7 @@ All files included in `otherFiles` directory  will be inside the kubernetes Conf
 
 - Kubernetes 1.19+
 - Helm 3.0+
-- Ingress controller (nginx, AWS Load Balancer Controller, or GKE ingress)
+- Ingress controller (nginx, AWS Load Balancer Controller, or GKE ingress) or Gateway API
 
 ## Installation
 
@@ -38,7 +38,7 @@ helm install terrakube terrakube/terrakube
 
 ### Ingress Configuration
 
-Terrakube supports three ingress controllers: `generic` (nginx), `aws` (ALB), and `gke` (Google Cloud Load Balancer).
+Terrakube supports four ingress controllers: `generic` (nginx), `aws` (ALB), `gke` (Google Cloud Load Balancer), and `gatewayapi` (HttpRoute).
 
 #### Generic Ingress (Default)
 
@@ -103,6 +103,28 @@ ingress:
     enabled: false
 ```
 
+### HttpRoute Gateway API
+
+```yaml
+ingress:
+  controller: "gatewayapi"
+  gatewayapi:
+    gateways:
+    - name: "terrakube-gateway"
+      namespace: "terrakube"
+  ui:
+    enabled: true
+    domain: "terrakube-ui.example.com"
+  api:
+    enabled: true
+    domain: "terrakube-api.example.com"
+  registry:
+    enabled: true
+    domain: "terrakube-registry.example.com"
+  executor:
+    enabled: false
+```
+
 ## Helm Repository
 
 ## Usage
@@ -151,7 +173,7 @@ To install Terrakube in a Kubernetes cluster you will need the following:
 
 ## Requirements.
 
-Please make sure to have a kubernetes setup with some ingress setup completed for example Nginx Ingress, but any other kubernetes ingress should work.
+Please make sure to have a kubernetes setup with some ingress setup completed for example Nginx Ingress, but any other kubernetes ingress should work. Gateway API is also supported for example NGINX Gateway Fabric, but any other Gateway API implementation should work as well.
 
 ### 1. Authentication
 
@@ -341,7 +363,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | security.dexClientScope                   | Yes      | Use "email openid profile offline_access groups"                       |
 | security.gcpCredentials                   | No       | JSON Credentials for Google Identity Authentication                    |
 | security.caCerts                          | No       | Custom CA certificates to be added at runtime                          |
-| ingress.controller                        | Yes      | Ingress controller type: "generic", "aws", or "gke"                    |
+| ingress.controller                        | Yes      | Ingress controller type: "generic", "aws", or "gke" and "gatewayapi"                   |
 | ingress.includeTlsHosts                   | No       | Include TLS hosts in ingress configuration (default: true)             |
 | ingress.ui.enabled                        | Yes      | Enable UI ingress (default: true)                                      |
 | ingress.ui.domain                         | Yes      | Domain name for UI service                                             |
@@ -398,6 +420,8 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.gke.apiStaticIPName               | No       | GCP static IP name for API service                                     |
 | ingress.gke.registryStaticIPName          | No       | GCP static IP name for Registry service                                |
 | ingress.gke.executorStaticIPName          | No       | GCP static IP name for Executor service                                |
+| ingress.gatewayapi.enabled                  | No       | Enable Gateway API features (default: false)                          |
+| ingress.gatewayapi.gateways                | No       | Gateway API gateway references                                         |
 | openldap.adminUser                        | Yes      | LDAP deployment admin user                                             |
 | openldap.adminPass                        | Yes      | LDAP deployment admin password                                         |
 | openldap.baseRoot                         | Yes      | LDAP baseDN (or suffix) of the LDAP tree                               |
