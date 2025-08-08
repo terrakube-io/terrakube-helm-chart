@@ -339,7 +339,7 @@ ui:
 ingress:
   useTls: false
   includeTlsHosts: true
-  controller: "generic"  # Options: "generic", "aws", "gke"
+  controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
   
   gke:
     enabled: false
@@ -375,7 +375,12 @@ ingress:
       enabled: false
       groupName: ""
     annotations: {}
-  
+
+  gatewayapi:
+    enabled: false
+    gateways: []
+    annotations: {}
+
   ui:
     enabled: true
     domain: "terrakube-ui.minikube.net"
