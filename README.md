@@ -8,7 +8,7 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 Once Helm is set up properly, add the repo as follows:
 
 ```console
-helm repo add terrakube-community https://terrakube-io.github.io/terrakube-helm-chart
+helm repo add terrakube-community https://charts.terrakube.io
 ```
 
 You can then run `helm search repo terrakube-community` to see the charts.
