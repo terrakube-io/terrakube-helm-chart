@@ -316,6 +316,15 @@ registry:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  startupProbe:
+    failureThreshold: 30
+    periodSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 120
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
 
 ## UI Properties
 ui:
