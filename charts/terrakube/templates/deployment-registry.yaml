@@ -69,20 +69,20 @@ spec:
           httpGet:
             path: /actuator/health
             port: 8075
-          failureThreshold: 30
-          periodSeconds: 10
+          failureThreshold: {{ .Values.registry.startupProbe.failureThreshold }}
+          periodSeconds: {{ .Values.registry.startupProbe.periodSeconds }}
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
             port: 8075
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.registry.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.registry.livenessProbe.periodSeconds }}
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
             port: 8075
-          initialDelaySeconds: 120
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.registry.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.registry.readinessProbe.periodSeconds }}
         {{- with .Values.registry.containerSecurityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}
