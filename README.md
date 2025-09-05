@@ -2,6 +2,17 @@
 
 This Helm chart deploys Terrakube, an open-source Terraform management platform, on Kubernetes.
 
+## ⚠️ Important Notice Bitnami images
+
+By default this helm chart is using bitnami containers, these images are only for testing/development, when deploying in a production cluster make sure to use an external postgresql, redis, minio, s3 storage and any external authentication provider like Azure Entra Id, Google Cloud Identity, Amazon Cognito, etc.
+
+## Quick deployment
+
+To test Terrakube in minikube please follow this guide that explain how to deploy it.
+
+https://docs.terrakube.io/getting-started/deployment/minikube-+-https
+
+
 ## Features
 
 - **Multi-Cloud Ingress Support**: Generic (NGINX), AWS ALB, GKE ingress controllers and AWS ALB (WIP) and Gateway API
