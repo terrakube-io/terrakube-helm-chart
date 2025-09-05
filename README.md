@@ -8,7 +8,7 @@ By default this helm chart is using bitnami containers, these images are only fo
 
 ## Quick deployment
 
-To test Terrakube in minikube please follow this guide that explain how to deploy it using minikube.
+To test Terrakube in minikube please follow this guide that explain how to deploy it.
 
 https://docs.terrakube.io/getting-started/deployment/minikube-+-https
 
