@@ -24,7 +24,7 @@ openldap:
   adminPass: "admin"
   baseRoot: "dc=example,dc=org"
   image: "bitnami/openldap"
-  version: "2.6.4-debian-11-r4"
+  version: "latest"
   imagePullSecrets: []
   initContainers: []
   podLabels: {}
@@ -155,6 +155,12 @@ storage:
 
 # Default Storage Minio Configuration
 minio:
+  image:
+    tag: latest
+  clientImage:
+    tag: latest
+  console:
+    enabled: false
   auth:
     rootUser: "admin"
     rootPassword: "superadmin"
@@ -162,6 +168,8 @@ minio:
 
 # Default Database Postgresql
 postgresql:
+  image:
+    tag: latest
   auth:
     username: "terrakube"
     password: "terrakubepassword"
@@ -169,6 +177,8 @@ postgresql:
 
 # Default Redis Configuration
 redis:
+  image:
+    tag: latest
   architecture: "standalone"
   auth:
     enabled: true

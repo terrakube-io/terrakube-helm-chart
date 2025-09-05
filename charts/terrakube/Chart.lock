@@ -1,15 +1,15 @@
 dependencies:
 - name: minio
   repository: https://charts.bitnami.com/bitnami
-  version: 15.0.5
+  version: 17.0.21
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 16.4.16
+  version: 16.7.27
 - name: dex
   repository: https://charts.dexidp.io
-  version: 0.23.0
+  version: 0.24.0
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 20.11.0
-digest: sha256:5a33171aa0425826e727bc1266146a5f089d57ff44154908323001b5ded91331
-generated: "2025-07-25T15:28:54.111147-03:00"
+  version: 22.0.7
+digest: sha256:11e666f1db4e87ae4ae9c5dc5e9f00887897d2b34e5014c9e360227e17dcf5ab
+generated: "2025-09-05T13:32:00.716601855-06:00"
