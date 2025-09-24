@@ -244,15 +244,13 @@ api:
     databaseSchema: "public"
     databasePassword: ""
     databaseSslMode: "disable"
-    databasePort: "3306"
+    databasePort: "5432"
     redisHostname: ""
     redisPassword: ""
     redisPort: "6379"
     executorUrl: "http://terrakube-executor-service:8090"
-
-
-## The database port is only used for mysql databases
-
+    
+## DONT FORGET TO UPDATE THE PORT DEPENDING OF THE DATABASE BY DEFAULT IS USING THE POSTGRESQL PORT
 ## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".   
 ## Reference: https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/PGProperty.html#SSL_MODE
 
