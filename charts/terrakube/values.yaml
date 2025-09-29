@@ -197,6 +197,12 @@ api:
   serviceAccountName: ""
   revisionHistoryLimit: 3
   automountServiceAccountToken: true
+  dynamicCredentials:
+    enabled: false
+    publicKey: ""
+    publicKeyPath: "/etc/terrakube/credentials/public-key.pem"
+    privateKey: ""
+    privateKeyPath: "/etc/terrakube/credentials/private-key.pem"
   otel:
     enabled: false
     metrics:

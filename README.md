@@ -464,9 +464,14 @@ Once you have completed the above steps you can complete the file values.yaml to
 | api.defaultRedis                          | No       | Enable default Redis using Bitnami helm chart                          |
 | api.defaultDatabase                       | No       | Enable default database using postgresql helm chart                    |
 | api.image                                 | No       | API image repository                                                   |
+| api.dynamicCredentials.enabled            | No       | This will enable dyanmic credentials secret                            |
+| api.dynamicCredentials.publicKey          | No       | Public key for dynamic credentials                                     |
+| api.dynamicCredentials.privateKey         | No       | Private key for dynamic credentials                                    |
+| api.dynamicCredentials.publicKeyPath      | No       | Default value /etc/terrakube/credentials/public-key.pem                |
+| api.dynamicCredentials.privateKeyPath     | No       | Default value /etc/terrakube/credentials/private-key.pem               |
 | api.version                               | Yes      | Terrakube API version                                                  |
 | api.replicaCount                          | Yes      | Number of API pod replicas                                             |
-| api.serviceAccountName                    | No       | Kubernetes Service Account name 
+| api.serviceAccountName                    | No       | Kubernetes Service Account name                                        |
 | api.serviceType                           | Yes      | Kubernetes service type (ClusterIP/NodePort/LoadBalancer)             |
 | api.env                                   | No       | Environment variables for API pods                                     |
 | api.volumes                               | No       | Volume mounts for API pods                                             |
@@ -764,7 +769,38 @@ registry:
       endpoint: zipkin:9411/api/v2/spans
 ```
 
-### 7. Deploy Terrakube using helm chart manually
+### 7. Dynamic credentials
+
+To enable the feature use the following:
+
+```
+api:
+  dynamicCredentials:
+    enabled: true
+    publicKey: |
+      -----BEGIN PUBLIC KEY-----
+      REDACTED
+      -----END PUBLIC KEY-----
+    privateKey: |
+      -----BEGIN PRIVATE KEY-----
+      REDACTED
+      -----END PRIVATE KEY-----
+  volumes:
+    - name: dynamic-credentials
+      secret:
+        secretName: terrakube-dynamic-credentials
+        items:
+          - key: public-key.pem
+            path: public-key.pem
+          - key: private-key.pem
+            path: private-key.pem
+  volumeMounts:
+  - name: dynamic-credentials
+    mountPath: /etc/terrakube/credentials
+    readOnly: true
+```
+
+### 8. Deploy Terrakube using helm chart manually
 
 Now you have all the information to deploy Terrakube, you can use the following example:
 
