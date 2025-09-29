@@ -23,7 +23,7 @@ openldap:
   adminUser: "admin"
   adminPass: "admin"
   baseRoot: "dc=example,dc=org"
-  image: "bitnami/openldap"
+  image: "bitnamilegacy/openldap"
   version: "latest"
   imagePullSecrets: []
   initContainers: []
@@ -125,8 +125,6 @@ dex:
     readOnly: true
 
 
-
-
 ## Terraform Storage
 storage:
   defaultStorage: true
@@ -156,9 +154,11 @@ storage:
 # Default Storage Minio Configuration
 minio:
   image:
-    tag: latest
+    repository: bitnamilegacy/minio
+    tag: 2025.7.23-debian-12-r3
   clientImage:
-    tag: latest
+    repository: bitnamilegacy/minio-client
+    tag: 2025.7.21-debian-12-r2
   console:
     enabled: false
   auth:
@@ -169,7 +169,8 @@ minio:
 # Default Database Postgresql
 postgresql:
   image:
-    tag: latest
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0-debian-12-r4
   auth:
     username: "terrakube"
     password: "terrakubepassword"
@@ -178,7 +179,8 @@ postgresql:
 # Default Redis Configuration
 redis:
   image:
-    tag: latest
+    repository: bitnamilegacy/redis
+    tag: 8.2.1-debian-12-r0
   architecture: "standalone"
   auth:
     enabled: true
