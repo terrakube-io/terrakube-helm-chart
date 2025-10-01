@@ -24,6 +24,6 @@ spec:
       port: 8080
     matches:
     - path:
-      type: pathPrefix
+      type: PathPrefix
       values: {{ .Values.ingress.ui.path  }}
 {{- end }}

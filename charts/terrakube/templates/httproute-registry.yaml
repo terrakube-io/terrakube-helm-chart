@@ -24,6 +24,6 @@ spec:
       port: 8075
     matches:
     - path:
-      type: pathPrefix
+      type: PathPrefix
       values: {{ .Values.ingress.registry.path  }}
 {{- end }}

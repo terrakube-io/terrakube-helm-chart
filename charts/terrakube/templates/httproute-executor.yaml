@@ -24,6 +24,6 @@ spec:
       port: 8090
     matches:
     - path:
-      type: pathPrefix
+      type: PathPrefix
       values: {{ .Values.ingress.executor.path  }}
 {{- end }}
