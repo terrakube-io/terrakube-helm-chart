@@ -18,12 +18,11 @@ spec:
   parentRefs: {{- . | toYaml | nindent 4 }}
 {{- end }}
   rules:
-  - backendRefs:
-    - kind: Service
-      name: {{ .Values.name }}-ui-service
-      port: 8080
-    matches:
+  - matches:
     - path:
-      type: PathPrefix
-      values: {{ .Values.ingress.ui.path  }}
+        type: PathPrefix
+        value: {{ .Values.ingress.ui.path  }}
+    backendRefs:
+    - name: {{ .Values.name }}-ui-service
+      port: 8080
 {{- end }}

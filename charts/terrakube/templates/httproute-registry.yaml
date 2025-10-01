@@ -18,12 +18,12 @@ spec:
   parentRefs: {{- . | toYaml | nindent 4 }}
 {{- end }}
   rules:
-  - backendRefs:
-    - kind: Service
-      name: {{ .Values.name }}-registry-service
-      port: 8075
-    matches:
+  - matches:
     - path:
-      type: PathPrefix
-      values: {{ .Values.ingress.registry.path  }}
+        type: PathPrefix
+        value: {{ .Values.ingress.registry.path  }}
+    backendRefs:
+    - name: {{ .Values.name }}-registry-service
+      port: 8075
 {{- end }}
+

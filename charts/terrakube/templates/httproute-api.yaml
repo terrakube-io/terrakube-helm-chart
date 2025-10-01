@@ -19,21 +19,20 @@ spec:
 {{- end }}
   rules:
 {{- if .Values.ingress.dex.enabled }}
-  - backendRefs:
-    - kind: Service
-      name: {{ .Release.Name }}-dex
+  - matches:
+    - path:
+        type: PathPrefix
+        value: {{ .Values.ingress.dex.path  }}
+    backendRefs:
+    - name: {{ .Release.Name }}-dex
       port: 5556
-    matches:
-    - path:
-      type: PathPrefix
-      values: {{ .Values.ingress.dex.path  }}
 {{- end }}
-  - backendRefs:
-    - kind: Service
-      name: {{ .Values.name }}-api-service
-      port: 8080
-    matches:
+  - matches:
     - path:
-      type: PathPrefix
-      values: {{ .Values.ingress.api.path  }}
+        type: PathPrefix
+        value: {{ .Values.ingress.api.path  }}
+    backendRefs:
+    - name: {{ .Values.name }}-api-service
+      port: 8080
+
 {{- end }}
