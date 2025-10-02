@@ -18,12 +18,11 @@ spec:
   parentRefs: {{- . | toYaml | nindent 4 }}
 {{- end }}
   rules:
-  - backendRefs:
-    - kind: Service
-      name: {{ .Values.name }}-executor-service
-      port: 8090
-    matches:
+  - matches:
     - path:
-      type: pathPrefix
-      values: {{ .Values.ingress.executor.path  }}
+        type: PathPrefix
+        value: {{ .Values.ingress.executor.path  }}
+    backendRefs:
+    - name: {{ .Values.name }}-executor-service
+      port: 8090
 {{- end }}
