@@ -219,36 +219,32 @@ The following in an example of Dex configuration using Azure Active Directory, G
       - id: microsoft
         redirectURIs:
         - 'https://terrakube-ui.domain.com'
-        - 'http://localhost:3000'
-        - 'http://localhost:10001/login'
-        - 'http://localhost:10000/login'
+        - 'http://localhost:10001/login' # required for terraform login
+        - 'http://localhost:10000/login' # required for terraform login
         - '/device/callback'
         name: 'microsoft'
         public: true
       - id: github
         redirectURIs:
         - 'https://terrakube-ui.domain.com'
-        - 'http://localhost:3000'
-        - 'http://localhost:10001/login'
-        - 'http://localhost:10000/login'
+        - 'http://localhost:10001/login' # required for terraform login
+        - 'http://localhost:10000/login' # required for terraform login
         - '/device/callback'
         name: 'github-web'
         public: true
       - id: gitlab
         redirectURIs:
         - 'https://terrakube-ui.domain.com'
-        - 'http://localhost:3000'
-        - 'http://localhost:10001/login'
-        - 'http://localhost:10000/login'
+        - 'http://localhost:10001/login' # required for terraform login
+        - 'http://localhost:10000/login' # required for terraform login
         - '/device/callback'
         name: 'gitlab'
         public: true
       - id: google
         redirectURIs:
         - 'https://terrakube-ui.domain.com'
-        - 'http://localhost:3000'
-        - 'http://localhost:10001/login'
-        - 'http://localhost:10000/login'
+        - 'http://localhost:10001/login' # required for terraform login
+        - 'http://localhost:10000/login' # required for terraform login
         - '/device/callback'
         name: 'google'
         public: true
