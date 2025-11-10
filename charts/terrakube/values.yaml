@@ -195,6 +195,7 @@ api:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  serviceAnnotations: {}
   revisionHistoryLimit: 3
   automountServiceAccountToken: true
   dynamicCredentials:
@@ -313,6 +314,7 @@ registry:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  serviceAnnotations: {}
   revisionHistoryLimit: 3
   secrets:
    - terrakube-registry-secrets
@@ -350,8 +352,9 @@ ui:
   version: ""
   replicaCount: "1"
   serviceType: ClusterIP
-  revisionHistoryLimit: 3
   serviceAccountName: ""
+  serviceAnnotations: {}
+  revisionHistoryLimit: 3
   resources: {}
   podLabels: {}
   podAnnotations: {}

@@ -5,10 +5,15 @@ metadata:
   name: {{ .Values.name }}-api-service
   labels:
     {{- include "terrakube-api.labels" . | nindent 4 }}
-  {{- if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled .Values.ingress.gke.backendConfig.create }}
+  {{- if or (and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled .Values.ingress.gke.backendConfig.create) .Values.api.serviceAnnotations }}
   annotations:
+    {{- if and (eq .Values.ingress.controller "gke") .Values.ingress.gke.enabled .Values.ingress.gke.backendConfig.create }}
     cloud.google.com/backend-config: '{"default": "{{ .Values.name }}-api-backend-config"}'
     cloud.google.com/neg: '{"ingress": true}'
+    {{- end }}
+    {{- with .Values.api.serviceAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   # Use NodePort for GKE or the specified type from values (default to ClusterIP)
