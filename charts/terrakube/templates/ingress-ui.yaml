@@ -85,12 +85,8 @@ metadata:
     {{- if .Values.ingress.gke.backendConfig.create }}
     cloud.google.com/backend-config: '{"default": "{{ .Values.name }}-ui-backend-config"}'
     {{- end }}
-    {{- if .Values.ingress.gke.externalDNS }}
-    {{- if .Values.ingress.gke.externalDNS.perIngressProxy }}
+    {{- if .Values.ingress.gke.externalDNS.perIngressProxy.ui }}
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "{{ .Values.ingress.gke.externalDNS.perIngressProxy.ui }}"
-    {{- else }}
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "{{ .Values.ingress.gke.externalDNS.proxyEnabled }}"
-    {{- end }}
     {{- end }}
     {{- range $key, $value := .Values.ingress.gke.annotations }}
     {{ $key }}: {{ tpl (toString $value) $ | quote }}

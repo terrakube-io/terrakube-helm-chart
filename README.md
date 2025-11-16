@@ -420,7 +420,6 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.gke.backendConfig.registrySecurityPolicy | No       | Cloud Armor security policy for Registry service (usually empty)      |
 | ingress.gke.backendConfig.executorSecurityPolicy | No       | Cloud Armor security policy for Executor service (usually empty)      '
 | ingress.gke.frontendConfig.create         | No       | Create FrontendConfig resources (default: false)                      |
-| ingress.gke.externalDNS.proxyEnabled      | No       | Enable Cloudflare proxy for external-dns (default: "false")           |
 | ingress.gke.externalDNS.perIngressProxy   | No       | Per-service Cloudflare proxy settings                                 |
 | ingress.gke.annotations                   | No       | Global GKE annotations applied to all ingresses                       |
 | ingress.gke.uiStaticIPName                | No       | GCP static IP name for UI service                                      |

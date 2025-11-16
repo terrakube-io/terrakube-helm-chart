@@ -786,9 +786,6 @@
                                             "type": "boolean"
                                         }
                                     }
-                                },
-                                "proxyEnabled": {
-                                    "type": "boolean"
                                 }
                             }
                         },
