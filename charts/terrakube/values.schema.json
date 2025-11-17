@@ -750,7 +750,16 @@
                                 "create": {
                                     "type": "boolean"
                                 },
-                                "securityPolicy": {
+                                "apiSecurityPolicy": {
+                                    "type": "string"
+                                },
+                                "executorSecurityPolicy": {
+                                    "type": "string"
+                                },
+                                "registrySecurityPolicy": {
+                                    "type": "string"
+                                },
+                                "uiSecurityPolicy": {
                                     "type": "string"
                                 },
                                 "timeout": {
@@ -807,15 +816,6 @@
                             "type": "object",
                             "properties": {
                                 "create": {
-                                    "type": "boolean"
-                                },
-                                "domains": {
-                                    "type": "array"
-                                },
-                                "existingCertName": {
-                                    "type": "string"
-                                },
-                                "useExisting": {
                                     "type": "boolean"
                                 }
                             }
