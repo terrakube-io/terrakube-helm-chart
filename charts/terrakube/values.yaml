@@ -486,8 +486,7 @@ ingress:
       create: false
       redirectToHttps: true
     externalDNS:
-      proxyEnabled: false      # Control whether ExternalDNS creates proxy records (Cloudflare)
-      perIngressProxy:         # Optional: Allow per-ingress proxy settings
+      perIngressProxy:         # Control whether ExternalDNS creates proxy records (Cloudflare)
         ui: false
         api: false
         registry: false
