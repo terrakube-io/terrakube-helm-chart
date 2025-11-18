@@ -48,14 +48,23 @@ spec:
         - name: metrics
           containerPort: {{ .Values.api.otel.metrics.port | default "9464" }}
         {{- end }}
-        {{- with .Values.api.env }}
         env:
+        {{- if .Values.security.caCerts }}
+        - name: SERVICE_BINDING_ROOT
+          value: /mnt/platform/bindings
+        {{- end }}
+        {{- with .Values.api.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         volumeMounts:
-          {{- with .Values.api.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+        {{- if .Values.security.caCerts }}
+        - name: ca-certs
+          mountPath: /mnt/platform/bindings/ca-certificates
+          readOnly: true
+        {{- end }}
+        {{- with .Values.api.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         envFrom:
         {{- range .Values.api.secrets }}
         - secretRef:
@@ -100,8 +109,13 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.api.volumes }}
       volumes:
+      {{- if .Values.security.caCerts }}
+      - name: ca-certs
+        secret:
+          secretName: terrakube-ca-secrets
+      {{- end }}
+      {{- with .Values.api.volumes }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
       {{- with .Values.api.serviceAccountName }}
