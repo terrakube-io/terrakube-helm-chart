@@ -148,7 +148,7 @@ storage:
     credentials: ""
   default:
     region: "us-east-1"
-    endpoint: "http://terrakube-minio:9000"
+    endpoint: ""
 
 
 # Default Storage Minio Configuration
