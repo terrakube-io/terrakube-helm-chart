@@ -226,6 +226,7 @@ api:
   defaultRedis: true
   loadSampleData: true
   terraformReleasesUrl: "https://releases.hashicorp.com/terraform/index.json"
+  tofuReleasesUrl: "https://api.github.com/repos/opentofu/opentofu/releases"
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
