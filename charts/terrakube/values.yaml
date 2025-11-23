@@ -236,12 +236,10 @@ api:
   initContainers: []
   startupProbe:
     failureThreshold: 30
-    periodSeconds: 10
+    periodSeconds: 5
   readinessProbe:
-    initialDelaySeconds: 120
     periodSeconds: 10
   livenessProbe:
-    initialDelaySeconds: 10
     periodSeconds: 10
   cache:
     moduleCacheMaxTotal: "128"
@@ -301,12 +299,10 @@ executor:
   initContainers: []
   startupProbe:
     failureThreshold: 30
-    periodSeconds: 10
+    periodSeconds: 5
   readinessProbe:
-    initialDelaySeconds: 120
     periodSeconds: 10
   livenessProbe:
-    initialDelaySeconds: 10
     periodSeconds: 10
 
 ## Registry properties
@@ -340,12 +336,10 @@ registry:
   initContainers: []
   startupProbe:
     failureThreshold: 30
-    periodSeconds: 10
+    periodSeconds: 5
   readinessProbe:
-    initialDelaySeconds: 120
     periodSeconds: 10
   livenessProbe:
-    initialDelaySeconds: 10
     periodSeconds: 10
 
 ## UI Properties
