@@ -157,6 +157,17 @@
                         }
                     }
                 },
+                "ephemeralExecution": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "secretName": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "readinessProbe": {
                     "type": "object",
                     "properties": {
