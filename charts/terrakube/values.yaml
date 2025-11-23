@@ -217,6 +217,9 @@ api:
     create: false
     roleName: "terrakube-api-role"
     roleBindingName: "terrakube-api-role-binding"
+  ephemeralExecution:
+    enabled: false
+    secretName: terrakube-executor-secrets
   secrets:
    - terrakube-api-secrets
   resources: {}

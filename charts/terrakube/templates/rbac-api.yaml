@@ -1,4 +1,5 @@
-{{- if .Values.api.rbac.create -}}
+{{- if (or .Values.api.rbac.create .Values.api.ephemeralExecution.enabled) -}}
+{{- $_ := required "Must set .Values.api.serviceAccountName" .Values.api.serviceAccountName }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:

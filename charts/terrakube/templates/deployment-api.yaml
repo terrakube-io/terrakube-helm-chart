@@ -49,6 +49,14 @@ spec:
           containerPort: {{ .Values.api.otel.metrics.port | default "9464" }}
         {{- end }}
         env:
+        {{- if .Values.api.ephemeralExecution.enabled }}
+        - name: ExecutorEphemeralNamespace
+          value: {{ .Release.Namespace }}
+        - name: ExecutorEphemeralImage
+          value: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
+        - name: ExecutorEphemeralSecret
+          value: {{ .Values.api.ephemeralExecution.secretName }}
+        {{- end }}
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
