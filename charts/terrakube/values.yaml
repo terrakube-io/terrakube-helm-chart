@@ -369,14 +369,6 @@ ingress:
   useTls: false
   includeTlsHosts: true
   controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
-  
-  aws:
-    enabled: false
-    certificateArn: ""
-    sharedLoadBalancer:
-      enabled: false
-      groupName: ""
-    annotations: {}
 
   gatewayapi:
     enabled: false
@@ -450,16 +442,9 @@ ingress:
       apiTargetGroupARN: ""
       uiTargetGroupARN: ""
       registryTargetGroupARN: ""
-      dexTargetGroupARN: ""
-    securityGroups: []
-    subnets: []
-    certificateArn: ""
-    targetGroupBinding:
-      create: false
-      apiTargetGroupARN: ""
-      uiTargetGroupARN: ""
-      registryTargetGroupARN: ""
-      dexTargetGroupARN: ""
+    sharedLoadBalancer:
+      enabled: false
+      groupName: ""
     securityGroups: []
     subnets: []
 
