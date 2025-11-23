@@ -1,0 +1,18 @@
+name: Release Charts
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate package.json against a local schema
+        uses: cardinalby/schema-validator-action@2166123eb256fa40baef7e22ab1379708425efc7 # 3.1.1
+        with:
+          file: charts/terrakube/values.yaml
+          schema: charts/terrakube/values.schema.json
