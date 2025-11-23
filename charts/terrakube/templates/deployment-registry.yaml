@@ -84,13 +84,11 @@ spec:
           httpGet:
             path: /actuator/health/liveness
             port: 8075
-          initialDelaySeconds: {{ .Values.registry.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.registry.livenessProbe.periodSeconds }}
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
             port: 8075
-          initialDelaySeconds: {{ .Values.registry.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.registry.readinessProbe.periodSeconds }}
         {{- with .Values.registry.containerSecurityContext }}
         securityContext:

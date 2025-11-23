@@ -55,9 +55,6 @@
                 "livenessProbe": {
                     "type": "object",
                     "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
-                        },
                         "periodSeconds": {
                             "type": "integer"
                         }
@@ -160,9 +157,6 @@
                 "readinessProbe": {
                     "type": "object",
                     "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
-                        },
                         "periodSeconds": {
                             "type": "integer"
                         }
@@ -460,9 +454,6 @@
                 "livenessProbe": {
                     "type": "object",
                     "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
-                        },
                         "periodSeconds": {
                             "type": "integer"
                         }
@@ -518,9 +509,6 @@
                 "readinessProbe": {
                     "type": "object",
                     "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
-                        },
                         "periodSeconds": {
                             "type": "integer"
                         }
