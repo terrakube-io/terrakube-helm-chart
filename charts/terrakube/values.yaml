@@ -368,6 +368,7 @@ ingress:
   controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
 
   gatewayapi:
+    apiVersion: v1beta1
     enabled: false
     gateways: []
     annotations: {}
