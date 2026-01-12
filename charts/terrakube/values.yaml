@@ -235,6 +235,7 @@ api:
   imagePullSecrets: []
   initContainers: []
   startupProbe:
+    initialDelaySeconds: 90
     failureThreshold: 30
     periodSeconds: 5
   readinessProbe:
