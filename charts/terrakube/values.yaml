@@ -46,9 +46,9 @@ dex:
     web:
       http: 0.0.0.0:5556
       allowedOrigins: ['*']
-      skipApprovalScreen: true
     oauth2:
       responseTypes: ["code", "token", "id_token"]
+      skipApprovalScreen: true
 
     connectors:
     - type: ldap
