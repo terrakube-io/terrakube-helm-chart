@@ -20,6 +20,20 @@ spec:
     - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
+          - path: "/.well-known/openid-configuration"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
+          - path: "/.well-known/jwks"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
           - path: {{ .Values.ingress.api.path | quote }}
             pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
@@ -67,6 +81,20 @@ spec:
     - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
+          - path: "/.well-known/openid-configuration"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
+          - path: "/.well-known/jwks"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
           - path: {{ .Values.ingress.api.path | quote }}
             pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
@@ -119,6 +147,20 @@ spec:
     - host: {{ .Values.ingress.api.domain | quote }}
       http:
         paths:
+          - path: "/.well-known/openid-configuration"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
+          - path: "/.well-known/jwks"
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.name }}-api-service
+                port:
+                  number: 8080
           - path: {{ .Values.ingress.api.path | quote }}
             pathType: {{ .Values.ingress.api.pathType | quote }}
             backend:
