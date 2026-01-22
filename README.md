@@ -20,6 +20,7 @@ https://docs.terrakube.io/getting-started/deployment/minikube-+-https
 - **Google Cloud Integration**: GKE managed certificates, Cloud Armor, and BackendConfig support
 - **AWS Integration**: ALB ingress with shared load balancer support
 - **Authentication**: Dex OIDC integration with GitHub, Google, and other providers
+- **Public OIDC/JWKS Endpoints**: Publicly accessible `.well-known/openid-configuration` and `.well-known/jwks` endpoints for OIDC discovery and JWT validation
 - **Storage**: MinIO S3-compatible storage or external S3
 - **Database**: PostgreSQL support with optional external database
 - **Module Registry**: Private Terraform module registry
@@ -289,6 +290,29 @@ To learn more about how to build the Dex configuration file please review the fo
 - [Google Cloud Identity](https://dexidp.io/docs/connectors/google/)
 - [Github](https://dexidp.io/docs/connectors/github/)
 - [Gitlab](https://dexidp.io/docs/connectors/gitlab/)
+
+#### OIDC Discovery and JWKS Endpoints
+
+Terrakube exposes the following public OIDC endpoints through the API service for authentication and JWT token validation:
+
+- `/.well-known/openid-configuration` - OpenID Connect discovery endpoint
+- `/.well-known/jwks` - JSON Web Key Set (JWKS) endpoint for JWT signature verification
+
+These endpoints are automatically configured as **public** (without security policies) across all supported ingress types:
+- **Generic/NGINX Ingress**: Public paths with exact matching
+- **GKE Ingress**: Dedicated BackendConfig without Cloud Armor security policies
+- **Gateway API (HttpRoute)**: Public routes with exact path matching
+
+This allows external services and clients to:
+- Discover OIDC configuration automatically
+- Validate JWT tokens issued by Terrakube
+- Integrate with third-party authentication systems
+
+The endpoints are exposed on your configured API domain:
+```
+https://terrakube-api.example.com/.well-known/openid-configuration
+https://terrakube-api.example.com/.well-known/jwks
+```
 
 ### 2. Terrakube Admin Group and Internal Security
 
