@@ -20,6 +20,24 @@ spec:
     requestPath: "/actuator/health"
     port: 8080
 ---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ .Values.name }}-api-wellknown-backend-config
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
+spec:
+  timeoutSec: {{ .Values.ingress.gke.backendConfig.timeout }}
+  # NO security policy for .well-known endpoints - public access required for OIDC/JWKS
+  healthCheck:
+    checkIntervalSec: 15
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    type: HTTP
+    requestPath: "/actuator/health"
+    port: 8080
+---
 {{- if .Values.dex.enabled }}
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
