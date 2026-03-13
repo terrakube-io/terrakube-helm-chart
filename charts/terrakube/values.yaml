@@ -210,7 +210,7 @@ api:
       port: "9464"
       host: "0.0.0.0"
     traces:
-      type: jaeger
+      type: ""
       # endpoint its just example, change it to your jaeger endpoint
       endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
   rbac:
