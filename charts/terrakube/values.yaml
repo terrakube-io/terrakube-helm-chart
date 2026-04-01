@@ -222,6 +222,8 @@ api:
     secretName: terrakube-executor-secrets
   secrets:
    - terrakube-api-secrets
+  configMaps:
+   - terrakube-api-config
   resources: {}
   podLabels: {}
   podAnnotations: {}
@@ -278,6 +280,8 @@ executor:
   revisionHistoryLimit: 3
   secrets:
    - terrakube-executor-secrets
+  configMaps:
+   - terrakube-executor-config
   otel:
     enabled: false
     metrics:
@@ -319,6 +323,8 @@ registry:
   revisionHistoryLimit: 3
   secrets:
    - terrakube-registry-secrets
+  configMaps:
+   - terrakube-registry-config
   otel:
     enabled: false
     metrics:

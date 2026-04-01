@@ -1,0 +1,87 @@
+{{- if .Values.executor.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: terrakube-executor-config
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
+data:
+  # General Settings
+  AzBuilderApiUrl: '{{ .Values.executor.apiServiceUrl }}'
+  ExecutorFlagBatch: 'false'
+  ExecutorFlagDisableAcknowledge: 'false'
+  TerrakubeToolsRepository: '{{ .Values.executor.properties.toolsRepository }}'
+  TerrakubeToolsBranch: '{{ .Values.executor.properties.toolsBranch }}'
+  TerrakubeEnableSecurity: 'true'
+  TerrakubeRegistryDomain: '{{ .Values.ingress.registry.domain }}'
+  TerrakubeApiUrl: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.api.domain }}'
+  TerrakubeRedisPort: '{{ .Values.api.properties.redisPort }}'
+  {{- if .Values.api.defaultRedis }}
+  #Default Redis
+  TerrakubeRedisHostname: '{{ .Release.Name }}-redis-master'
+  {{- else }}
+  #Custom Redis
+  TerrakubeRedisHostname: '{{ .Values.api.properties.redisHostname }}'
+  {{- end }}
+
+  {{- if .Values.storage.defaultStorage }}
+
+  #AWS S3 Storage using MINIO
+  TerraformStateType: 'AwsTerraformStateImpl'
+  AwsTerraformStateBucketName: '{{ .Values.minio.defaultBuckets }}'
+  AwsTerraformStateRegion: '{{ .Values.storage.default.region }}'
+  TerraformOutputType: 'AwsTerraformOutputImpl'
+  AwsTerraformOutputBucketName: '{{ .Values.minio.defaultBuckets }}'
+  AwsTerraformOutputRegion: '{{ .Values.storage.default.region }}'
+  AwsEndpoint: {{ .Values.storage.default.endpoint | default (printf "http://%s-minio:9000" .Release.Name) | quote }}
+
+  {{- else }}
+
+  {{- if and (.Values.storage.azure).storageAccountName (.Values.storage.azure).storageAccountAccessKey }}
+  #Azure Storage
+  TerraformStateType: 'AzureTerraformStateImpl'
+  AzureTerraformStateResourceGroup: '{{ .Values.storage.azure.storageAccountResourceGroup }}'
+  AzureTerraformStateStorageAccountName: '{{ .Values.storage.azure.storageAccountName }}'
+  AzureTerraformStateStorageContainerName: 'tfstate'
+  TerraformOutputType: 'AzureTerraformOutputImpl'
+  AzureTerraformOutputAccountName: '{{ .Values.storage.azure.storageAccountName }}'
+  {{- end }}
+
+  {{- if and (.Values.storage.aws).bucketName (.Values.storage.aws).region }}
+  #AWS S3 Storage
+  TerraformStateType: 'AwsTerraformStateImpl'
+  AwsTerraformStateBucketName: '{{ .Values.storage.aws.bucketName }}'
+  AwsTerraformStateRegion: '{{ .Values.storage.aws.region }}'
+  TerraformOutputType: 'AwsTerraformOutputImpl'
+  AwsTerraformOutputBucketName: '{{ .Values.storage.aws.bucketName }}'
+  AwsTerraformOutputRegion: '{{ .Values.storage.aws.region }}'
+  AwsEndpoint: ''
+  {{- end }}
+
+  {{- if and (.Values.storage.minio).bucketName (.Values.storage.minio).accessKey (.Values.storage.minio).secretKey (.Values.storage.minio).endpoint }}
+  #MINIO S3 Storage
+  TerraformStateType: 'AwsTerraformStateImpl' # MINIO USES THE AWS LIBRARY
+  AwsTerraformStateBucketName: '{{ .Values.storage.minio.bucketName }}'
+  AwsTerraformStateRegion: 'us-east-1' # THIS IS NEEDED IN ORDER TO CONNECT TO MINIO USING THE AWS CODE, HARD CODED IT HAS NO EFFECT
+  TerraformOutputType: 'AwsTerraformOutputImpl' # MINIO USES THE AWS LIBRARY
+  AwsTerraformOutputBucketName: '{{ .Values.storage.minio.bucketName }}'
+  AwsTerraformOutputRegion: 'us-east-1' # THIS IS NEEDED IN ORDER TO CONNECT TO MINIO USING THE AWS CODE, HARD CODED IT HAS NO EFFECT
+  AwsEndpoint: '{{ .Values.storage.minio.endpoint }}'
+  {{- end }}
+
+  {{- if and (.Values.storage.gcp).projectId (.Values.storage.gcp).bucketName (.Values.storage.gcp).credentials }}
+  #GCP Storage Bucket
+  TerraformStateType: 'GcpTerraformStateImpl'
+  GcpTerraformStateProjectId: '{{ .Values.storage.gcp.projectId }}'
+  GcpTerraformStateBucketName: '{{ .Values.storage.gcp.bucketName }}'
+  TerraformOutputType: 'GcpTerraformOutputImpl'
+  GcpTerraformOutputProjectId: '{{ .Values.storage.gcp.projectId }}'
+  GcpTerraformOutputBucketName: '{{ .Values.storage.gcp.bucketName }}'
+  {{- end }}
+
+  {{- end }}
+
+  #Custom terraform releases url
+  CustomTerraformReleasesUrl : '{{ .Values.api.terraformReleasesUrl }}'
+
+{{ end }}
