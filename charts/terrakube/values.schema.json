@@ -188,6 +188,12 @@
                         "type": "string"
                     }
                 },
+                "configMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "securityContext": {
                     "type": "object"
                 },
@@ -535,6 +541,12 @@
                     "type": "integer"
                 },
                 "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "configMaps": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -1071,6 +1083,12 @@
                     "type": "integer"
                 },
                 "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "configMaps": {
                     "type": "array",
                     "items": {
                         "type": "string"
