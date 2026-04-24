@@ -3,6 +3,33 @@ entries:
   terrakube:
   - apiVersion: v2
     appVersion: 2.30.1
+    created: "2026-04-24T23:51:41.858867425Z"
+    dependencies:
+    - condition: storage.defaultStorage
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.0.21
+    - condition: api.defaultDatabase
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.7.27
+    - condition: dex.enabled
+      name: dex
+      repository: https://charts.dexidp.io
+      version: 0.24.0
+    - condition: api.defaultRedis
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 22.0.7
+    description: A Helm chart for Kubernetes
+    digest: b52c89d87deea02be3595fc6556c6dc206b9d624db5245a9563072f2e32c45ca
+    name: terrakube
+    type: application
+    urls:
+    - https://github.com/terrakube-io/terrakube-helm-chart/releases/download/terrakube-4.6.1/terrakube-4.6.1.tgz
+    version: 4.6.1
+  - apiVersion: v2
+    appVersion: 2.30.1
     created: "2026-04-01T23:44:55.534037131Z"
     dependencies:
     - condition: storage.defaultStorage
@@ -2849,4 +2876,4 @@ entries:
     urls:
     - https://github.com/AzBuilder/terrakube-helm-chart/releases/download/terrakube-0.1.0/terrakube-0.1.0.tgz
     version: 0.1.0
-generated: "2026-04-01T23:44:55.534437497Z"
+generated: "2026-04-24T23:51:41.859173143Z"
