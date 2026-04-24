@@ -56,7 +56,19 @@ spec:
         - name: ExecutorEphemeralImage
           value: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
         - name: ExecutorEphemeralSecret
-          value: {{ .Values.api.ephemeralExecution.secretName }}
+          {{- if kindIs "string" .Values.api.ephemeralExecution.secretName }}
+          value: {{ .Values.api.ephemeralExecution.secretName | quote }}
+          {{- else }}
+          value: {{ .Values.api.ephemeralExecution.secretName | join "," | quote }}
+          {{- end }}
+        {{- if .Values.api.ephemeralExecution.podAnnotations }}
+        - name: ExecutorEphemeralPodAnnotations
+          value: {{ .Values.api.ephemeralExecution.podAnnotations | toJson | quote }}
+        {{- end }}
+        {{- if .Values.api.ephemeralExecution.configMapName }}
+        - name: ExecutorEphemeralConfigMap
+          value: {{ .Values.api.ephemeralExecution.configMapName | quote }}
+        {{- end }}
         {{- end }}
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT

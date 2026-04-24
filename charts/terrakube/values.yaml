@@ -219,7 +219,10 @@ api:
     roleBindingName: "terrakube-api-role-binding"
   ephemeralExecution:
     enabled: false
-    secretName: terrakube-executor-secrets
+    secretName:
+      - terrakube-executor-secrets
+    configMapName: ""
+    podAnnotations: {}
   secrets:
    - terrakube-api-secrets
   configMaps:

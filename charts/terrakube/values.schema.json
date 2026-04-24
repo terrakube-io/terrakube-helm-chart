@@ -161,7 +161,16 @@
                             "type": "boolean"
                         },
                         "secretName": {
+                            "oneOf": [
+                                { "type": "string" },
+                                { "type": "array", "items": { "type": "string" } }
+                            ]
+                        },
+                        "configMapName": {
                             "type": "string"
+                        },
+                        "podAnnotations": {
+                            "type": "object"
                         }
                     }
                 },
