@@ -480,7 +480,7 @@ ingress:
       create: false
       redirectToHttps: true
       # Per-service SSL policies (optional)
-      uiSslPolicy: "fake"   # SSL policy for UI
+      uiSslPolicy: ""       # SSL policy for UI
       apiSslPolicy: ""      # SSL policy for API
       registrySslPolicy: "" # SSL policy for Registry
       executorSslPolicy: "" # SSL policy for Executor
