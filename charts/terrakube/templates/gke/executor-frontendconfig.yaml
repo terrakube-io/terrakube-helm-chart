@@ -6,4 +6,7 @@ metadata:
 spec:
   redirectToHttps:
     enabled: {{ .Values.ingress.gke.frontendConfig.redirectToHttps }}
+  {{- if .Values.ingress.gke.frontendConfig.executorSslPolicy }}
+  sslPolicy: {{ .Values.ingress.gke.frontendConfig.executorSslPolicy }}
+  {{- end }}
 {{- end }}
