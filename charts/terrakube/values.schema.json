@@ -162,8 +162,15 @@
                         },
                         "secretName": {
                             "oneOf": [
-                                { "type": "string" },
-                                { "type": "array", "items": { "type": "string" } }
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
                             ]
                         },
                         "configMapName": {
@@ -826,6 +833,18 @@
                                 },
                                 "redirectToHttps": {
                                     "type": "boolean"
+                                },
+                                "apiSslPolicy": {
+                                    "type": "string"
+                                },
+                                "executorSslPolicy": {
+                                    "type": "string"
+                                },
+                                "registrySslPolicy": {
+                                    "type": "string"
+                                },
+                                "uiSslPolicy": {
+                                    "type": "string"
                                 }
                             }
                         },
