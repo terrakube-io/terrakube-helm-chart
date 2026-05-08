@@ -11,6 +11,7 @@ jobs:
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
       contents: write
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,6 +31,30 @@ jobs:
         run: |
           for dir in $(ls -d charts/*/); do
             helm dependency list $dir 2> /dev/null | tail +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read cmd; do $cmd; done
+          done
+
+      - name: Log in to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username "${{ github.actor }}" --password-stdin
+
+      - name: Package and push charts to OCI registry
+        run: |
+          mkdir -p .oci-release-packages
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+
+          for dir in charts/*/; do
+            chart_name="$(helm show chart "$dir" | awk -F': ' '$1 == "name" { print $2; exit }')"
+            chart_version="$(helm show chart "$dir" | awk -F': ' '$1 == "version" { print $2; exit }')"
+            oci_ref="oci://ghcr.io/${owner}/charts/${chart_name}"
+
+            if helm show chart "$oci_ref" --version "$chart_version" > /dev/null 2>&1; then
+              echo "${chart_name} ${chart_version} already exists in GHCR, skipping OCI push."
+              continue
+            fi
+
+            helm dependency build "$dir"
+            package="$(helm package "$dir" --destination .oci-release-packages | awk -F': ' '/Successfully packaged chart and saved it to:/ { print $2 }')"
+            helm push "$package" "oci://ghcr.io/${owner}/charts"
           done
 
       - name: Run chart-releaser
