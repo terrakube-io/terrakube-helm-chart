@@ -41,15 +41,14 @@ jobs:
 
       - name: Package and push charts to OCI registry
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE }}
         run: |
           mkdir -p .oci-release-packages
-          namespace="${DOCKERHUB_NAMESPACE:-$DOCKERHUB_USERNAME}"
+          namespace="$DOCKERHUB_NAMESPACE"
           namespace="${namespace,,}"
 
           if [ -z "$namespace" ]; then
-            echo "Docker Hub namespace is required. Set DOCKERHUB_NAMESPACE repo variable or DOCKERHUB_USERNAME secret."
+            echo "Docker Hub namespace is required. Set DOCKERHUB_NAMESPACE repo variable."
             exit 1
           fi
 
