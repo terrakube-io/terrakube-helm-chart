@@ -239,6 +239,12 @@ api:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     initialDelaySeconds: 30
     failureThreshold: 30
@@ -305,6 +311,12 @@ executor:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
@@ -344,6 +356,12 @@ registry:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
@@ -370,6 +388,12 @@ ui:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
 
 ## Ingress properties
 ingress:

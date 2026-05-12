@@ -1,0 +1,17 @@
+{{- if and .Values.ui.enabled .Values.ui.podDisruptionBudget.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: terrakube-ui-pdb
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "terrakube-ui.labels" . | nindent 6 }}
+  {{- if .Values.ui.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.ui.podDisruptionBudget.minAvailable }}
+  {{- else if .Values.ui.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.ui.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+{{- end }}
