@@ -23,6 +23,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         checksum/config: {{ include (print $.Template.BasePath "/secrets-registry.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configMap-registry.yaml") . | sha256sum }}
 {{- if .Values.registry.otel.enabled }}
         checksum/otel-config: {{ include (print $.Template.BasePath "/otel-registry.yaml") . | sha256sum }}
 {{- end }}
@@ -66,13 +67,17 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         envFrom:
+        {{- range .Values.registry.configMaps }}
+        - configMapRef:
+            name: {{ . | quote }}
+        {{- end }}
+        {{- if .Values.registry.otel.enabled}}
+        - configMapRef:
+            name: "terrakube-registry-otel-config"
+        {{- end }}
         {{- range .Values.registry.secrets }}
         - secretRef:
             name: {{ . | quote }}
-        {{- end }}
-        {{- if .Values.executor.otel.enabled}}
-        - configMapRef:
-          name: "terrakube-executor-otel-config"
         {{- end }}
         startupProbe:
           httpGet:

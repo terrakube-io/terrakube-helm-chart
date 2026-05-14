@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "terrakube.labels" . | nindent 4 }}
 data:
-   OTEL_JAVAAGENT_ENABLE: "true"
+   OTEL_JAVAAGENT_ENABLED: "true"
    OTEL_SERVICE_NAME: TERRAKUBE-REGISTRY
 {{- if .Values.api.otel.metrics }}
    OTEL_METRICS_EXPORTER: prometheus

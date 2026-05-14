@@ -1,0 +1,58 @@
+{{- if .Values.registry.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: terrakube-registry-config
+  labels:
+    {{- include "terrakube.labels" . | nindent 4 }}
+data:
+  AzBuilderRegistry: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.registry.domain }}'
+  AzBuilderApiUrl: 'http://terrakube-api-service:8080'
+  AuthenticationValidationTypeRegistry: 'DEX'
+  DexIssuerUri: '{{ .Values.dex.config.issuer }}'
+  TerrakubeEnableSecurity: 'true'
+  TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}'
+  AppIssuerUri: '{{ .Values.dex.config.issuer }}'
+
+  {{- if .Values.storage.defaultStorage }}
+
+  #AWS S3 Storage using MINIO
+  RegistryStorageType: 'AwsStorageImpl'
+  AwsStorageBucketName: '{{ .Values.minio.defaultBuckets }}'
+  AwsStorageRegion: '{{ .Values.storage.default.region }}'
+  AwsEndpoint: {{ .Values.storage.default.endpoint | default (printf "http://%s-minio:9000" .Release.Name) | quote }}
+
+  {{- else }}
+
+  {{- if and (.Values.storage.azure).storageAccountName (.Values.storage.azure).storageAccountAccessKey }}
+  #Azure Storage
+  RegistryStorageType: 'AzureStorageImpl'
+  AzureAccountName: '{{ .Values.storage.azure.storageAccountName }}'
+  {{- end }}
+
+  {{- if and (.Values.storage.aws).bucketName (.Values.storage.aws).region }}
+  #Aws Storage
+  RegistryStorageType: 'AwsStorageImpl'
+  AwsStorageBucketName: '{{ .Values.storage.aws.bucketName }}'
+  AwsStorageRegion: '{{ .Values.storage.aws.region }}'
+  AwsEndpoint: ''
+  {{- end }}
+
+  {{- if and (.Values.storage.minio).bucketName (.Values.storage.minio).accessKey (.Values.storage.minio).secretKey (.Values.storage.minio).endpoint }}
+  #MINIO Storage
+  RegistryStorageType: 'AwsStorageImpl'
+  AwsStorageBucketName: '{{ .Values.storage.minio.bucketName }}'
+  AwsStorageRegion: 'us-east-1' # THIS IS NEEDED IN ORDER TO CONNECT TO MINIO USING THE AWS CODE, HARD CODED IT HAS NO EFFECT
+  AwsEndpoint: '{{ .Values.storage.minio.endpoint }}'
+  {{- end }}
+
+  {{- if and (.Values.storage.gcp).projectId (.Values.storage.gcp).bucketName (.Values.storage.gcp).credentials }}
+  #Gcp Storage
+  RegistryStorageType: 'GcpStorageImpl'
+  GcpStorageProjectId: '{{ .Values.storage.gcp.projectId }}'
+  GcpStorageBucketName: '{{ .Values.storage.gcp.bucketName }}'
+  {{- end }}
+
+  {{- end }}
+
+{{ end }}

@@ -161,7 +161,23 @@
                             "type": "boolean"
                         },
                         "secretName": {
+                            "oneOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            ]
+                        },
+                        "configMapName": {
                             "type": "string"
+                        },
+                        "podAnnotations": {
+                            "type": "object"
                         }
                     }
                 },
@@ -183,6 +199,12 @@
                     "type": "integer"
                 },
                 "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "configMaps": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -566,6 +588,12 @@
                         "type": "string"
                     }
                 },
+                "configMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "securityContext": {
                     "type": "object"
                 },
@@ -831,6 +859,18 @@
                                 },
                                 "redirectToHttps": {
                                     "type": "boolean"
+                                },
+                                "apiSslPolicy": {
+                                    "type": "string"
+                                },
+                                "executorSslPolicy": {
+                                    "type": "string"
+                                },
+                                "registrySslPolicy": {
+                                    "type": "string"
+                                },
+                                "uiSslPolicy": {
+                                    "type": "string"
                                 }
                             }
                         },
@@ -1097,6 +1137,12 @@
                     "type": "integer"
                 },
                 "secrets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "configMaps": {
                     "type": "array",
                     "items": {
                         "type": "string"

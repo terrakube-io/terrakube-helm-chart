@@ -210,7 +210,7 @@ api:
       port: "9464"
       host: "0.0.0.0"
     traces:
-      type: jaeger
+      type: ""
       # endpoint its just example, change it to your jaeger endpoint
       endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
   rbac:
@@ -219,9 +219,14 @@ api:
     roleBindingName: "terrakube-api-role-binding"
   ephemeralExecution:
     enabled: false
-    secretName: terrakube-executor-secrets
+    secretName:
+      - terrakube-executor-secrets
+    configMapName: ""
+    podAnnotations: {}
   secrets:
    - terrakube-api-secrets
+  configMaps:
+   - terrakube-api-config
   resources: {}
   podLabels: {}
   podAnnotations: {}
@@ -234,6 +239,12 @@ api:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     initialDelaySeconds: 30
     failureThreshold: 30
@@ -278,6 +289,8 @@ executor:
   revisionHistoryLimit: 3
   secrets:
    - terrakube-executor-secrets
+  configMaps:
+   - terrakube-executor-config
   otel:
     enabled: false
     metrics:
@@ -313,6 +326,12 @@ executor:
     azureCli:
       enabled: false
       initImage: "python:3.11-slim-bookworm"
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
@@ -334,6 +353,8 @@ registry:
   revisionHistoryLimit: 3
   secrets:
    - terrakube-registry-secrets
+  configMaps:
+   - terrakube-registry-config
   otel:
     enabled: false
     metrics:
@@ -350,6 +371,12 @@ registry:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
@@ -376,6 +403,12 @@ ui:
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
+  podDisruptionBudget:
+    enabled: false
+    ## minAvailable and maxUnavailable are mutually exclusive, use only one.
+    ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    minAvailable: 1
+    # maxUnavailable: 1
 
 ## Ingress properties
 ingress:
@@ -485,6 +518,11 @@ ingress:
     frontendConfig:
       create: false
       redirectToHttps: true
+      # Per-service SSL policies (optional)
+      uiSslPolicy: ""       # SSL policy for UI
+      apiSslPolicy: ""      # SSL policy for API
+      registrySslPolicy: "" # SSL policy for Registry
+      executorSslPolicy: "" # SSL policy for Executor
     externalDNS:
       perIngressProxy:         # Control whether ExternalDNS creates proxy records (Cloudflare)
         ui: false

@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "terrakube.labels" . | nindent 4 }}
 data:
-   OTEL_JAVAAGENT_ENABLE: "true"
+   OTEL_JAVAAGENT_ENABLED: "true"
    OTEL_SERVICE_NAME: TERRAKUBE-API
 {{- if .Values.api.otel.metrics }}
    OTEL_METRICS_EXPORTER: prometheus
@@ -16,11 +16,11 @@ data:
 {{- if .Values.api.otel.traces }}
 {{- if eq .Values.api.otel.traces.type "zipkin" }}
    OTEL_TRACES_EXPORTER: zipkin
-   OTEL_EXPORTER_ZIPKIN_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint  }}
+   OTEL_EXPORTER_ZIPKIN_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint | default "http://localhost:9411/api/v2/spans" }}
 {{- end }}
 {{- if eq .Values.api.otel.traces.type "jaeger" }}
    OTEL_TRACES_EXPORTER: jaeger
-   OTEL_EXPORTER_JAEGER_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint  }}
+   OTEL_EXPORTER_JAEGER_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint | default "http://localhost:14268/api/traces" }}
    OTEL_EXPORTER_JAEGER_TIMEOUT: {{ quote .Values.api.otel.traces.timeout | default "10000" }}
 {{- end }}
 {{- end }}
