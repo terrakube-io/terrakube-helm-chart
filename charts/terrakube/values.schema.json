@@ -462,6 +462,32 @@
                 "initContainers": {
                     "type": "array"
                 },
+                "cliTools": {
+                    "type": "object",
+                    "properties": {
+                        "awsCli": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": { "type": "boolean" },
+                                "initImage": { "type": "string" }
+                            }
+                        },
+                        "gcloud": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": { "type": "boolean" },
+                                "initImage": { "type": "string" }
+                            }
+                        },
+                        "azureCli": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": { "type": "boolean" },
+                                "initImage": { "type": "string" }
+                            }
+                        }
+                    }
+                },
                 "livenessProbe": {
                     "type": "object",
                     "properties": {

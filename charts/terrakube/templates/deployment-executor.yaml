@@ -31,9 +31,77 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.executor.initContainers }}
+      {{- $awsCli := .Values.executor.cliTools.awsCli.enabled }}
+      {{- $gcloud := .Values.executor.cliTools.gcloud.enabled }}
+      {{- $azureCli := .Values.executor.cliTools.azureCli.enabled }}
+      {{- $anyCliTool := or $awsCli $gcloud $azureCli }}
+      {{- if or .Values.executor.initContainers $anyCliTool }}
       initContainers:
-        {{- toYaml . | nindent 6 }}
+        {{- with .Values.executor.initContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if $awsCli }}
+        - name: install-aws-cli
+          image: {{ .Values.executor.cliTools.awsCli.initImage | quote }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              apt-get update -qq && apt-get install -y -qq --no-install-recommends curl unzip ca-certificates
+              ARCH=$(uname -m)
+              if [ "$ARCH" = "aarch64" ]; then
+                URL="https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip"
+              else
+                URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+              fi
+              curl -fsSL "$URL" -o /tmp/awscliv2.zip
+              unzip -q /tmp/awscliv2.zip -d /tmp
+              /tmp/aws/install --install-dir /opt/terrakube-tools/aws-cli --bin-dir /opt/terrakube-tools/bin
+          volumeMounts:
+            - name: terrakube-tools
+              mountPath: /opt/terrakube-tools
+        {{- end }}
+        {{- if $gcloud }}
+        - name: install-gcloud
+          image: {{ .Values.executor.cliTools.gcloud.initImage | quote }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              apt-get update -qq && apt-get install -y -qq --no-install-recommends curl ca-certificates
+              ARCH=$(uname -m)
+              if [ "$ARCH" = "aarch64" ]; then
+                URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-arm.tar.gz"
+              else
+                URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz"
+              fi
+              mkdir -p /opt/terrakube-tools
+              curl -fsSL "$URL" | tar -xz -C /opt/terrakube-tools
+              mkdir -p /opt/terrakube-tools/bin
+              ln -sf /opt/terrakube-tools/google-cloud-sdk/bin/gcloud /opt/terrakube-tools/bin/gcloud
+              ln -sf /opt/terrakube-tools/google-cloud-sdk/bin/gsutil /opt/terrakube-tools/bin/gsutil
+              ln -sf /opt/terrakube-tools/google-cloud-sdk/bin/bq /opt/terrakube-tools/bin/bq
+          volumeMounts:
+            - name: terrakube-tools
+              mountPath: /opt/terrakube-tools
+        {{- end }}
+        {{- if $azureCli }}
+        - name: install-azure-cli
+          image: {{ .Values.executor.cliTools.azureCli.initImage | quote }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /opt/terrakube-tools/bin
+              python3 -m venv /opt/terrakube-tools/azure-cli-venv
+              /opt/terrakube-tools/azure-cli-venv/bin/pip install --quiet azure-cli
+              printf '#!/bin/sh\nexec /opt/terrakube-tools/azure-cli-venv/bin/python3 -Im azure.cli "$@"\n' \
+                > /opt/terrakube-tools/bin/az
+              chmod +x /opt/terrakube-tools/bin/az
+          volumeMounts:
+            - name: terrakube-tools
+              mountPath: /opt/terrakube-tools
+        {{- end }}
       {{- end }}
       containers:
       - name: terrakube-executor
@@ -53,6 +121,10 @@ spec:
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
         {{- end }}
+        {{- if $anyCliTool }}
+        - name: PATH
+          value: "/opt/terrakube-tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        {{- end }}
         {{- with .Values.executor.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -61,6 +133,10 @@ spec:
         - name: ca-certs
           mountPath: /mnt/platform/bindings/ca-certificates
           readOnly: true
+        {{- end }}
+        {{- if $anyCliTool }}
+        - name: terrakube-tools
+          mountPath: /opt/terrakube-tools
         {{- end }}
         {{- with .Values.executor.volumeMounts }}
         {{- toYaml . | nindent 8 }}
@@ -114,6 +190,10 @@ spec:
       {{- end }}
       {{- with .Values.executor.volumes }}
       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- if $anyCliTool }}
+      - name: terrakube-tools
+        emptyDir: {}
       {{- end }}
       {{- with .Values.executor.serviceAccountName }}
       serviceAccountName: {{ quote . }}
