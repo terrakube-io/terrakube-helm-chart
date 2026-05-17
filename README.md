@@ -21,6 +21,7 @@ https://docs.terrakube.io/getting-started/deployment/minikube-+-https
 - **AWS Integration**: ALB ingress with shared load balancer support
 - **Authentication**: Dex OIDC integration with GitHub, Google, and other providers
 - **Public OIDC/JWKS Endpoints**: Publicly accessible `.well-known/openid-configuration` and `.well-known/jwks` endpoints for OIDC discovery and JWT validation
+- **Cloud CLI Tools**: Optional AWS CLI, Google Cloud CLI, and Azure CLI installation into the executor at runtime via init containers, without requiring a custom image
 - **Storage**: MinIO S3-compatible storage or external S3
 - **Database**: PostgreSQL support with optional external database
 - **Module Registry**: Private Terraform module registry
@@ -523,6 +524,12 @@ Once you have completed the above steps you can complete the file values.yaml to
 | executor.containerSecurityContext         | No       | Fill securityContext field in the container spec                       |
 | executor.imagePullSecrets                 | No       | Specific Secret used to pull images from private repository            |
 | executor.initContainers                   | No       | Init containers for executor deployment                                |
+| executor.cliTools.awsCli.enabled          | No       | Install AWS CLI v2 into the executor via an init container             |
+| executor.cliTools.awsCli.initImage        | No       | Init container image used to install AWS CLI (default: debian:bookworm-slim) |
+| executor.cliTools.gcloud.enabled          | No       | Install Google Cloud CLI into the executor via an init container       |
+| executor.cliTools.gcloud.initImage        | No       | Init container image used to install gcloud (default: debian:bookworm-slim) |
+| executor.cliTools.azureCli.enabled        | No       | Install Azure CLI into the executor via an init container              |
+| executor.cliTools.azureCli.initImage      | No       | Init container image used to install Azure CLI (default: python:3.11-slim-bookworm) |
 | registry.enabled                          | Yes      | Enable Registry component deployment                                   |
 | registry.image                            | No       | Registry image repository                                              |
 | registry.version                          | Yes      | Terrakube Registry version                                             |
@@ -845,3 +852,97 @@ helm install --debug --values ./values.yaml terrakube ./terrakube-helm-chart/cha
 ```
 
 After installing you should be able to view the app using ui domain inside the values.yaml.
+
+### 9. Cloud CLI Tools (AWS, GCP, Azure)
+
+The executor can be configured to install the AWS CLI, Google Cloud CLI (`gcloud`), and/or Azure CLI at pod startup — without building a custom image. Each tool is downloaded and installed by a dedicated init container into a shared volume that the executor container then mounts at `/opt/terrakube-tools`.
+
+When any tool is enabled the chart automatically:
+- Adds an init container that downloads and installs the tool
+- Creates a shared `emptyDir` volume at `/opt/terrakube-tools`
+- Mounts the volume into the executor container
+- Prepends `/opt/terrakube-tools/bin` to `PATH`
+
+#### Enable all three CLIs
+
+```yaml
+executor:
+  cliTools:
+    awsCli:
+      enabled: true
+    gcloud:
+      enabled: true
+    azureCli:
+      enabled: true
+```
+
+#### Enable only AWS CLI
+
+```yaml
+executor:
+  cliTools:
+    awsCli:
+      enabled: true
+```
+
+#### Enable only Google Cloud CLI
+
+```yaml
+executor:
+  cliTools:
+    gcloud:
+      enabled: true
+```
+
+#### Enable only Azure CLI
+
+```yaml
+executor:
+  cliTools:
+    azureCli:
+      enabled: true
+```
+
+#### How each tool is installed
+
+| Tool | Init container default image | Installation method |
+|------|------------------------------|---------------------|
+| AWS CLI v2 | `debian:bookworm-slim` | Official AWS CLI installer — self-contained bundle with bundled Python |
+| Google Cloud CLI | `debian:bookworm-slim` | Official Linux `.tar.gz` archive — includes bundled Python |
+| Azure CLI | `python:3.11-slim-bookworm` | `pip install azure-cli` into a Python venv in the shared volume |
+
+All three init container scripts detect the node architecture (`amd64` / `arm64`) at runtime and download the appropriate binary automatically.
+
+#### Overriding init container images
+
+The `initImage` for each tool can be overridden. This is useful when the executor image uses a different libc variant (e.g., Alpine/musl instead of Debian/glibc).
+
+> **Important:** The init container image must use the same libc variant (glibc or musl) as the executor image, because the installed binaries and their Python runtimes are dynamically linked. The default executor image (`azbuilder/executor`) is Debian/glibc-based, so the defaults work out of the box.
+
+```yaml
+executor:
+  cliTools:
+    awsCli:
+      enabled: true
+      initImage: "debian:bookworm-slim"   # override for custom base OS
+    gcloud:
+      enabled: true
+      initImage: "debian:bookworm-slim"
+    azureCli:
+      enabled: true
+      initImage: "python:3.11-slim-bookworm"
+```
+
+#### Using the CLIs in Terraform
+
+Once enabled, the CLI tools are available to any Terraform `local-exec` provisioner or Terrakube extension script running inside the executor:
+
+```hcl
+resource "null_resource" "example" {
+  provisioner "local-exec" {
+    command = "aws s3 ls"
+  }
+}
+```
+
+Authentication credentials should be provided via Terraform workspace environment variables or a Kubernetes secret mounted into the executor.
