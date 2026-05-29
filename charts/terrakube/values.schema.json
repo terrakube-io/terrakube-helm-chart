@@ -28,6 +28,12 @@
                         }
                     }
                 },
+                "configMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "containerSecurityContext": {
                     "type": "object"
                 },
@@ -37,8 +43,48 @@
                 "defaultRedis": {
                     "type": "boolean"
                 },
+                "dynamicCredentials": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "privateKey": {
+                            "type": "string"
+                        },
+                        "privateKeyPath": {
+                            "type": "string"
+                        },
+                        "publicKey": {
+                            "type": "string"
+                        },
+                        "publicKeyPath": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "enabled": {
                     "type": "boolean"
+                },
+                "ephemeralExecution": {
+                    "type": "object",
+                    "properties": {
+                        "configMapName": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "podAnnotations": {
+                            "type": "object"
+                        },
+                        "secretName": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
                 },
                 "existingSecret": {
                     "type": "boolean"
@@ -95,6 +141,17 @@
                 },
                 "podAnnotations": {
                     "type": "object"
+                },
+                "podDisruptionBudget": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "minAvailable": {
+                            "type": "integer"
+                        }
+                    }
                 },
                 "podLabels": {
                     "type": "object"
@@ -154,33 +211,6 @@
                         }
                     }
                 },
-                "ephemeralExecution": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "secretName": {
-                            "oneOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            ]
-                        },
-                        "configMapName": {
-                            "type": "string"
-                        },
-                        "podAnnotations": {
-                            "type": "object"
-                        }
-                    }
-                },
                 "readinessProbe": {
                     "type": "object",
                     "properties": {
@@ -204,17 +234,14 @@
                         "type": "string"
                     }
                 },
-                "configMaps": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "securityContext": {
                     "type": "object"
                 },
                 "serviceAccountName": {
                     "type": "string"
+                },
+                "serviceAnnotations": {
+                    "type": "object"
                 },
                 "serviceType": {
                     "type": "string"
@@ -225,12 +252,18 @@
                         "failureThreshold": {
                             "type": "integer"
                         },
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
                         "periodSeconds": {
                             "type": "integer"
                         }
                     }
                 },
                 "terraformReleasesUrl": {
+                    "type": "string"
+                },
+                "tofuReleasesUrl": {
                     "type": "string"
                 },
                 "version": {
@@ -343,6 +376,9 @@
                                     "items": {
                                         "type": "string"
                                     }
+                                },
+                                "skipApprovalScreen": {
+                                    "type": "boolean"
                                 }
                             }
                         },
@@ -388,9 +424,6 @@
                                 },
                                 "http": {
                                     "type": "string"
-                                },
-                                "skipApprovalScreen": {
-                                    "type": "boolean"
                                 }
                             }
                         }
@@ -466,6 +499,12 @@
                 "apiServiceUrl": {
                     "type": "string"
                 },
+                "configMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "containerSecurityContext": {
                     "type": "object"
                 },
@@ -525,6 +564,17 @@
                 "podAnnotations": {
                     "type": "object"
                 },
+                "podDisruptionBudget": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "minAvailable": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "podLabels": {
                     "type": "object"
                 },
@@ -557,12 +607,6 @@
                     "type": "integer"
                 },
                 "secrets": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "configMaps": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -673,6 +717,17 @@
                         "securityGroups": {
                             "type": "array"
                         },
+                        "sharedLoadBalancer": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "groupName": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "subnets": {
                             "type": "array"
                         },
@@ -684,9 +739,6 @@
                                 },
                                 "create": {
                                     "type": "boolean"
-                                },
-                                "dexTargetGroupARN": {
-                                    "type": "string"
                                 },
                                 "registryTargetGroupARN": {
                                     "type": "string"
@@ -757,6 +809,23 @@
                         }
                     }
                 },
+                "gatewayapi": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "apiVersion": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "gateways": {
+                            "type": "array"
+                        }
+                    }
+                },
                 "gke": {
                     "type": "object",
                     "properties": {
@@ -774,11 +843,11 @@
                         "backendConfig": {
                             "type": "object",
                             "properties": {
-                                "create": {
-                                    "type": "boolean"
-                                },
                                 "apiSecurityPolicy": {
                                     "type": "string"
+                                },
+                                "create": {
+                                    "type": "boolean"
                                 },
                                 "executorSecurityPolicy": {
                                     "type": "string"
@@ -786,11 +855,11 @@
                                 "registrySecurityPolicy": {
                                     "type": "string"
                                 },
-                                "uiSecurityPolicy": {
-                                    "type": "string"
-                                },
                                 "timeout": {
                                     "type": "integer"
+                                },
+                                "uiSecurityPolicy": {
+                                    "type": "string"
                                 }
                             }
                         },
@@ -828,17 +897,17 @@
                         "frontendConfig": {
                             "type": "object",
                             "properties": {
-                                "create": {
-                                    "type": "boolean"
-                                },
-                                "redirectToHttps": {
-                                    "type": "boolean"
-                                },
                                 "apiSslPolicy": {
                                     "type": "string"
                                 },
+                                "create": {
+                                    "type": "boolean"
+                                },
                                 "executorSslPolicy": {
                                     "type": "string"
+                                },
+                                "redirectToHttps": {
+                                    "type": "boolean"
                                 },
                                 "registrySslPolicy": {
                                     "type": "string"
@@ -957,8 +1026,38 @@
                         }
                     }
                 },
+                "clientImage": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "console": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                },
                 "defaultBuckets": {
                     "type": "string"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
@@ -1022,22 +1121,14 @@
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "redis": {
-            "type": "object",
-            "properties": {
-                "architecture": {
-                    "type": "string"
                 },
-                "auth": {
+                "image": {
                     "type": "object",
                     "properties": {
-                        "enabled": {
-                            "type": "boolean"
+                        "repository": {
+                            "type": "string"
                         },
-                        "password": {
+                        "tag": {
                             "type": "string"
                         }
                     }
@@ -1047,6 +1138,12 @@
         "registry": {
             "type": "object",
             "properties": {
+                "configMaps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "containerSecurityContext": {
                     "type": "object"
                 },
@@ -1064,6 +1161,14 @@
                 },
                 "initContainers": {
                     "type": "array"
+                },
+                "livenessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
                 },
                 "otel": {
                     "type": "object",
@@ -1098,8 +1203,27 @@
                 "podAnnotations": {
                     "type": "object"
                 },
+                "podDisruptionBudget": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "minAvailable": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "podLabels": {
                     "type": "object"
+                },
+                "readinessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
                 },
                 "replicaCount": {
                     "type": "string"
@@ -1116,20 +1240,28 @@
                         "type": "string"
                     }
                 },
-                "configMaps": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "securityContext": {
                     "type": "object"
                 },
                 "serviceAccountName": {
                     "type": "string"
                 },
+                "serviceAnnotations": {
+                    "type": "object"
+                },
                 "serviceType": {
                     "type": "string"
+                },
+                "startupProbe": {
+                    "type": "object",
+                    "properties": {
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        }
+                    }
                 },
                 "version": {
                     "type": "string"
@@ -1273,6 +1405,17 @@
                 "podAnnotations": {
                     "type": "object"
                 },
+                "podDisruptionBudget": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "minAvailable": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "podLabels": {
                     "type": "object"
                 },
@@ -1291,11 +1434,54 @@
                 "serviceAccountName": {
                     "type": "string"
                 },
+                "serviceAnnotations": {
+                    "type": "object"
+                },
                 "serviceType": {
                     "type": "string"
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "valkey": {
+            "type": "object",
+            "properties": {
+                "auth": {
+                    "type": "object",
+                    "properties": {
+                        "aclUsers": {
+                            "type": "object",
+                            "properties": {
+                                "default": {
+                                    "type": "object",
+                                    "properties": {
+                                        "password": {
+                                            "type": "string"
+                                        },
+                                        "permissions": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         }

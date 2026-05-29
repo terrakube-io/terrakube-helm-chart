@@ -482,9 +482,9 @@ Once you have completed the above steps you can complete the file values.yaml to
 | dex.*                                     | No       | Setup based on https://github.com/dexidp/helm-charts                   |
 | minio.*                                   | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/minio    |
 | postgres.*                                | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/postgres |
-| redis.*                                   | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/redis    |
+| valkey.*                                  | No       | Setup based on https://github.com/valkey-io/valkey-helm                     |
 | api.enabled                               | Yes      | Enable API component deployment                                        |
-| api.defaultRedis                          | No       | Enable default Redis using Bitnami helm chart                          |
+| api.defaultRedis                          | No       | Enable default Valkey using the official Valkey helm chart             |
 | api.defaultDatabase                       | No       | Enable default database using postgresql helm chart                    |
 | api.image                                 | No       | API image repository                                                   |
 | api.dynamicCredentials.enabled            | No       | This will enable dyanmic credentials secret                            |
