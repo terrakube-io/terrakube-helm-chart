@@ -176,15 +176,20 @@ postgresql:
     password: "terrakubepassword"
     database: "terrakube"
 
-# Default Redis Configuration
-redis:
+# Default Valkey Configuration
+# Uses the official Valkey Helm chart (https://github.com/valkey-io/valkey-helm).
+# Authentication is ACL-based: the "default" user password is what Terrakube uses
+# to connect (see api.properties.redisPort / TerrakubeRedisPassword).
+valkey:
   image:
-    repository: bitnamilegacy/redis
-    tag: 8.2.1-debian-12-r0
-  architecture: "standalone"
+    repository: valkey/valkey
+    tag: ""
   auth:
     enabled: true
-    password: "7p9iWVeRV4S944"
+    aclUsers:
+      default:
+        permissions: "~* &* +@all"
+        password: "7p9iWVeRV4S944"
 
 ## API properties
 api:
