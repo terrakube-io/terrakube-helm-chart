@@ -1023,6 +1023,15 @@
                         },
                         "rootUser": {
                             "type": "string"
+                        },
+                        "existingSecret": {
+                            "type": "string"
+                        },
+                        "existingSecretUserKey": {
+                            "type": "string"
+                        },
+                        "existingSecretPasswordKey": {
+                            "type": "string"
                         }
                     }
                 },
@@ -1375,6 +1384,15 @@
                             "type": "string"
                         },
                         "secretKey": {
+                            "type": "string"
+                        },
+                        "existingSecret": {
+                            "type": "string"
+                        },
+                        "existingSecretAccessKeyKey": {
+                            "type": "string"
+                        },
+                        "existingSecretSecretKeyKey": {
                             "type": "string"
                         }
                     }

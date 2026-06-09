@@ -54,6 +54,33 @@ spec:
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
         {{- end }}
+        {{- if .Values.storage.defaultStorage }}
+        {{- if .Values.minio.auth.existingSecret }}
+        - name: AwsStorageAccessKey
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.minio.auth.existingSecret }}
+              key: {{ .Values.minio.auth.existingSecretUserKey | default "root-user" }}
+        - name: AwsStorageSecretKey
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.minio.auth.existingSecret }}
+              key: {{ .Values.minio.auth.existingSecretPasswordKey | default "root-password" }}
+        {{- end }}
+        {{- else }}
+        {{- if and (.Values.storage.minio).bucketName (.Values.storage.minio).endpoint (.Values.storage.minio).existingSecret }}
+        - name: AwsStorageAccessKey
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.storage.minio.existingSecret }}
+              key: {{ .Values.storage.minio.existingSecretAccessKeyKey | default "accessKey" }}
+        - name: AwsStorageSecretKey
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.storage.minio.existingSecret }}
+              key: {{ .Values.storage.minio.existingSecretSecretKeyKey | default "secretKey" }}
+        {{- end }}
+        {{- end }}
         {{- with .Values.registry.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

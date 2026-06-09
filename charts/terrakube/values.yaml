@@ -142,6 +142,9 @@ storage:
     secretKey: ""
     bucketName: ""
     endpoint: ""
+    existingSecret: ""
+    existingSecretAccessKeyKey: "accessKey"
+    existingSecretSecretKeyKey: "secretKey"
   gcp:
     projectId: ""
     bucketName: ""
@@ -164,6 +167,9 @@ minio:
   auth:
     rootUser: "admin"
     rootPassword: "superadmin"
+    existingSecret: ""
+    existingSecretUserKey: "root-user"
+    existingSecretPasswordKey: "root-password"
   defaultBuckets: "terrakube"
 
 # Default Database Postgresql
