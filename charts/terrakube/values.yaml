@@ -200,6 +200,7 @@ api:
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
+  serviceAccountAnnotations: {}
   serviceAnnotations: {}
   revisionHistoryLimit: 3
   automountServiceAccountToken: true
