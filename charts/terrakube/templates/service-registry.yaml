@@ -24,7 +24,8 @@ spec:
       protocol: TCP
       name: http
 {{- if and .Values.registry.otel.enabled .Values.registry.otel.metrics }}
-    - port: {{ .Values.registry.otel.metrics.port | default "9464" }}
+    - name: otel-metrics
+      port: {{ .Values.registry.otel.metrics.port | default "9464" }}
       targetPort: metrics
 {{- end }}
   selector:
