@@ -10,6 +10,7 @@ data:
   AzBuilderApiUrl: '{{ .Values.executor.apiServiceUrl }}'
   ExecutorFlagBatch: 'false'
   ExecutorFlagDisableAcknowledge: 'false'
+  ExecutorJobMaxDurationMinutes: '{{ .Values.executor.properties.maxJobDurationMinutes | default 360 }}'
   TerrakubeToolsRepository: '{{ .Values.executor.properties.toolsRepository }}'
   TerrakubeToolsBranch: '{{ .Values.executor.properties.toolsBranch }}'
   TerrakubeEnableSecurity: 'true'
