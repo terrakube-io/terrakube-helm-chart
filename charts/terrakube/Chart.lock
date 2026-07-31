@@ -8,8 +8,8 @@ dependencies:
 - name: dex
   repository: https://charts.dexidp.io
   version: 0.24.0
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 22.0.7
-digest: sha256:11e666f1db4e87ae4ae9c5dc5e9f00887897d2b34e5014c9e360227e17dcf5ab
-generated: "2025-09-05T13:32:00.716601855-06:00"
+- name: valkey
+  repository: https://valkey.io/valkey-helm/
+  version: 0.9.4
+digest: sha256:deb5fa27fa9c4c523275c0224debef645f347d6ae03c0eed3f4ac881df0d9f74
+generated: "2026-05-29T13:40:17.872713+01:00"

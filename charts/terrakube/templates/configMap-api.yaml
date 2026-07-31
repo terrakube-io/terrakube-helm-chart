@@ -21,8 +21,8 @@ data:
   DynamicCredentialPublicKeyPath: '{{ .Values.api.dynamicCredentials.publicKeyPath }}'
   DynamicCredentialPrivateKeyPath: '{{ .Values.api.dynamicCredentials.privateKeyPath }}'
   {{- if .Values.api.defaultRedis }}
-  #Default Redis
-  TerrakubeRedisHostname: '{{ .Release.Name }}-redis-master'
+  #Default Valkey
+  TerrakubeRedisHostname: '{{ .Release.Name }}-valkey'
   {{- else }}
   #Custom Redis
   TerrakubeRedisHostname: '{{ .Values.api.properties.redisHostname }}'

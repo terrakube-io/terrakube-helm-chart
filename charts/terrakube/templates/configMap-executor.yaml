@@ -17,8 +17,8 @@ data:
   TerrakubeApiUrl: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.api.domain }}'
   TerrakubeRedisPort: '{{ .Values.api.properties.redisPort }}'
   {{- if .Values.api.defaultRedis }}
-  #Default Redis
-  TerrakubeRedisHostname: '{{ .Release.Name }}-redis-master'
+  #Default Valkey
+  TerrakubeRedisHostname: '{{ .Release.Name }}-valkey'
   {{- else }}
   #Custom Redis
   TerrakubeRedisHostname: '{{ .Values.api.properties.redisHostname }}'
