@@ -95,6 +95,7 @@ spec:
             path: /actuator/health/readiness
             port: 8090
           periodSeconds: {{ .Values.executor.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.executor.readinessProbe.failureThreshold | default 1 }}
         {{- with .Values.executor.containerSecurityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}

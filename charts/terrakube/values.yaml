@@ -289,6 +289,8 @@ executor:
   enabled: true
   image: "azbuilder/executor"
   version: ""
+  # Static pool size - no autoscaling. Size this to your expected peak concurrent job count,
+  # since each pod only runs one job at a time (see executor readiness/watchdog notes above).
   replicaCount: "1"
   serviceType: ClusterIP
   serviceAccountName: ""
@@ -313,6 +315,9 @@ executor:
   properties:
     toolsRepository: "https://github.com/terrakube-io/terrakube-extensions"
     toolsBranch: "main"
+    # Longest a single job may run before this pod is marked unhealthy (liveness) so
+    # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
+    maxJobDurationMinutes: "360"
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
@@ -327,7 +332,11 @@ executor:
     failureThreshold: 30
     periodSeconds: 5
   readinessProbe:
-    periodSeconds: 10
+    # Low periodSeconds/failureThreshold so a pod that just started a job is pulled out of
+    # the Service's endpoints almost immediately, instead of the Kubernetes default of 3
+    # consecutive failures (~2 extra probe cycles of routing new jobs to a busy pod).
+    periodSeconds: 2
+    failureThreshold: 1
   livenessProbe:
     periodSeconds: 10
 
