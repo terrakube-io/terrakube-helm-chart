@@ -290,6 +290,9 @@ executor:
   image: "azbuilder/executor"
   version: ""
   replicaCount: "1"
+  # Gives the pod's @PreDestroy hook (JobExecutionWatchdog.onShutdown) time to fail an
+  # in-flight job's status before Kubernetes SIGKILLs the process.
+  terminationGracePeriodSeconds: 60
   serviceType: ClusterIP
   serviceAccountName: ""
   revisionHistoryLimit: 3
