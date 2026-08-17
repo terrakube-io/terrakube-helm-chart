@@ -15,7 +15,7 @@ data:
   TerrakubeToolsBranch: '{{ .Values.executor.properties.toolsBranch }}'
   TerrakubeEnableSecurity: 'true'
   TerrakubeRegistryDomain: '{{ .Values.ingress.registry.domain }}'
-  TerrakubeApiUrl: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.api.domain }}'
+  TerrakubeApiUrl: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.api.domain }}{{- if .Values.ingress.api.port }}:{{ .Values.ingress.api.port }}{{- end }}'
   TerrakubeRedisPort: '{{ .Values.api.properties.redisPort }}'
   {{- if .Values.api.defaultRedis }}
   #Default Valkey

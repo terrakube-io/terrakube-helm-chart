@@ -15,7 +15,7 @@ data:
   TerrakubeHostname: '{{ .Values.ingress.api.domain }}'
   AzBuilderExecutorUrl: '{{ .Values.api.properties.executorUrl }}/api/v1/terraform-rs'
   ExecutorReplicas: '{{ .Values.api.properties.executorReplicaCount |  default .Values.executor.replicaCount }}'
-  TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}'
+  TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}{{- if .Values.ingress.ui.port }}:{{ .Values.ingress.ui.port }}{{- end }}'
   TERRAKUBE_ADMIN_GROUP: '{{ .Values.security.adminGroup }}'
   TerrakubeRedisPort: '{{ .Values.api.properties.redisPort }}'
   DynamicCredentialPublicKeyPath: '{{ .Values.api.dynamicCredentials.publicKeyPath }}'
