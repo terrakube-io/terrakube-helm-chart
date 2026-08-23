@@ -96,6 +96,7 @@ data:
   #Custom terraform releases url
   CustomTerraformReleasesUrl : '{{ .Values.api.terraformReleasesUrl }}'
   CustomTofuReleasesUrl : '{{ .Values.api.tofuReleasesUrl }}'
+  CustomReleaseCacheExpirationMinutes: '{{ .Values.api.cache.releaseCacheExpirationMinutes | default 30 }}'
   ModuleCacheMaxTotal: '{{ .Values.api.cache.moduleCacheMaxTotal }}'
   ModuleCacheMaxIdle: '{{ .Values.api.cache.moduleCacheMaxIdle }}'
   ModuleCacheMinIdle: '{{ .Values.api.cache.moduleCacheMinIdle }}'

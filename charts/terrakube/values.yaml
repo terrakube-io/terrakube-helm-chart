@@ -265,6 +265,9 @@ api:
     moduleCacheMinIdle: "64"
     moduleCacheTimeout: "600000"
     moduleCacheSchedule: "0 */3 * ? * *"
+    # Minutes the terraform/tofu release lists are cached in Redis.
+    # Every expiration triggers one outbound call per API replica.
+    releaseCacheExpirationMinutes: "30"
   properties:
     databaseType: "POSTGRESQL"
     databaseHostname: ""
