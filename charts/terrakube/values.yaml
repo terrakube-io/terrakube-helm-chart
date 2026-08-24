@@ -195,7 +195,7 @@ valkey:
 api:
   existingSecret: false
   enabled: true
-  image: azbuilder/api-server
+  image: ghcr.io/jplorier/terrakube-api-server
   version: ""
   replicaCount: "1"
   serviceType: ClusterIP
@@ -287,7 +287,7 @@ api:
 executor:
   existingSecret: false
   enabled: true
-  image: "azbuilder/executor"
+  image: "ghcr.io/jplorier/terrakube-executor"
   version: ""
   # Static pool size - no autoscaling. Size this to your expected peak concurrent job count,
   # since each pod only runs one job at a time (see executor readiness/watchdog notes above).
@@ -359,7 +359,7 @@ executor:
 registry:
   enabled: true
   existingSecret: false
-  image: azbuilder/open-registry
+  image: ghcr.io/jplorier/terrakube-open-registry
   version: ""
   replicaCount: "1"
   serviceType: ClusterIP
@@ -404,7 +404,7 @@ registry:
 ui:
   enabled: true
   existingSecret: false
-  image: azbuilder/terrakube-ui
+  image: ghcr.io/jplorier/terrakube-ui
   version: ""
   replicaCount: "1"
   serviceType: ClusterIP
