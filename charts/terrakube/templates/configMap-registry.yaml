@@ -11,7 +11,7 @@ data:
   AuthenticationValidationTypeRegistry: 'DEX'
   DexIssuerUri: '{{ .Values.dex.config.issuer }}'
   TerrakubeEnableSecurity: 'true'
-  TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}'
+  TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}{{- if .Values.ingress.ui.port }}:{{ .Values.ingress.ui.port }}{{- end }}'
   AppIssuerUri: '{{ .Values.dex.config.issuer }}'
 
   {{- if .Values.storage.defaultStorage }}

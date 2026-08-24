@@ -691,6 +691,9 @@
                         "domain": {
                             "type": "string"
                         },
+                        "port": {
+                            "type": "integer"
+                        },
                         "enabled": {
                             "type": "boolean"
                         },
@@ -979,6 +982,9 @@
                         "domain": {
                             "type": "string"
                         },
+                        "port": {
+                            "type": "integer"
+                        },
                         "enabled": {
                             "type": "boolean"
                         },
@@ -1012,6 +1018,9 @@
                         },
                         "domain": {
                             "type": "string"
+                        },
+                        "port": {
+                            "type": "integer"
                         },
                         "enabled": {
                             "type": "boolean"

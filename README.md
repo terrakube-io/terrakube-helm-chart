@@ -399,6 +399,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.includeTlsHosts                   | No       | Include TLS hosts in ingress configuration (default: true)             |
 | ingress.ui.enabled                        | Yes      | Enable UI ingress (default: true)                                      |
 | ingress.ui.domain                         | Yes      | Domain name for UI service                                             |
+| ingress.ui.port                           | No       | Custom port for UI service                                             |
 | ingress.ui.path                           | Yes      | URL path for UI service (default: "/")                                 |
 | ingress.ui.pathType                       | Yes      | Path matching type: "Prefix", "Exact", or "ImplementationSpecific"     |
 | ingress.ui.ingressClassName               | No       | Ingress class name (e.g., "nginx", "gce")                             |
@@ -407,6 +408,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.ui.annotations                    | No       | Custom annotations for UI ingress                                       |
 | ingress.api.enabled                       | Yes      | Enable API ingress (default: true)                                     |
 | ingress.api.domain                        | Yes      | Domain name for API service                                            |
+| ingress.ui.port                           | No       | Custom port for API service                                            |
 | ingress.api.path                          | Yes      | URL path for API service (default: "/")                                |
 | ingress.api.pathType                      | Yes      | Path matching type: "Prefix", "Exact", or "ImplementationSpecific"     |
 | ingress.api.ingressClassName              | No       | Ingress class name (e.g., "nginx", "gce")                             |
@@ -415,6 +417,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.api.annotations                   | No       | Custom annotations for API ingress                                      |
 | ingress.registry.enabled                  | Yes      | Enable Registry ingress (default: true)                               |
 | ingress.registry.domain                   | Yes      | Domain name for Registry service                                       |
+| ingress.registry.port                     | No       | Custom port for Registry service                                       |
 | ingress.registry.path                     | Yes      | URL path for Registry service (default: "/")                           |
 | ingress.registry.pathType                 | Yes      | Path matching type: "Prefix", "Exact", or "ImplementationSpecific"     |
 | ingress.registry.ingressClassName         | No       | Ingress class name (e.g., "nginx", "gce")                             |
@@ -764,7 +767,7 @@ api:
     enabled: true
     metrics:
       port: 8081
-      host: 
+      host:
     traces:
       type: jaeger # or zipkin
       endpoint: http://jaeger-collector:14268/api/traces
@@ -779,7 +782,7 @@ executor:
     enabled: true
     metrics:
       port: 8081
-      host: 
+      host:
     traces:
       type: zupkin # or jaeger
       endpoint: zipkin:9411/api/v2/spans
@@ -793,7 +796,7 @@ registry:
     enabled: false # or true
     metrics:
       port: 8081
-      host: 
+      host:
     traces:
       type: zupkin # or jaeger
       endpoint: zipkin:9411/api/v2/spans
