@@ -295,6 +295,9 @@ executor:
   # Static pool size - no autoscaling. Size this to your expected peak concurrent job count,
   # since each pod only runs one job at a time (see executor readiness/watchdog notes above).
   replicaCount: "1"
+  # Gives the pod's @PreDestroy hook (JobExecutionWatchdog.onShutdown) time to fail an
+  # in-flight job's status before Kubernetes SIGKILLs the process.
+  terminationGracePeriodSeconds: 60
   serviceType: ClusterIP
   serviceAccountName: ""
   revisionHistoryLimit: 3
