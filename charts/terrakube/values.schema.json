@@ -634,6 +634,32 @@
                 },
                 "version": {
                     "type": "string"
+                },
+                "cache": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "sizeLimit": {
+                            "type": "string"
+                        },
+                        "existingClaim": {
+                            "type": "string"
+                        },
+                        "providers": {
+                            "type": "boolean"
+                        },
+                        "ignoreLockFile": {
+                            "type": "boolean"
+                        },
+                        "modules": {
+                            "type": "boolean"
+                        }
+                    }
                 }
             }
         },

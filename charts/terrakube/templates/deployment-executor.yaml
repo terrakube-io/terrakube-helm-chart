@@ -54,6 +54,21 @@ spec:
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
         {{- end }}
+        {{- if (.Values.executor.cache).enabled }}
+        {{- $cachePath := .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" }}
+        {{- if .Values.executor.cache.providers }}
+        - name: TF_PLUGIN_CACHE_DIR
+          value: {{ printf "%s/plugin-cache" $cachePath | quote }}
+        {{- if .Values.executor.cache.ignoreLockFile }}
+        - name: TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE
+          value: "1"
+        {{- end }}
+        {{- end }}
+        {{- if .Values.executor.cache.modules }}
+        - name: TerraformDataDirCacheRoot
+          value: {{ printf "%s/data" $cachePath | quote }}
+        {{- end }}
+        {{- end }}
         {{- with .Values.executor.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -62,6 +77,10 @@ spec:
         - name: ca-certs
           mountPath: /mnt/platform/bindings/ca-certificates
           readOnly: true
+        {{- end }}
+        {{- if (.Values.executor.cache).enabled }}
+        - name: terraform-cache
+          mountPath: {{ .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" | quote }}
         {{- end }}
         {{- with .Values.executor.volumeMounts }}
         {{- toYaml . | nindent 8 }}
@@ -117,6 +136,18 @@ spec:
       - name: ca-certs
         secret:
           secretName: terrakube-ca-secrets
+      {{- end }}
+      {{- if (.Values.executor.cache).enabled }}
+      - name: terraform-cache
+        {{- if .Values.executor.cache.existingClaim }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.executor.cache.existingClaim | quote }}
+        {{- else }}
+        emptyDir:
+          {{- with .Values.executor.cache.sizeLimit }}
+          sizeLimit: {{ . | quote }}
+          {{- end }}
+        {{- end }}
       {{- end }}
       {{- with .Values.executor.volumes }}
       {{- toYaml . | nindent 6 }}
