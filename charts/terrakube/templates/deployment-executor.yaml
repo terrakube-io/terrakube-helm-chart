@@ -32,9 +32,26 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.executor.initContainers }}
+      {{- if or (.Values.executor.cache).enabled .Values.executor.initContainers }}
       initContainers:
+      {{- if (.Values.executor.cache).enabled }}
+      {{- $cachePath := .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" }}
+      # Terraform/OpenTofu refuse a TF_PLUGIN_CACHE_DIR that does not exist and a fresh volume is
+      # empty, so create the cache sub-directories (as the executor's own user) before the executor starts.
+      - name: init-terraform-cache
+        image: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
+        command: ["sh", "-c", {{ printf "mkdir -p %s/plugin-cache %s/data" $cachePath $cachePath | quote }}]
+        volumeMounts:
+        - name: terraform-cache
+          mountPath: {{ $cachePath | quote }}
+        {{- with .Values.executor.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.executor.initContainers }}
         {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- end }}
       containers:
       - name: terrakube-executor
@@ -54,6 +71,21 @@ spec:
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
         {{- end }}
+        {{- if (.Values.executor.cache).enabled }}
+        {{- $cachePath := .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" }}
+        {{- if .Values.executor.cache.providers }}
+        - name: TF_PLUGIN_CACHE_DIR
+          value: {{ printf "%s/plugin-cache" $cachePath | quote }}
+        {{- if .Values.executor.cache.ignoreLockFile }}
+        - name: TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE
+          value: "1"
+        {{- end }}
+        {{- end }}
+        {{- if .Values.executor.cache.modules }}
+        - name: TerraformDataDirCacheRoot
+          value: {{ printf "%s/data" $cachePath | quote }}
+        {{- end }}
+        {{- end }}
         {{- with .Values.executor.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -62,6 +94,10 @@ spec:
         - name: ca-certs
           mountPath: /mnt/platform/bindings/ca-certificates
           readOnly: true
+        {{- end }}
+        {{- if (.Values.executor.cache).enabled }}
+        - name: terraform-cache
+          mountPath: {{ .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" | quote }}
         {{- end }}
         {{- with .Values.executor.volumeMounts }}
         {{- toYaml . | nindent 8 }}
@@ -117,6 +153,18 @@ spec:
       - name: ca-certs
         secret:
           secretName: terrakube-ca-secrets
+      {{- end }}
+      {{- if (.Values.executor.cache).enabled }}
+      - name: terraform-cache
+        {{- if .Values.executor.cache.existingClaim }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.executor.cache.existingClaim | quote }}
+        {{- else }}
+        emptyDir:
+          {{- with .Values.executor.cache.sizeLimit }}
+          sizeLimit: {{ . | quote }}
+          {{- end }}
+        {{- end }}
       {{- end }}
       {{- with .Values.executor.volumes }}
       {{- toYaml . | nindent 6 }}

@@ -321,6 +321,28 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
+  # Cache what terraform/tofu init downloads, across jobs. Every job runs in a fresh
+  # clone, so without a cache the providers and the modules are fetched again on every run.
+  cache:
+    enabled: false
+    # Mount point of the cache volume inside the executor container.
+    path: "/home/cnb/.terraform.d"
+    # emptyDir size limit (ignored when existingClaim is set). Lives as long as the pod.
+    sizeLimit: "2Gi"
+    # Use an existing PersistentVolumeClaim instead of an emptyDir so the cache survives
+    # pod restarts. Must be ReadWriteMany when replicaCount > 1.
+    existingClaim: ""
+    # Provider plugin cache: TF_PLUGIN_CACHE_DIR=<path>/plugin-cache
+    providers: true
+    # Terraform/OpenTofu only reuse a cached provider that is already recorded in the
+    # workspace's .terraform.lock.hcl. Enable when your repositories do not commit the lock
+    # file (sets TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=1).
+    ignoreLockFile: false
+    # Per-workspace data directory: TerraformDataDirCacheRoot=<path>/data, which the executor
+    # turns into TF_DATA_DIR=<path>/data/<organization>/<workspace> so the modules AND the
+    # providers are reused by the next job of the same workspace. Requires an executor that
+    # supports TerraformDataDirCacheRoot (ignored by older images).
+    modules: true
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []

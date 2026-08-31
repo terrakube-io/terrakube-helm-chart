@@ -520,6 +520,13 @@ Once you have completed the above steps you can complete the file values.yaml to
 | executor.env                              | No       |                                                                        |
 | executor.volumes                          | No       |                                                                        |
 | executor.volumeMounts                     | No       |                                                                        |
+| executor.cache.enabled                    | No       | Cache providers/modules across jobs on a volume mounted in the executor |
+| executor.cache.path                       | No       | Mount point of the cache volume (default /home/cnb/.terraform.d)       |
+| executor.cache.sizeLimit                  | No       | emptyDir size limit (default 2Gi)                                      |
+| executor.cache.existingClaim              | No       | Use an existing PVC (RWX when replicaCount > 1) instead of an emptyDir |
+| executor.cache.providers                  | No       | Set TF_PLUGIN_CACHE_DIR (default true)                                 |
+| executor.cache.ignoreLockFile             | No       | Set TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=1 (no committed lock file) |
+| executor.cache.modules                    | No       | Per-workspace TF_DATA_DIR via TerraformDataDirCacheRoot (executor support required) |
 | executor.properties.toolsRepository       | Yes      | Example: https://github.com/terrakube-io/terrakube-extensions          |
 | executor.properties.toolsBranch           | Yes      | Example: main                                                          |
 | executor.securityContext                  | No       | Fill securityContext field                                             |
