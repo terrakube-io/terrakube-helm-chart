@@ -32,9 +32,26 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.executor.initContainers }}
+      {{- if or (.Values.executor.cache).enabled .Values.executor.initContainers }}
       initContainers:
+      {{- if (.Values.executor.cache).enabled }}
+      {{- $cachePath := .Values.executor.cache.path | default "/home/cnb/.terraform.d" | trimSuffix "/" }}
+      # Terraform/OpenTofu refuse a TF_PLUGIN_CACHE_DIR that does not exist and a fresh volume is
+      # empty, so create the cache sub-directories (as the executor's own user) before the executor starts.
+      - name: init-terraform-cache
+        image: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
+        command: ["sh", "-c", {{ printf "mkdir -p %s/plugin-cache %s/data" $cachePath $cachePath | quote }}]
+        volumeMounts:
+        - name: terraform-cache
+          mountPath: {{ $cachePath | quote }}
+        {{- with .Values.executor.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.executor.initContainers }}
         {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- end }}
       containers:
       - name: terrakube-executor
