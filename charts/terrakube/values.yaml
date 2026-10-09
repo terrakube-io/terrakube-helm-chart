@@ -296,6 +296,7 @@ api:
 
 ## Executor properties
 executor:
+  initSecretImage: "busybox:latest"
   existingSecret: false
   enabled: true
   image: "azbuilder/executor"
