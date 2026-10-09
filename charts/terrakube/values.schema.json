@@ -517,6 +517,9 @@
                 "image": {
                     "type": "string"
                 },
+                "initSecretImage": {
+                    "type": "string"
+                },
                 "imagePullSecrets": {
                     "type": "array"
                 },

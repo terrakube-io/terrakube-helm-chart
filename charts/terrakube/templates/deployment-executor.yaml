@@ -32,8 +32,19 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.executor.initContainers }}
       initContainers:
+      - name: copy-internal-secret
+        image: {{ .Values.executor.initSecretImage | default "busybox:latest" | quote }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - cp /config-ro/InternalSecret /config-rw/internal-secret.txt && chmod 666 /config-rw/internal-secret.txt
+        volumeMounts:
+        - name: raw-secret
+          mountPath: /config-ro
+          readOnly: true
+        - name: writable-internal-secret
+          mountPath: /config-rw
+      {{- with .Values.executor.initContainers }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
       containers:
@@ -50,6 +61,10 @@ spec:
           containerPort: {{ .Values.executor.otel.metrics.port | default "9464" }}
         {{- end }}
         env:
+        - name: InternalSecret
+          value: ""
+        - name: InternalSecretFile
+          value: "/etc/terrakube/internal-secret/internal-secret.txt"
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
@@ -58,6 +73,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         volumeMounts:
+        - name: writable-internal-secret
+          mountPath: /etc/terrakube/internal-secret
         {{- if .Values.security.caCerts }}
         - name: ca-certs
           mountPath: /mnt/platform/bindings/ca-certificates
@@ -113,6 +130,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+      - name: raw-secret
+        secret:
+          secretName: {{ index .Values.executor.secrets 0 | default "terrakube-executor-secrets" | quote }}
+      - name: writable-internal-secret
+        emptyDir: {}
       {{- if .Values.security.caCerts }}
       - name: ca-certs
         secret:
