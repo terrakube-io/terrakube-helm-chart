@@ -69,6 +69,12 @@
                 "ephemeralExecution": {
                     "type": "object",
                     "properties": {
+                        "activeDeadlineSeconds": {
+                            "type": "string"
+                        },
+                        "backoffLimit": {
+                            "type": "string"
+                        },
                         "configMapName": {
                             "type": "string"
                         },
@@ -83,6 +89,12 @@
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        "terminationGracePeriodSeconds": {
+                            "type": "string"
+                        },
+                        "ttlSecondsAfterFinished": {
+                            "type": "string"
                         }
                     }
                 },

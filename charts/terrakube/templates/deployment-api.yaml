@@ -69,6 +69,22 @@ spec:
         - name: ExecutorEphemeralConfigMap
           value: {{ .Values.api.ephemeralExecution.configMapName | quote }}
         {{- end }}
+        {{- if .Values.api.ephemeralExecution.activeDeadlineSeconds }}
+        - name: ExecutorEphemeralActiveDeadlineSeconds
+          value: {{ .Values.api.ephemeralExecution.activeDeadlineSeconds | quote }}
+        {{- end }}
+        {{- if .Values.api.ephemeralExecution.backoffLimit }}
+        - name: ExecutorEphemeralBackoffLimit
+          value: {{ .Values.api.ephemeralExecution.backoffLimit | quote }}
+        {{- end }}
+        {{- if .Values.api.ephemeralExecution.ttlSecondsAfterFinished }}
+        - name: ExecutorEphemeralTtlSecondsAfterFinished
+          value: {{ .Values.api.ephemeralExecution.ttlSecondsAfterFinished | quote }}
+        {{- end }}
+        {{- if .Values.api.ephemeralExecution.terminationGracePeriodSeconds }}
+        - name: ExecutorEphemeralTerminationGracePeriodSeconds
+          value: {{ .Values.api.ephemeralExecution.terminationGracePeriodSeconds | quote }}
+        {{- end }}
         {{- end }}
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT
