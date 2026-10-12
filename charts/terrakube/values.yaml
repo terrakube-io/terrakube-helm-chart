@@ -26,6 +26,7 @@ openldap:
   image: "bitnamilegacy/openldap"
   version: "latest"
   imagePullSecrets: []
+  imagePullPolicy: IfNotPresent
   initContainers: []
   podLabels: {}
   podAnnotations: {}
@@ -227,6 +228,7 @@ api:
     enabled: false
     secretName:
       - terrakube-executor-secrets
+    # Set to terrakube-executor-config to reuse the same configuration for ephemeral executions.
     configMapName: ""
     podAnnotations: {}
     ## Seconds the ephemeral job is allowed to run before Kubernetes terminates it; unset means unbounded (today's behaviour).
@@ -252,6 +254,7 @@ api:
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
+  imagePullPolicy: IfNotPresent
   initContainers: []
   podDisruptionBudget:
     enabled: false
@@ -332,6 +335,8 @@ executor:
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
+  # It may be necessary to set this to Always when using a custom executor image during development and testing.
+  imagePullPolicy: IfNotPresent
   initContainers: []
   podDisruptionBudget:
     enabled: false
@@ -381,6 +386,7 @@ registry:
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
+  imagePullPolicy: IfNotPresent
   initContainers: []
   podDisruptionBudget:
     enabled: false
@@ -413,6 +419,7 @@ ui:
   securityContext: {}
   containerSecurityContext: {}
   imagePullSecrets: []
+  imagePullPolicy: IfNotPresent
   initContainers: []
   podDisruptionBudget:
     enabled: false
@@ -430,11 +437,21 @@ ingress:
   gatewayapi:
     apiVersion: v1beta1
     enabled: false
+    # Enable when a Gateway in another namespace needs to reference a TLS Secret in this namespace and no external ReferenceGrant exists.
+    createReferenceGrant: false
     gateways: []
     annotations: {}
 
   ui:
     enabled: true
+    gateways: []
+    # Custom parentRef configuration for this endpoint, such as sectionName.
+    # gateways:
+    #   - group: gateway.networking.k8s.io
+    #     kind: Gateway
+    #     name: internal-gateway
+    #     namespace: gateway-system
+    #     sectionName: https-terrakube-ui
     domain: "terrakube-ui.minikube.net"
     path: "/"
     pathType: "Prefix"
@@ -446,6 +463,14 @@ ingress:
   
   api:
     enabled: true
+    gateways: []
+    # Custom parentRef configuration for this endpoint, such as sectionName.
+    # gateways:
+    #   - group: gateway.networking.k8s.io
+    #     kind: Gateway
+    #     name: internal-gateway
+    #     namespace: gateway-system
+    #     sectionName: https-terrakube-api
     domain: "terrakube-api.minikube.net"
     path: "/"
     pathType: "Prefix"
@@ -458,6 +483,14 @@ ingress:
 
   registry:
     enabled: true
+    gateways: []
+    # Custom parentRef configuration for this endpoint, such as sectionName.
+    # gateways:
+    #   - group: gateway.networking.k8s.io
+    #     kind: Gateway
+    #     name: internal-gateway
+    #     namespace: gateway-system
+    #     sectionName: https-terrakube-reg
     domain: "terrakube-reg.minikube.net"
     path: "/"
     pathType: "Prefix"
@@ -476,6 +509,14 @@ ingress:
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
   executor:
     enabled: false
+    gateways: []
+    # Custom parentRef configuration for this endpoint, such as sectionName.
+    # gateways:
+    #   - group: gateway.networking.k8s.io
+    #     kind: Gateway
+    #     name: internal-gateway
+    #     namespace: gateway-system
+    #     sectionName: https-terrakube-executor
     domain: "terrakube-executor.minikube.net"
     path: "/"
     pathType: "Prefix"

@@ -24,7 +24,7 @@ data:
 
   {{- else }}
 
-  {{- if and (.Values.storage.azure).storageAccountName (.Values.storage.azure).storageAccountAccessKey }}
+  {{- if (.Values.storage.azure).storageAccountName }}
   #Azure Storage
   RegistryStorageType: 'AzureStorageImpl'
   AzureAccountName: '{{ .Values.storage.azure.storageAccountName }}'

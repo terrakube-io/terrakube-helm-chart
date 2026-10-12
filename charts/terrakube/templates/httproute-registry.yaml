@@ -14,7 +14,7 @@ spec:
   hostnames:
     - {{ . | quote }}
 {{- end }}
-{{- with .Values.ingress.gatewayapi.gateways}}
+{{- with .Values.ingress.registry.gateways | default .Values.ingress.gatewayapi.gateways}}
   parentRefs: {{- . | toYaml | nindent 4 }}
 {{- end }}
   rules:

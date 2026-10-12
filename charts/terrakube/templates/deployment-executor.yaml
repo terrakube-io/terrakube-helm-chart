@@ -39,6 +39,7 @@ spec:
       containers:
       - name: terrakube-executor
         image: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
+        imagePullPolicy: {{ .Values.executor.imagePullPolicy | default "IfNotPresent" }}
         {{- if .Values.executor.resources }}
         resources: {{- toYaml .Values.executor.resources | nindent 12 }}
         {{- end }}
