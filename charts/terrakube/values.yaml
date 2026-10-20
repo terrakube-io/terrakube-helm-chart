@@ -296,6 +296,8 @@ api:
 
 ## Executor properties
 executor:
+  # Load internal secret via initContainer and writable emptyDir volume (mandatory in Terrakube 2.34.0+)
+  emptyDirSecret: false
   initSecretImage: "busybox:latest"
   existingSecret: false
   enabled: true

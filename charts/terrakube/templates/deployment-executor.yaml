@@ -32,7 +32,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if or .Values.executor.emptyDirSecret .Values.executor.initContainers }}
       initContainers:
+      {{- if .Values.executor.emptyDirSecret }}
       - name: copy-internal-secret
         image: {{ .Values.executor.initSecretImage | default "busybox:latest" | quote }}
         command: ["/bin/sh", "-c"]
@@ -44,8 +46,10 @@ spec:
           readOnly: true
         - name: writable-internal-secret
           mountPath: /config-rw
+      {{- end }}
       {{- with .Values.executor.initContainers }}
         {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- end }}
       containers:
       - name: terrakube-executor
@@ -61,10 +65,12 @@ spec:
           containerPort: {{ .Values.executor.otel.metrics.port | default "9464" }}
         {{- end }}
         env:
+        {{- if .Values.executor.emptyDirSecret }}
         - name: InternalSecret
           value: ""
         - name: InternalSecretFile
           value: "/etc/terrakube/internal-secret/internal-secret.txt"
+        {{- end }}
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT
           value: /mnt/platform/bindings
@@ -73,8 +79,10 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         volumeMounts:
+        {{- if .Values.executor.emptyDirSecret }}
         - name: writable-internal-secret
           mountPath: /etc/terrakube/internal-secret
+        {{- end }}
         {{- if .Values.security.caCerts }}
         - name: ca-certs
           mountPath: /mnt/platform/bindings/ca-certificates
@@ -130,11 +138,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+      {{- if .Values.executor.emptyDirSecret }}
       - name: raw-secret
         secret:
           secretName: {{ index .Values.executor.secrets 0 | default "terrakube-executor-secrets" | quote }}
       - name: writable-internal-secret
         emptyDir: {}
+      {{- end }}
       {{- if .Values.security.caCerts }}
       - name: ca-certs
         secret:
