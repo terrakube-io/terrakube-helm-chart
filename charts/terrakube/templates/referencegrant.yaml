@@ -1,0 +1,25 @@
+{{- $gateways := concat .Values.ingress.gatewayapi.gateways .Values.ingress.ui.gateways .Values.ingress.api.gateways .Values.ingress.registry.gateways .Values.ingress.executor.gateways }}
+{{- if and (eq .Values.ingress.controller "gatewayapi") .Values.ingress.gatewayapi.createReferenceGrant }}
+{{- $uniqueNamespaces := dict }}
+{{- range $gateways }}
+{{- if and .namespace (not (hasKey $uniqueNamespaces .namespace)) }}
+{{- $_ := set $uniqueNamespaces .namespace true }}
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: {{ $.Values.name }}-allow-gateway-tls-{{ .namespace | replace "." "-" | trunc 20 | trimSuffix "-" }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "terrakube.labels" $ | nindent 4 }}
+spec:
+  from:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    namespace: {{ .namespace }}
+  to:
+  - group: ""
+    kind: Secret
+{{- end }}
+{{- end }}
+{{- end }}

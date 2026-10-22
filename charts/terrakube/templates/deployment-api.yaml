@@ -39,6 +39,7 @@ spec:
       containers:
       - name: terrakube-api
         image: {{ .Values.api.image }}:{{ default .Chart.AppVersion .Values.api.version }}
+        imagePullPolicy: {{ .Values.api.imagePullPolicy | default "IfNotPresent" }}
         {{- if .Values.api.resources }}
         resources: {{- toYaml .Values.api.resources | nindent 12 }}
         {{- end }}

@@ -39,6 +39,7 @@ spec:
       containers:
       - name: terrakube-registry
         image: {{ .Values.registry.image }}:{{ default .Chart.AppVersion .Values.registry.version }}
+        imagePullPolicy: {{ .Values.registry.imagePullPolicy | default "IfNotPresent" }}
         {{- if .Values.registry.resources }}
         resources: {{- toYaml .Values.registry.resources | nindent 12 }}
         {{- end }}

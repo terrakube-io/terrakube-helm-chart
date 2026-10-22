@@ -35,6 +35,7 @@ spec:
       containers:
       - name: terrakube-openldap
         image: {{ .Values.openldap.image }}:{{ .Values.openldap.version }}
+        imagePullPolicy: {{ .Values.openldap.imagePullPolicy | default "IfNotPresent" }}
         env:
         - name: LDAP_ADMIN_USERNAME
           value: {{ .Values.openldap.adminUser }}
