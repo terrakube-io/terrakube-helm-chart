@@ -296,9 +296,11 @@ api:
 
 ## Executor properties
 executor:
-  # Load executor secrets via initContainer and writable in-memory emptyDir volume (mandatory in Terrakube 2.34.0+)
+  # Load executor secrets via initContainer and writable in-memory emptyDir volume (mandatory in Terrakube 2.34.0+).
+  # NOTE: When emptyDirSecret is true, secrets are excluded from envFrom and loaded from an in-memory volume at startup.
+  # This requires executor image 2.34.0 or later.
   emptyDirSecret: true
-  initSecretImage: "busybox:latest"
+  initSecretImage: "busybox:1.37.0"
   existingSecret: false
   enabled: true
   image: "azbuilder/executor"
@@ -309,6 +311,8 @@ executor:
   serviceType: ClusterIP
   serviceAccountName: ""
   revisionHistoryLimit: 3
+  # Multiple secrets are projected into a single volume. Keys across secrets must be unique;
+  # in case of conflicting keys, the last projected secret listed takes precedence.
   secrets:
    - terrakube-executor-secrets
   configMaps:

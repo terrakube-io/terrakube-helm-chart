@@ -36,18 +36,35 @@ spec:
       initContainers:
       {{- if .Values.executor.emptyDirSecret }}
       - name: copy-executor-secrets
-        image: {{ .Values.executor.initSecretImage | default "busybox:latest" | quote }}
+        image: {{ .Values.executor.initSecretImage | default "busybox:1.37.0" | quote }}
         command: ["/bin/sh", "-c"]
         args:
           - |
-            chmod 0777 /config-rw
+            chmod 0700 /config-rw
             for f in /config-ro/*; do
               if [ -f "$f" ]; then
                 target="/config-rw/$(basename "$f")"
                 cp -L "$f" "$target"
-                chmod 0666 "$target"
+                chmod 0600 "$target"
               fi
             done
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop:
+              - ALL
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - name: raw-secret
           mountPath: /config-ro
@@ -157,6 +174,7 @@ spec:
       - name: writable-executor-secrets
         emptyDir:
           medium: Memory
+          sizeLimit: 64Mi
       {{- end }}
       {{- if .Values.security.caCerts }}
       - name: ca-certs
