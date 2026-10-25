@@ -40,7 +40,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            chmod 0700 /config-rw
+            set -eu
             for f in /config-ro/*; do
               if [ -f "$f" ]; then
                 target="/config-rw/$(basename "$f")"
@@ -90,6 +90,8 @@ spec:
           containerPort: {{ .Values.executor.otel.metrics.port | default "9464" }}
         {{- end }}
         env:
+        - name: HOME
+          value: /tmp
         {{- if .Values.executor.emptyDirSecret }}
         - name: ExecutorSecretsDirectory
           value: "/etc/terrakube/secrets"

@@ -237,6 +237,10 @@ api:
     ttlSecondsAfterFinished: ""
     ## Seconds the ephemeral pod gets to shut down cleanly after SIGTERM before Kubernetes SIGKILLs it; unset means 60.
     terminationGracePeriodSeconds: ""
+    ## Controls whether ephemeral job mounts secrets via emptyDir initContainer (defaults to executor.emptyDirSecret)
+    emptyDirSecret: ""
+    ## Init image used when emptyDirSecret is true (defaults to executor.initSecretImage)
+    initSecretImage: ""
   secrets:
    - terrakube-api-secrets
   configMaps:
@@ -336,7 +340,13 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
-  securityContext: {}
+  # Note: The copy-executor-secrets initContainer creates secret files owned by UID 1000 with 0600 permissions.
+  # If customizing runAsUser in securityContext or containerSecurityContext, ensure it matches the initContainer UID (1000)
+  # so the executor process can read the copied secret files.
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
