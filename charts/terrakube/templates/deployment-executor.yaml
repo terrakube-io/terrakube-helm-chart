@@ -41,11 +41,12 @@ spec:
         args:
           - |
             set -eu
+            chmod 2770 /config-rw
             for f in /config-ro/*; do
               if [ -f "$f" ]; then
                 target="/config-rw/$(basename "$f")"
                 cp -L "$f" "$target"
-                chmod 0600 "$target"
+                chmod 0660 "$target"
               fi
             done
         resources:
@@ -57,12 +58,6 @@ spec:
             memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
-          runAsNonRoot: true
-          runAsUser: 1000
-          runAsGroup: 1000
-          capabilities:
-            drop:
-              - ALL
           seccompProfile:
             type: RuntimeDefault
         volumeMounts:
@@ -90,8 +85,6 @@ spec:
           containerPort: {{ .Values.executor.otel.metrics.port | default "9464" }}
         {{- end }}
         env:
-        - name: HOME
-          value: /tmp
         {{- if .Values.executor.emptyDirSecret }}
         - name: ExecutorSecretsDirectory
           value: "/etc/terrakube/secrets"

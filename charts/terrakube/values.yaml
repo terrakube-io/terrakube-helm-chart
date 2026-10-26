@@ -340,12 +340,9 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
-  # Note: The copy-executor-secrets initContainer creates secret files owned by UID 1000 with 0600 permissions.
-  # If customizing runAsUser in securityContext or containerSecurityContext, ensure it matches the initContainer UID (1000)
-  # so the executor process can read the copied secret files.
+  # Note: The copy-executor-secrets initContainer creates secret files with 0660 permissions governed by fsGroup: 1000.
+  # Both ARM images (running as heroku:1000) and AMD64 images (running as cnb:1002 with group 1000) can read and shred secrets.
   securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
     fsGroup: 1000
   containerSecurityContext: {}
   imagePullSecrets: []
