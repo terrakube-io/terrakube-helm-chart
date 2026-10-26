@@ -340,8 +340,11 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
-  # Note: The copy-executor-secrets initContainer creates secret files with 0660 permissions governed by fsGroup: 1000.
+  # Note: The copy-executor-secrets initContainer runs as root with capabilities.drop: [ALL] to execute
+  # chmod 2770 /config-rw and copy secret files with 0660 permissions. This clears the default tmpfs sticky bit (03777),
+  # allowing standard POSIX group write permissions under fsGroup: 1000.
   # Both ARM images (running as heroku:1000) and AMD64 images (running as cnb:1002 with group 1000) can read and shred secrets.
+  # Any custom executor image must be compatible with group 1000 (which the pod receives via fsGroup: 1000).
   securityContext:
     fsGroup: 1000
   containerSecurityContext: {}
