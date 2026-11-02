@@ -71,7 +71,11 @@ spec:
         {{- end }}
         {{- if .Values.api.ephemeralExecution.configMapName }}
         - name: ExecutorEphemeralConfigMap
+          {{- if kindIs "string" .Values.api.ephemeralExecution.configMapName }}
           value: {{ .Values.api.ephemeralExecution.configMapName | quote }}
+          {{- else }}
+          value: {{ .Values.api.ephemeralExecution.configMapName | join "," | quote }}
+          {{- end }}
         {{- end }}
         {{- if .Values.api.ephemeralExecution.activeDeadlineSeconds }}
         - name: ExecutorEphemeralActiveDeadlineSeconds
