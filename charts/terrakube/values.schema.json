@@ -78,8 +78,14 @@
                         "configMapName": {
                             "type": "string"
                         },
+                        "emptyDirSecret": {
+                            "type": ["boolean", "string"]
+                        },
                         "enabled": {
                             "type": "boolean"
+                        },
+                        "initSecretImage": {
+                            "type": "string"
                         },
                         "podAnnotations": {
                             "type": "object"
