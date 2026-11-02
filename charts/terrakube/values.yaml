@@ -128,6 +128,9 @@ dex:
 ## Terraform Storage
 storage:
   defaultStorage: true
+  ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+  ## When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API
+  httpBackend: false
   azure:
     storageAccountName: ""
     storageAccountResourceGroup: ""
@@ -293,6 +296,8 @@ api:
     redisPassword: ""
     redisPort: "6379"
     executorUrl: "http://terrakube-executor-service:8090"
+    ## Maximum state file size accepted by the Terraform HTTP backend endpoint in bytes (default: 104857600 = 100MB)
+    stateMaxSizeBytes: "104857600"
     
 ## DONT FORGET TO UPDATE THE PORT DEPENDING OF THE DATABASE BY DEFAULT IS USING THE POSTGRESQL PORT
 ## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".   
@@ -340,6 +345,12 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
+    ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+    ## When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
+    ## and passes scoped workspace access tokens for state synchronization and locking.
+    httpBackend: false
+    ## Token TTL in minutes for the scoped workspace HTTP backend access token (default: 60)
+    httpTokenTtlMinutes: 60
   # Note: The copy-executor-secrets initContainer runs as root with capabilities.drop: [ALL] to execute
   # chmod 2770 /config-rw and copy secret files with 0660 permissions. This clears the default tmpfs sticky bit (03777),
   # allowing standard POSIX group write permissions under fsGroup: 1000.

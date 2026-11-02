@@ -204,6 +204,9 @@
                         "executorUrl": {
                             "type": "string"
                         },
+                        "stateMaxSizeBytes": {
+                            "type": "string"
+                        },
                         "redisHostname": {
                             "type": "string"
                         },
@@ -605,6 +608,12 @@
                 "properties": {
                     "type": "object",
                     "properties": {
+                        "httpBackend": {
+                            "type": "boolean"
+                        },
+                        "httpTokenTtlMinutes": {
+                            "type": "integer"
+                        },
                         "toolsBranch": {
                             "type": "string"
                         },
@@ -1336,6 +1345,9 @@
         "storage": {
             "type": "object",
             "properties": {
+                "httpBackend": {
+                    "type": "boolean"
+                },
                 "aws": {
                     "type": "object",
                     "properties": {
