@@ -76,7 +76,13 @@
                             "type": "string"
                         },
                         "configMapName": {
-                            "type": "string"
+                            "type": [
+                                "string",
+                                "array"
+                            ],
+                            "items": {
+                                "type": "string"
+                            }
                         },
                         "emptyDirSecret": {
                             "type": ["boolean", "string"]
