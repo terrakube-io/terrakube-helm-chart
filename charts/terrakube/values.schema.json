@@ -76,7 +76,13 @@
                             "type": "string"
                         },
                         "configMapName": {
-                            "type": "string"
+                            "type": [
+                                "string",
+                                "array"
+                            ],
+                            "items": {
+                                "type": "string"
+                            }
                         },
                         "emptyDirSecret": {
                             "type": ["boolean", "string"]
@@ -202,6 +208,9 @@
                             "type": "string"
                         },
                         "executorUrl": {
+                            "type": "string"
+                        },
+                        "stateMaxSizeBytes": {
                             "type": "string"
                         },
                         "redisHostname": {
@@ -605,6 +614,12 @@
                 "properties": {
                     "type": "object",
                     "properties": {
+                        "httpBackend": {
+                            "type": "boolean"
+                        },
+                        "httpTokenTtlMinutes": {
+                            "type": "integer"
+                        },
                         "toolsBranch": {
                             "type": "string"
                         },
@@ -1336,6 +1351,9 @@
         "storage": {
             "type": "object",
             "properties": {
+                "httpBackend": {
+                    "type": "boolean"
+                },
                 "aws": {
                     "type": "object",
                     "properties": {
