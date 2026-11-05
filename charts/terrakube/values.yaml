@@ -130,7 +130,7 @@ storage:
   defaultStorage: true
   ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
   ## When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API
-  httpBackend: false
+  httpBackend: true
   azure:
     storageAccountName: ""
     storageAccountResourceGroup: ""
@@ -241,7 +241,7 @@ api:
     ## Seconds the ephemeral pod gets to shut down cleanly after SIGTERM before Kubernetes SIGKILLs it; unset means 60.
     terminationGracePeriodSeconds: ""
     ## Controls whether ephemeral job mounts secrets via emptyDir initContainer (defaults to executor.emptyDirSecret)
-    emptyDirSecret: ""
+    emptyDirSecret: true
     ## Init image used when emptyDirSecret is true (defaults to executor.initSecretImage)
     initSecretImage: ""
   secrets:
@@ -348,7 +348,7 @@ executor:
     ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
     ## When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
     ## and passes scoped workspace access tokens for state synchronization and locking.
-    httpBackend: false
+    httpBackend: true
     ## Token TTL in minutes for the scoped workspace HTTP backend access token.
     ## By default, this is omitted so it automatically inherits maxJobDurationMinutes (default 360m / 6h).
     ## Only specify this value if you need an explicit TTL override independent of maxJobDurationMinutes.
