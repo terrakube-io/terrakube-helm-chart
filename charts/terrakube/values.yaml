@@ -349,8 +349,10 @@ executor:
     ## When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
     ## and passes scoped workspace access tokens for state synchronization and locking.
     httpBackend: false
-    ## Token TTL in minutes for the scoped workspace HTTP backend access token (default: 60)
-    httpTokenTtlMinutes: 60
+    ## Token TTL in minutes for the scoped workspace HTTP backend access token.
+    ## By default, this is omitted so it automatically inherits maxJobDurationMinutes (default 360m / 6h).
+    ## Only specify this value if you need an explicit TTL override independent of maxJobDurationMinutes.
+    # httpTokenTtlMinutes: 360
   # Note: The copy-executor-secrets initContainer runs as root with capabilities.drop: [ALL] to execute
   # chmod 2770 /config-rw and copy secret files with 0660 permissions. This clears the default tmpfs sticky bit (03777),
   # allowing standard POSIX group write permissions under fsGroup: 1000.
