@@ -85,4 +85,8 @@ data:
   #Custom terraform releases url
   CustomTerraformReleasesUrl : '{{ .Values.api.terraformReleasesUrl }}'
 
+  {{- if .Values.executor.emptyDirSecret }}
+  ExecutorSecretsDirectory: '/etc/terrakube/secrets'
+  {{- end }}
+
 {{ end }}

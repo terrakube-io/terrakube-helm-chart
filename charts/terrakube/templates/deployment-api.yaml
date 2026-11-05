@@ -61,6 +61,10 @@ spec:
           {{- else }}
           value: {{ .Values.api.ephemeralExecution.secretName | join "," | quote }}
           {{- end }}
+        - name: ExecutorEphemeralEmptyDirSecret
+          value: {{ if kindIs "bool" .Values.api.ephemeralExecution.emptyDirSecret }}{{ .Values.api.ephemeralExecution.emptyDirSecret | quote }}{{ else }}{{ .Values.executor.emptyDirSecret | quote }}{{ end }}
+        - name: ExecutorEphemeralInitSecretImage
+          value: {{ default .Values.executor.initSecretImage .Values.api.ephemeralExecution.initSecretImage | quote }}
         {{- if .Values.api.ephemeralExecution.podAnnotations }}
         - name: ExecutorEphemeralPodAnnotations
           value: {{ .Values.api.ephemeralExecution.podAnnotations | toJson | quote }}
