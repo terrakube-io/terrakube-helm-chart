@@ -85,4 +85,14 @@ data:
   #Custom terraform releases url
   CustomTerraformReleasesUrl : '{{ .Values.api.terraformReleasesUrl }}'
 
+  #Terraform HTTP state backend
+  TerraformStateHttpBackend: {{ if kindIs "bool" .Values.executor.properties.httpBackend }}{{ .Values.executor.properties.httpBackend | quote }}{{ else if kindIs "bool" .Values.storage.httpBackend }}{{ .Values.storage.httpBackend | quote }}{{ else }}"true"{{ end }}
+  {{- if .Values.executor.properties.httpTokenTtlMinutes }}
+  TerraformStateHttpTokenTtlMinutes: '{{ .Values.executor.properties.httpTokenTtlMinutes }}'
+  {{- end }}
+
+  {{- if .Values.executor.emptyDirSecret }}
+  ExecutorSecretsDirectory: '/etc/terrakube/secrets'
+  {{- end }}
+
 {{ end }}

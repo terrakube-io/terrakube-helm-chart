@@ -35,16 +35,39 @@ spec:
       {{- if or .Values.executor.emptyDirSecret .Values.executor.initContainers }}
       initContainers:
       {{- if .Values.executor.emptyDirSecret }}
-      - name: copy-internal-secret
-        image: {{ .Values.executor.initSecretImage | default "busybox:latest" | quote }}
+      - name: copy-executor-secrets
+        image: {{ .Values.executor.initSecretImage | default "busybox:1.37.0" | quote }}
         command: ["/bin/sh", "-c"]
         args:
-          - cp /config-ro/InternalSecret /config-rw/internal-secret.txt && chmod 666 /config-rw/internal-secret.txt
+          - |
+            set -eu
+            chmod 2770 /config-rw
+            for f in /config-ro/*; do
+              if [ -f "$f" ]; then
+                target="/config-rw/$(basename "$f")"
+                cp -L "$f" "$target"
+                chmod 0660 "$target"
+              fi
+            done
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - name: raw-secret
           mountPath: /config-ro
           readOnly: true
-        - name: writable-internal-secret
+        - name: writable-executor-secrets
           mountPath: /config-rw
       {{- end }}
       {{- with .Values.executor.initContainers }}
@@ -66,10 +89,8 @@ spec:
         {{- end }}
         env:
         {{- if .Values.executor.emptyDirSecret }}
-        - name: InternalSecret
-          value: ""
-        - name: InternalSecretFile
-          value: "/etc/terrakube/internal-secret/internal-secret.txt"
+        - name: ExecutorSecretsDirectory
+          value: "/etc/terrakube/secrets"
         {{- end }}
         {{- if .Values.security.caCerts }}
         - name: SERVICE_BINDING_ROOT
@@ -80,8 +101,8 @@ spec:
         {{- end }}
         volumeMounts:
         {{- if .Values.executor.emptyDirSecret }}
-        - name: writable-internal-secret
-          mountPath: /etc/terrakube/internal-secret
+        - name: writable-executor-secrets
+          mountPath: /etc/terrakube/secrets
         {{- end }}
         {{- if .Values.security.caCerts }}
         - name: ca-certs
@@ -100,9 +121,11 @@ spec:
         - configMapRef:
             name: "terrakube-executor-otel-config"
         {{- end }}
+        {{- if not .Values.executor.emptyDirSecret }}
         {{- range .Values.executor.secrets }}
         - secretRef:
             name: {{ . | quote }}
+        {{- end }}
         {{- end }}
         startupProbe:
           httpGet:
@@ -140,10 +163,16 @@ spec:
       volumes:
       {{- if .Values.executor.emptyDirSecret }}
       - name: raw-secret
-        secret:
-          secretName: {{ index .Values.executor.secrets 0 | default "terrakube-executor-secrets" | quote }}
-      - name: writable-internal-secret
-        emptyDir: {}
+        projected:
+          sources:
+          {{- range (.Values.executor.secrets | default (list "terrakube-executor-secrets")) }}
+          - secret:
+              name: {{ . | quote }}
+          {{- end }}
+      - name: writable-executor-secrets
+        emptyDir:
+          medium: Memory
+          sizeLimit: 64Mi
       {{- end }}
       {{- if .Values.security.caCerts }}
       - name: ca-certs

@@ -93,6 +93,11 @@ data:
   spring_profiles_active: 'demo'
   {{- end }}
 
+  {{- if .Values.api.properties.stateMaxSizeBytes }}
+  #Terraform HTTP state backend max state size
+  TerraformStateMaxSizeBytes: '{{ .Values.api.properties.stateMaxSizeBytes }}'
+  {{- end }}
+
   #Custom terraform releases url
   CustomTerraformReleasesUrl : '{{ .Values.api.terraformReleasesUrl }}'
   CustomTofuReleasesUrl : '{{ .Values.api.tofuReleasesUrl }}'
