@@ -119,6 +119,9 @@
                 "imagePullSecrets": {
                     "type": "array"
                 },
+                "imagePullPolicy": {
+                    "type": "string"
+                },
                 "initContainers": {
                     "type": "array"
                 },
@@ -553,6 +556,9 @@
                 "imagePullSecrets": {
                     "type": "array"
                 },
+                "imagePullPolicy": {
+                    "type": "string"
+                },
                 "initContainers": {
                     "type": "array"
                 },
@@ -710,6 +716,9 @@
                         "enabled": {
                             "type": "boolean"
                         },
+                        "gateways": {
+                            "type": "array"
+                        },
                         "ingressClassName": {
                             "type": "string"
                         },
@@ -837,6 +846,9 @@
                         "enabled": {
                             "type": "boolean"
                         },
+                        "gateways": {
+                            "type": "array"
+                        },
                         "ingressClassName": {
                             "type": "string"
                         },
@@ -865,6 +877,9 @@
                         },
                         "gateways": {
                             "type": "array"
+                        },
+                        "createReferenceGrant": {
+                            "type": "boolean"
                         }
                     }
                 },
@@ -1001,6 +1016,9 @@
                         "enabled": {
                             "type": "boolean"
                         },
+                        "gateways": {
+                            "type": "array"
+                        },
                         "ingressClassName": {
                             "type": "string"
                         },
@@ -1037,6 +1055,9 @@
                         },
                         "enabled": {
                             "type": "boolean"
+                        },
+                        "gateways": {
+                            "type": "array"
                         },
                         "ingressClassName": {
                             "type": "string"
@@ -1133,6 +1154,9 @@
                 "imagePullSecrets": {
                     "type": "array"
                 },
+                "imagePullPolicy": {
+                    "type": "string"
+                },
                 "initContainers": {
                     "type": "array"
                 },
@@ -1206,6 +1230,9 @@
                 },
                 "imagePullSecrets": {
                     "type": "array"
+                },
+                "imagePullPolicy": {
+                    "type": "string"
                 },
                 "initContainers": {
                     "type": "array"
@@ -1449,6 +1476,9 @@
                 },
                 "imagePullSecrets": {
                     "type": "array"
+                },
+                "imagePullPolicy": {
+                    "type": "string"
                 },
                 "initContainers": {
                     "type": "array"

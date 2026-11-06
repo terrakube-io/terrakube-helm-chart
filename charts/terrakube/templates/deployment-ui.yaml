@@ -36,6 +36,7 @@ spec:
       containers:
       - name: terrakube-ui
         image: {{ .Values.ui.image }}:{{ default .Chart.AppVersion .Values.ui.version }}
+        imagePullPolicy: {{ .Values.ui.imagePullPolicy | default "IfNotPresent" }}
         volumeMounts:
         - name: ui-config
           mountPath: "/usr/share/nginx/html/env-config.js"

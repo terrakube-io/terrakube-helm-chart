@@ -38,7 +38,7 @@ data:
 
   {{- else }}
 
-  {{- if and (.Values.storage.azure).storageAccountName (.Values.storage.azure).storageAccountAccessKey }}
+  {{- if (.Values.storage.azure).storageAccountName }}
   #Azure Storage
   StorageType: 'AZURE'
   AzureAccountName: '{{ .Values.storage.azure.storageAccountName }}'

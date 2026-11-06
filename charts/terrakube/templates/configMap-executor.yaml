@@ -1,4 +1,4 @@
-{{- if .Values.executor.enabled -}}
+{{- if or .Values.executor.enabled .Values.api.ephemeralExecution.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -38,7 +38,7 @@ data:
 
   {{- else }}
 
-  {{- if and (.Values.storage.azure).storageAccountName (.Values.storage.azure).storageAccountAccessKey }}
+  {{- if (.Values.storage.azure).storageAccountName }}
   #Azure Storage
   TerraformStateType: 'AzureTerraformStateImpl'
   AzureTerraformStateResourceGroup: '{{ .Values.storage.azure.storageAccountResourceGroup }}'
