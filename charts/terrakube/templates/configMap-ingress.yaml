@@ -1,4 +1,4 @@
-{{- if eq .Values.ingress.api.ingressClassName "nginx" -}}
+{{- if or (eq .Values.ingress.api.ingressClassName "nginx") (and (include "terrakube.singleDomain" .) (eq (toString .Values.ingress.singleDomain.ingressClassName) "nginx")) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

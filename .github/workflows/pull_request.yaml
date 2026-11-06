@@ -16,3 +16,12 @@ jobs:
         with:
           file: charts/terrakube/values.yaml
           schema: charts/terrakube/values.schema.json
+
+      - name: Check the single-domain route table copy
+        run: |
+          url=https://raw.githubusercontent.com/terrakube-io/terrakube/main/docs/single-domain/route-table.yaml
+          if curl -fsSL "$url" -o /tmp/route-table.yaml; then
+            diff -u /tmp/route-table.yaml charts/terrakube/files/route-table.yaml
+          else
+            echo "route-table.yaml is not published in terrakube main yet; skipping"
+          fi
