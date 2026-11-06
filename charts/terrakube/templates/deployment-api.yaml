@@ -61,13 +61,21 @@ spec:
           {{- else }}
           value: {{ .Values.api.ephemeralExecution.secretName | join "," | quote }}
           {{- end }}
+        - name: ExecutorEphemeralEmptyDirSecret
+          value: {{ if kindIs "bool" .Values.api.ephemeralExecution.emptyDirSecret }}{{ .Values.api.ephemeralExecution.emptyDirSecret | quote }}{{ else if kindIs "bool" .Values.executor.emptyDirSecret }}{{ .Values.executor.emptyDirSecret | quote }}{{ else }}"true"{{ end }}
+        - name: ExecutorEphemeralInitSecretImage
+          value: {{ default .Values.executor.initSecretImage .Values.api.ephemeralExecution.initSecretImage | quote }}
         {{- if .Values.api.ephemeralExecution.podAnnotations }}
         - name: ExecutorEphemeralPodAnnotations
           value: {{ .Values.api.ephemeralExecution.podAnnotations | toJson | quote }}
         {{- end }}
         {{- if .Values.api.ephemeralExecution.configMapName }}
         - name: ExecutorEphemeralConfigMap
+          {{- if kindIs "string" .Values.api.ephemeralExecution.configMapName }}
           value: {{ .Values.api.ephemeralExecution.configMapName | quote }}
+          {{- else }}
+          value: {{ .Values.api.ephemeralExecution.configMapName | join "," | quote }}
+          {{- end }}
         {{- end }}
         {{- if .Values.api.ephemeralExecution.activeDeadlineSeconds }}
         - name: ExecutorEphemeralActiveDeadlineSeconds

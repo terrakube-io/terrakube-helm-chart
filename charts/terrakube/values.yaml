@@ -128,6 +128,9 @@ dex:
 ## Terraform Storage
 storage:
   defaultStorage: true
+  ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+  ## When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API
+  httpBackend: true
   azure:
     storageAccountName: ""
     storageAccountResourceGroup: ""
@@ -237,6 +240,10 @@ api:
     ttlSecondsAfterFinished: ""
     ## Seconds the ephemeral pod gets to shut down cleanly after SIGTERM before Kubernetes SIGKILLs it; unset means 60.
     terminationGracePeriodSeconds: ""
+    ## Controls whether ephemeral job mounts secrets via emptyDir initContainer (defaults to executor.emptyDirSecret)
+    emptyDirSecret: true
+    ## Init image used when emptyDirSecret is true (defaults to executor.initSecretImage)
+    initSecretImage: ""
   secrets:
    - terrakube-api-secrets
   configMaps:
@@ -289,6 +296,8 @@ api:
     redisPassword: ""
     redisPort: "6379"
     executorUrl: "http://terrakube-executor-service:8090"
+    ## Maximum state file size accepted by the Terraform HTTP backend endpoint in bytes (default: 104857600 = 100MB)
+    stateMaxSizeBytes: "104857600"
     
 ## DONT FORGET TO UPDATE THE PORT DEPENDING OF THE DATABASE BY DEFAULT IS USING THE POSTGRESQL PORT
 ## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".   
@@ -296,9 +305,11 @@ api:
 
 ## Executor properties
 executor:
-  # Load internal secret via initContainer and writable emptyDir volume (mandatory in Terrakube 2.34.0+)
-  emptyDirSecret: false
-  initSecretImage: "busybox:latest"
+  # Load executor secrets via initContainer and writable in-memory emptyDir volume (mandatory in Terrakube 2.34.0+).
+  # NOTE: When emptyDirSecret is true, secrets are excluded from envFrom and loaded from an in-memory volume at startup.
+  # This requires executor image 2.34.0 or later.
+  emptyDirSecret: true
+  initSecretImage: "busybox:1.37.0"
   existingSecret: false
   enabled: true
   image: "azbuilder/executor"
@@ -309,6 +320,8 @@ executor:
   serviceType: ClusterIP
   serviceAccountName: ""
   revisionHistoryLimit: 3
+  # Multiple secrets are projected into a single volume. Keys across secrets must be unique;
+  # in case of conflicting keys, the last projected secret listed takes precedence.
   secrets:
    - terrakube-executor-secrets
   configMaps:
@@ -332,7 +345,21 @@ executor:
     # Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
-  securityContext: {}
+    ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+    ## When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
+    ## and passes scoped workspace access tokens for state synchronization and locking.
+    httpBackend: true
+    ## Token TTL in minutes for the scoped workspace HTTP backend access token.
+    ## By default, this is omitted so it automatically inherits maxJobDurationMinutes (default 360m / 6h).
+    ## Only specify this value if you need an explicit TTL override independent of maxJobDurationMinutes.
+    # httpTokenTtlMinutes: 360
+  # Note: The copy-executor-secrets initContainer runs as root with capabilities.drop: [ALL] to execute
+  # chmod 2770 /config-rw and copy secret files with 0660 permissions. This clears the default tmpfs sticky bit (03777),
+  # allowing standard POSIX group write permissions under fsGroup: 1000.
+  # Both ARM images (running as heroku:1000) and AMD64 images (running as cnb:1002 with group 1000) can read and shred secrets.
+  # Any custom executor image must be compatible with group 1000 (which the pod receives via fsGroup: 1000).
+  securityContext:
+    fsGroup: 1000
   containerSecurityContext: {}
   imagePullSecrets: []
   initContainers: []
