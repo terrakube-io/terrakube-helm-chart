@@ -978,6 +978,36 @@
                 "includeTlsHosts": {
                     "type": "boolean"
                 },
+                "singleDomain": {
+                    "type": "object",
+                    "description": "Serve the UI, API, registry and Dex from one hostname (experimental).",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        },
+                        "maxBodySize": {
+                            "type": "string"
+                        },
+                        "port": {
+                            "type": ["integer", "string"]
+                        },
+                        "tlsSecretName": {
+                            "type": "string"
+                        },
+                        "useTls": {
+                            "type": "boolean"
+                        }
+                    }
+                },
                 "registry": {
                     "type": "object",
                     "properties": {

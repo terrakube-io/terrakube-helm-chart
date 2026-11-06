@@ -75,6 +75,31 @@ ingress:
     enabled: false
 ```
 
+#### Single-domain deployment (experimental)
+
+Serve the UI, API, registry and Dex from one hostname, routed by path. The chart renders one
+Ingress (or HTTPRoute with `controller: gatewayapi`) from `files/route-table.yaml` and skips the
+per-component ingresses. Dex must use the shared host as its issuer:
+
+```yaml
+ingress:
+  singleDomain:
+    enabled: true
+    domain: "terrakube.example.com"
+    useTls: true
+    tlsSecretName: tls-secret-terrakube
+    ingressClassName: "nginx"
+    maxBodySize: "512m"
+dex:
+  config:
+    issuer: https://terrakube.example.com/dex
+    # add https://terrakube.example.com to staticClients[].redirectURIs
+```
+
+`files/route-table.yaml` is a copy of `docs/single-domain/route-table.yaml` in
+[terrakube](https://github.com/terrakube-io/terrakube); CI fails when the two differ. See the
+[single-domain guide](https://docs.terrakube.io/getting-started/deployment/single-domain).
+
 #### AWS ALB Ingress (WIP)
 
 Uses AWS Application Load Balancer for ingress:

@@ -457,6 +457,20 @@ ingress:
   includeTlsHosts: true
   controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
 
+  # Single-domain deployment (experimental): serve the UI, API, registry and Dex from one hostname,
+  # routed by path. When enabled, the per-component ingresses/routes below are not rendered, and
+  # dex.config.issuer must be "<scheme>://<domain>/dex". See
+  # https://docs.terrakube.io/getting-started/deployment/single-domain
+  singleDomain:
+    enabled: false
+    domain: "terrakube.minikube.net"
+    useTls: true
+    tlsSecretName: tls-secret-terrakube
+    ingressClassName: "nginx"
+    maxBodySize: "512m"  # configuration and state uploads (nginx proxy-body-size)
+    # port: 8443  # only when the public URL uses a non-default port
+    annotations: {}
+
   gatewayapi:
     apiVersion: v1beta1
     enabled: false

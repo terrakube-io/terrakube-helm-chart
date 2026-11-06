@@ -14,8 +14,14 @@ data:
   TerrakubeToolsRepository: '{{ .Values.executor.properties.toolsRepository }}'
   TerrakubeToolsBranch: '{{ .Values.executor.properties.toolsBranch }}'
   TerrakubeEnableSecurity: 'true'
+  {{- if include "terrakube.singleDomain" . }}
+  # Single-domain: CLI credentials target the shared host; API calls stay on the internal service.
+  TerrakubePublicUrl: '{{ include "terrakube.publicUrl" . }}'
+  TerrakubeApiUrl: 'http://{{ .Values.name }}-api-service:8080'
+  {{- else }}
   TerrakubeRegistryDomain: '{{ .Values.ingress.registry.domain }}'
   TerrakubeApiUrl: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.api.domain }}{{- if .Values.ingress.api.port }}:{{ .Values.ingress.api.port }}{{- end }}'
+  {{- end }}
   TerrakubeRedisPort: '{{ .Values.api.properties.redisPort }}'
   {{- if .Values.api.defaultRedis }}
   #Default Valkey
