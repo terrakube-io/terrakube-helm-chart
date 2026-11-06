@@ -5,6 +5,12 @@ Check that the pods are running:
   kubectl -n {{ .Release.Namespace }} get pods
 
 URLs (from ingress.* values):
+{{- if include "terrakube.singleDomain" . }}
+{{- $publicUrl := include "terrakube.publicUrl" . }}
+  UI:       {{ $publicUrl }}
+  API:      {{ $publicUrl }}/api
+  Registry: {{ $publicUrl }}/api/private-registry
+{{- else }}
 {{- if .Values.ingress.ui.enabled }}
   UI:       {{ ternary "https" "http" (default false .Values.ingress.ui.useTls) }}://{{ .Values.ingress.ui.domain }}
 {{- end }}
@@ -13,6 +19,7 @@ URLs (from ingress.* values):
 {{- end }}
 {{- if .Values.ingress.registry.enabled }}
   Registry: {{ ternary "https" "http" (default false .Values.ingress.registry.useTls) }}://{{ .Values.ingress.registry.domain }}
+{{- end }}
 {{- end }}
   Dex:      {{ .Values.security.dexIssuerUri }}
 

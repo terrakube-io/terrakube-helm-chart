@@ -1,0 +1,87 @@
+{{- if include "terrakube.singleDomain" . }}
+{{- $sd := .Values.ingress.singleDomain }}
+{{- if not $sd.domain }}
+{{- fail "ingress.singleDomain.domain is required when ingress.singleDomain.enabled is true" }}
+{{- end }}
+{{- $publicUrl := include "terrakube.publicUrl" . }}
+{{- if ne (toString .Values.dex.config.issuer) (printf "%s/dex" $publicUrl) }}
+{{- fail (printf "ingress.singleDomain: set dex.config.issuer to %s/dex (got %s)" $publicUrl (toString .Values.dex.config.issuer)) }}
+{{- end }}
+{{- /* Routes come from files/route-table.yaml, a copy of docs/single-domain/route-table.yaml in terrakube. */}}
+{{- $table := .Files.Get "files/route-table.yaml" | fromYaml }}
+{{- $backends := dict
+      "api" (dict "name" (printf "%s-api-service" .Values.name) "port" 8080)
+      "registry" (dict "name" (printf "%s-registry-service" .Values.name) "port" 8075)
+      "dex" (dict "name" (printf "%s-dex" .Release.Name) "port" 5556)
+      "ui" (dict "name" (printf "%s-ui-service" .Values.name) "port" 8080) }}
+{{- if not (eq .Values.ingress.controller "gatewayapi") }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-single-domain
+  labels:
+    app: {{ .Values.name }}-single-domain
+  annotations:
+    {{- if eq (toString $sd.ingressClassName) "nginx" }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ $sd.maxBodySize | quote }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "{{ .Release.Namespace }}/custom-headers"
+    {{- end }}
+    {{- range $key, $value := $sd.annotations }}
+    {{ $key }}: {{ tpl (toString $value) $ | quote }}
+    {{- end }}
+spec:
+  {{- if $sd.ingressClassName }}
+  ingressClassName: {{ $sd.ingressClassName }}
+  {{- end }}
+  rules:
+    - host: {{ $sd.domain | quote }}
+      http:
+        paths:
+          {{- range $table.routes }}
+          {{- $backend := get $backends .component }}
+          - path: {{ .prefix | quote }}
+            pathType: {{ if eq .match "exact" }}Exact{{ else }}Prefix{{ end }}
+            backend:
+              service:
+                name: {{ $backend.name }}
+                port:
+                  number: {{ $backend.port }}
+          {{- end }}
+  {{- if and $sd.useTls $sd.tlsSecretName }}
+  tls:
+    - hosts:
+        - {{ $sd.domain | quote }}
+      secretName: {{ $sd.tlsSecretName }}
+  {{- end }}
+{{- else }}
+apiVersion: gateway.networking.k8s.io/{{ .Values.ingress.gatewayapi.apiVersion }}
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.name }}-single-domain
+  labels:
+    app: {{ .Values.name }}-single-domain
+  {{- with .Values.ingress.gatewayapi.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.ingress.gatewayapi.gateways | nindent 4 }}
+  hostnames:
+    - {{ $sd.domain | quote }}
+  rules:
+    {{- range $table.routes }}
+    {{- $backend := get $backends .component }}
+    - matches:
+        - path:
+            type: {{ if eq .match "exact" }}Exact{{ else }}PathPrefix{{ end }}
+            value: {{ trimSuffix "/" .prefix | default "/" | quote }}
+      backendRefs:
+        - name: {{ $backend.name }}
+          port: {{ $backend.port }}
+    {{- end }}
+{{- end }}
+{{- end }}

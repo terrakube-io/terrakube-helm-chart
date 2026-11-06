@@ -1,4 +1,4 @@
-{{- if and .Values.ingress.api.enabled (eq .Values.ingress.controller "gatewayapi") }}
+{{- if and .Values.ingress.api.enabled (eq .Values.ingress.controller "gatewayapi") (not (include "terrakube.singleDomain" .)) }}
 apiVersion: gateway.networking.k8s.io/{{ .Values.ingress.gatewayapi.apiVersion }}
 kind: HTTPRoute
 metadata:

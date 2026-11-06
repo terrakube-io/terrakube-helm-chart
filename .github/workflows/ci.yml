@@ -39,6 +39,15 @@ jobs:
           file: charts/terrakube/values.yaml
           schema: charts/terrakube/values.schema.json
 
+      - name: Check the single-domain route table copy
+        run: |
+          url=https://raw.githubusercontent.com/terrakube-io/terrakube/main/docs/single-domain/route-table.yaml
+          if curl -fsSL "$url" -o /tmp/route-table.yaml; then
+            diff -u /tmp/route-table.yaml charts/terrakube/files/route-table.yaml
+          else
+            echo "route-table.yaml is not published in terrakube main yet; skipping"
+          fi
+
       - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0
 
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -86,6 +95,7 @@ jobs:
           - ingress-gke
           - ingress-gatewayapi
           - external-services
+          - single-domain
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0

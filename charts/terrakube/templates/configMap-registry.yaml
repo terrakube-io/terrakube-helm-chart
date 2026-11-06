@@ -6,12 +6,18 @@ metadata:
   labels:
     {{- include "terrakube.labels" . | nindent 4 }}
 data:
+  {{- if include "terrakube.singleDomain" . }}
+  TerrakubePublicUrl: '{{ include "terrakube.publicUrl" . }}'
+  {{- else }}
   AzBuilderRegistry: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.registry.domain }}'
+  {{- end }}
   AzBuilderApiUrl: 'http://terrakube-api-service:8080'
   AuthenticationValidationTypeRegistry: 'DEX'
   DexIssuerUri: '{{ .Values.dex.config.issuer }}'
   TerrakubeEnableSecurity: 'true'
+  {{- if not (include "terrakube.singleDomain" .) }}
   TerrakubeUiURL: '{{- if .Values.ingress.useTls }}https{{else}}http{{ end }}://{{ .Values.ingress.ui.domain }}{{- if .Values.ingress.ui.port }}:{{ .Values.ingress.ui.port }}{{- end }}'
+  {{- end }}
   AppIssuerUri: '{{ .Values.dex.config.issuer }}'
 
   {{- if .Values.storage.defaultStorage }}

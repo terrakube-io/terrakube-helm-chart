@@ -602,6 +602,26 @@ ingress:
   # -- Ingress controller type: "generic", "aws", or "gke" and "gatewayapi"
   controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
 
+  # Single-domain deployment (experimental). When enabled, the per-component ingresses and
+  # routes are not rendered. See docs/ingress.md.
+  singleDomain:
+    # -- Serve the UI, API, registry and Dex from one hostname, routed by path. Requires `dex.config.issuer` set to `<scheme>://<domain>/dex`
+    enabled: false
+    # -- Shared hostname for all components
+    domain: "terrakube.minikube.net"
+    # -- Use https in the public URL and add a TLS section to the ingress
+    useTls: true
+    # -- TLS secret for the shared hostname
+    tlsSecretName: tls-secret-terrakube
+    # -- Ingress class. With "nginx", proxy body size, timeouts and custom headers are set
+    ingressClassName: "nginx"
+    # -- Maximum request body size for configuration and state uploads (nginx proxy-body-size)
+    maxBodySize: "512m"
+    # Public port, only when the public URL uses a non-default port.
+    # port: 8443
+    # -- Extra annotations for the single-domain ingress
+    annotations: {}
+
   gatewayapi:
     apiVersion: v1beta1
     # -- Enable Gateway API features (default: false)
