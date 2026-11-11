@@ -36,19 +36,71 @@ spec:
       initContainers:
       {{- if .Values.executor.emptyDirSecret }}
       - name: copy-executor-secrets
+        {{- if .Values.executor.initRestartPolicy }}
+        restartPolicy: {{ .Values.executor.initRestartPolicy | quote }}
+        {{- end }}
         image: {{ .Values.executor.initSecretImage | default "busybox:1.37.0" | quote }}
         command: ["/bin/sh", "-c"]
         args:
           - |
             set -eu
-            chmod 2770 /config-rw
-            for f in /config-ro/*; do
-              if [ -f "$f" ]; then
-                target="/config-rw/$(basename "$f")"
-                cp -L "$f" "$target"
-                chmod 0660 "$target"
+
+            copy_secrets() {
+              echo "Executor is dead/initializing. Copying secrets to /config-rw..."
+              chmod 2770 /config-rw
+              for f in /config-ro/*; do
+                if [ -f "$f" ]; then
+                  target="/config-rw/$(basename "$f")"
+                  cp -L "$f" "$target"
+                  chmod 0660 "$target"
+                fi
+              done
+            }
+
+            clean_secrets() {
+              rm -f /config-rw/* 2>/dev/null || true
+            }
+
+            is_executor_alive() {
+              http_proxy="" no_proxy=127.0.0.1,localhost wget -q -O /dev/null -T 2 http://127.0.0.1:8090/actuator/health/liveness 2>/dev/null
+            }
+
+            # 1. Initial copy: executor is not running yet
+            copy_secrets
+
+            {{- if eq .Values.executor.initRestartPolicy "Always" }}
+            executor_alive=0
+            boot_timer=0
+
+            # 2. Continuous lifecycle monitor
+            while true; do
+              sleep 3
+              if is_executor_alive; then
+                if [ "$executor_alive" -eq 0 ]; then
+                  echo "Executor is alive and healthy. Ensuring secrets directory is clean."
+                  clean_secrets
+                  executor_alive=1
+                  boot_timer=0
+                fi
+              else
+                if [ "$executor_alive" -eq 1 ]; then
+                  echo "Executor died! Re-copying secrets for container restart."
+                  copy_secrets
+                  executor_alive=0
+                  boot_timer=0
+                else
+                  # If the executor crashed during boot before port 8090 opened and /config-rw is empty,
+                  # re-copy after startup timeout (90s) so next restart succeeds
+                  boot_timer=$((boot_timer + 3))
+                  if [ "$boot_timer" -ge 90 ] && [ -z "$(ls -A /config-rw 2>/dev/null)" ]; then
+                    echo "Executor did not start within timeout and secrets are missing. Re-copying secrets."
+                    copy_secrets
+                    boot_timer=0
+                  fi
+                fi
               fi
             done
+            {{- end }}
         resources:
           requests:
             cpu: 50m
