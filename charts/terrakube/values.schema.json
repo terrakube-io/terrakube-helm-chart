@@ -551,7 +551,8 @@
                     "type": "string"
                 },
                 "initRestartPolicy": {
-                    "type": "string"
+                    "type": ["string", "null"],
+                    "enum": ["Always", "", null]
                 },
                 "imagePullSecrets": {
                     "type": "array"

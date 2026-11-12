@@ -310,13 +310,14 @@ executor:
   # This requires executor image 2.34.0 or later.
   emptyDirSecret: true
   initSecretImage: "busybox:1.37.0"
-  ## Restart policy for the copy-executor-secrets init container.
-  ## In Kubernetes 1.29+ (or 1.28 with SidecarContainers feature gate), "Always" designates the container as a
+  ## Restart policy for the copy-executor-secrets init container ("Always", "", or null).
+  ## On Kubernetes 1.29+ (.Capabilities.KubeVersion >= 1.29-0), "Always" designates the container as a
   ## native sidecar that stays running. For maximum security, it ONLY writes secrets to /config-rw when the
   ## executor is dead or initializing, keeping the secrets volume completely empty while the executor is running (terrakube#3890).
   ## NOTE: When running as a native sidecar, the init container's resource requests (default 50m CPU, 64Mi memory)
   ## are counted toward the Pod's total resource allocation for its entire lifetime.
-  ## Set to "" or null on older Kubernetes clusters (< 1.28) that do not support initContainer restartPolicy.
+  ## On clusters < 1.29 (or when set to "" or null), the template automatically falls back to a one-shot init container
+  ## (pass --kube-version when running offline 'helm template' against < 1.29 clusters).
   initRestartPolicy: "Always"
   existingSecret: false
   enabled: true
