@@ -44,6 +44,7 @@ spec:
         args:
           - |
             set -eu
+            trap 'exit 0' TERM INT
 
             copy_secrets() {
               echo "Executor is dead/initializing. Copying secrets to /config-rw..."
@@ -67,15 +68,20 @@ spec:
 
             # 1. Initial copy: executor is not running yet
             copy_secrets
+            touch /tmp/synced
 
             {{- if eq .Values.executor.initRestartPolicy "Always" }}
             executor_alive=0
             boot_timer=0
+            fail_count=0
 
             # 2. Continuous lifecycle monitor
             while true; do
-              sleep 3
+              sleep 3 &
+              wait $! 2>/dev/null || true
+
               if is_executor_alive; then
+                fail_count=0
                 if [ "$executor_alive" -eq 0 ]; then
                   echo "Executor is alive and healthy. Ensuring secrets directory is clean."
                   clean_secrets
@@ -83,11 +89,17 @@ spec:
                   boot_timer=0
                 fi
               else
+                fail_count=$((fail_count + 1))
                 if [ "$executor_alive" -eq 1 ]; then
-                  echo "Executor died! Re-copying secrets for container restart."
-                  copy_secrets
-                  executor_alive=0
-                  boot_timer=0
+                  # Require 3 consecutive failed health checks (~9s) before declaring the executor dead,
+                  # avoiding spurious re-copies during transient GC pauses or heavy CPU load.
+                  if [ "$fail_count" -ge 3 ]; then
+                    echo "Executor died (failed 3 consecutive health checks)! Re-copying secrets for container restart."
+                    copy_secrets
+                    executor_alive=0
+                    fail_count=0
+                    boot_timer=0
+                  fi
                 else
                   # If the executor crashed during boot before port 8090 opened and /config-rw is empty,
                   # re-copy after startup timeout (90s) so next restart succeeds
@@ -96,11 +108,23 @@ spec:
                     echo "Executor did not start within timeout and secrets are missing. Re-copying secrets."
                     copy_secrets
                     boot_timer=0
+                    fail_count=0
                   fi
                 fi
               fi
             done
             {{- end }}
+        {{- if eq .Values.executor.initRestartPolicy "Always" }}
+        startupProbe:
+          exec:
+            command:
+            - test
+            - -f
+            - /tmp/synced
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        {{- end }}
         resources:
           requests:
             cpu: 50m

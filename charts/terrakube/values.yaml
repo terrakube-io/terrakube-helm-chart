@@ -314,6 +314,8 @@ executor:
   ## In Kubernetes 1.29+ (or 1.28 with SidecarContainers feature gate), "Always" designates the container as a
   ## native sidecar that stays running. For maximum security, it ONLY writes secrets to /config-rw when the
   ## executor is dead or initializing, keeping the secrets volume completely empty while the executor is running (terrakube#3890).
+  ## NOTE: When running as a native sidecar, the init container's resource requests (default 50m CPU, 64Mi memory)
+  ## are counted toward the Pod's total resource allocation for its entire lifetime.
   ## Set to "" or null on older Kubernetes clusters (< 1.28) that do not support initContainer restartPolicy.
   initRestartPolicy: "Always"
   existingSecret: false
