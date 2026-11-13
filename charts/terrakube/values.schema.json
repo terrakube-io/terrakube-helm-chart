@@ -37,6 +37,9 @@
                 "containerSecurityContext": {
                     "type": "object"
                 },
+                "lifecycle": {
+                    "type": "object"
+                },
                 "defaultDatabase": {
                     "type": "boolean"
                 },

@@ -509,6 +509,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | api.properties.databasePassword           | No       | External database password                                             |
 | api.securityContext                       | No       | Pod security context for API                                           |
 | api.containerSecurityContext              | No       | Container security context for API                                     |
+| api.lifecycle                             | No       | Container lifecycle hooks for API, e.g. a preStop sleep                |
 | api.imagePullSecrets                      | No       | Specific Secret used to pull images from private repository            |
 | api.initContainers                        | No       | Init containers for API deployment                                     |
 | executor.enabled                          | Yes      | Enable Executor component deployment                                   |
