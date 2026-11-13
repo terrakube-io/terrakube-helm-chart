@@ -258,6 +258,7 @@ api:
   tofuReleasesUrl: "https://api.github.com/repos/opentofu/opentofu/releases"
   securityContext: {}
   containerSecurityContext: {}
+  lifecycle: {}
   imagePullSecrets: []
   initContainers: []
   podDisruptionBudget:
