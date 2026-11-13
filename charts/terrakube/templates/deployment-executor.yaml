@@ -35,20 +35,110 @@ spec:
       {{- if or .Values.executor.emptyDirSecret .Values.executor.initContainers }}
       initContainers:
       {{- if .Values.executor.emptyDirSecret }}
+      {{- $sidecar := and (eq (.Values.executor.initRestartPolicy | default "") "Always") (semverCompare ">=1.29-0" .Capabilities.KubeVersion.Version) }}
+      {{- $startupTimeout := mul (.Values.executor.startupProbe.failureThreshold | default 30 | int) (.Values.executor.startupProbe.periodSeconds | default 5 | int) }}
       - name: copy-executor-secrets
+        {{- if $sidecar }}
+        restartPolicy: "Always"
+        {{- end }}
         image: {{ .Values.executor.initSecretImage | default "busybox:1.37.0" | quote }}
         command: ["/bin/sh", "-c"]
         args:
           - |
             set -eu
-            chmod 2770 /config-rw
-            for f in /config-ro/*; do
-              if [ -f "$f" ]; then
-                target="/config-rw/$(basename "$f")"
-                cp -L "$f" "$target"
-                chmod 0660 "$target"
+            trap 'exit 0' TERM INT
+
+            copy_secrets() {
+              echo "Executor is dead/initializing. Copying secrets to /config-rw..."
+              chmod 2770 /config-rw
+              for f in /config-ro/*; do
+                if [ -f "$f" ]; then
+                  target="/config-rw/$(basename "$f")"
+                  cp -L "$f" "$target"
+                  chmod 0660 "$target"
+                fi
+              done
+            }
+
+            # 1. Initial copy: executor is not running yet
+            copy_secrets
+            {{- if $sidecar }}
+            touch /tmp/synced
+
+            clean_secrets() {
+              rm -f /config-rw/* 2>/dev/null || true
+            }
+
+            is_executor_alive() {
+              wget -q -O /dev/null -T 2 http://127.0.0.1:8090/actuator/health/liveness 2>/dev/null
+            }
+
+            is_port_open() {
+              nc -z 127.0.0.1 8090 2>/dev/null
+            }
+
+            executor_alive=0
+            boot_timer=0
+            fail_count=0
+
+            # 2. Continuous lifecycle monitor
+            while true; do
+              sleep 2 &
+              wait $! 2>/dev/null || true
+
+              if is_executor_alive; then
+                fail_count=0
+                if [ "$executor_alive" -eq 0 ]; then
+                  echo "Executor is alive and healthy. Ensuring secrets directory is clean."
+                  clean_secrets
+                  executor_alive=1
+                  boot_timer=0
+                fi
+              else
+                if [ "$executor_alive" -eq 1 ]; then
+                  # If port 8090 is closed (ECONNREFUSED), the executor process exited (crash/OOMKill);
+                  # re-copy immediately so secrets are ready before kubelet starts the new container.
+                  # Otherwise (timeout/500 during GC pause or load), require 3 consecutive failures.
+                  if ! is_port_open; then
+                    echo "Executor process exited (port 8090 closed)! Re-copying secrets immediately for container restart."
+                    copy_secrets
+                    executor_alive=0
+                    fail_count=0
+                    boot_timer=0
+                  else
+                    fail_count=$((fail_count + 1))
+                    if [ "$fail_count" -ge 3 ]; then
+                      echo "Executor failed 3 consecutive health checks! Re-copying secrets for container restart."
+                      copy_secrets
+                      executor_alive=0
+                      fail_count=0
+                      boot_timer=0
+                    fi
+                  fi
+                else
+                  # If the executor crashed during boot before port 8090 opened and /config-rw is empty,
+                  # re-copy after startupProbe timeout ({{ $startupTimeout }}s) so next restart succeeds
+                  boot_timer=$((boot_timer + 2))
+                  if [ "$boot_timer" -ge {{ $startupTimeout }} ] && [ -z "$(ls -A /config-rw 2>/dev/null)" ]; then
+                    echo "Executor did not start within startupProbe timeout and secrets are missing. Re-copying secrets."
+                    copy_secrets
+                    boot_timer=0
+                  fi
+                fi
               fi
             done
+            {{- end }}
+        {{- if $sidecar }}
+        startupProbe:
+          exec:
+            command:
+            - test
+            - -f
+            - /tmp/synced
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          failureThreshold: 30
+        {{- end }}
         resources:
           requests:
             cpu: 50m

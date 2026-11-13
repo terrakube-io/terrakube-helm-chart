@@ -550,6 +550,10 @@
                 "initSecretImage": {
                     "type": "string"
                 },
+                "initRestartPolicy": {
+                    "type": ["string", "null"],
+                    "enum": ["Always", "", null]
+                },
                 "imagePullSecrets": {
                     "type": "array"
                 },
