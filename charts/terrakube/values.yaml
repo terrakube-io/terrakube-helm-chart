@@ -148,6 +148,8 @@ storage:
   gcp:
     projectId: ""
     bucketName: ""
+    ## JSON service account key. Leave it empty to authenticate with Google Application Default Credentials
+    ## instead, for example GKE Workload Identity through the api, executor and registry service accounts
     credentials: ""
   default:
     region: "us-east-1"
