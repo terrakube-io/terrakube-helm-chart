@@ -1,0 +1,33 @@
+area/chart:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/**', 'charts/terrakube/Chart.yaml', 'charts/terrakube/.helmignore']
+area/values:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/values.yaml', 'charts/terrakube/values.schema.json']
+area/ingress:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/ingress-*.yaml', 'charts/terrakube/templates/httproute-*.yaml', 'charts/terrakube/templates/gke/**', 'charts/terrakube/templates/aws/**', 'charts/terrakube/templates/configMap-ingress.yaml']
+area/api:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/*-api.yaml']
+area/executor:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/*-executor.yaml']
+area/registry:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/*-registry.yaml']
+area/ui:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/templates/*-ui.yaml']
+area/dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ['charts/terrakube/Chart.lock', 'charts/terrakube/charts/**']
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file: ['README.md', 'docs/**', 'charts/terrakube/README.md*', 'examples/**', 'CONTRIBUTING.md', 'RELEASING.md', 'SECURITY.md']
+area/ci:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/**', 'ct.yaml']
+area/release:
+  - changed-files:
+      - any-glob-to-any-file: ['release-please-config.json', '.release-please-manifest.json', 'RELEASING.md', 'charts/terrakube/CHANGELOG.md']
