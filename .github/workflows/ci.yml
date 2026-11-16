@@ -59,6 +59,19 @@ jobs:
       - name: chart-testing lint
         run: ct lint --config ct.yaml --target-branch "${{ github.event.pull_request.base.ref || 'main' }}"
 
+  docs:
+    name: Generated docs are up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: helm-docs
+        run: docker run --rm -v "$PWD/charts:/helm-docs" jnorwood/helm-docs:v1.14.2
+      - name: git diff
+        run: |
+          git diff --exit-code charts/terrakube/README.md || \
+            (echo "charts/terrakube/README.md is out of date. Run helm-docs and commit." >&2; exit 1)
+
   template:
     name: Render (${{ matrix.values }})
     runs-on: ubuntu-latest

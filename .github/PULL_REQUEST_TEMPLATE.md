@@ -10,7 +10,8 @@ Closes #
 
 - [ ] `Chart.yaml` `version` is bumped (patch for fixes, minor for new options, major for breaking changes)
 - [ ] `values.yaml` and `values.schema.json` are updated together for new or changed options
-- [ ] New options are documented in `README.md`
+- [ ] New options have a `# -- description` comment and `charts/terrakube/README.md` is regenerated with helm-docs
+- [ ] Upgrade actions are in `docs/upgrading.md`
 - [ ] `helm lint charts/terrakube` and `helm template` pass with the files in `.github/ci-values/`
 - [ ] New options default to the previous behaviour, so existing installs upgrade unchanged
 
