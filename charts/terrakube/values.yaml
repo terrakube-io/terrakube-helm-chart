@@ -74,7 +74,7 @@ dex:
       id: ldap
       config:
         # -- The following configurations seem to work with OpenLDAP:
-        # 
+        #
         # 1) Plain LDAP, without TLS:
         host: terrakube-openldap-service:1389
         insecureNoSSL: true
@@ -267,7 +267,7 @@ api:
     traces:
       type: ""
       # -- endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
   rbac:
     create: false
     roleName: "terrakube-api-role"
@@ -365,9 +365,9 @@ api:
     executorUrl: "http://terrakube-executor-service:8090"
     # -- Maximum state file size accepted by the Terraform HTTP backend endpoint in bytes (default: 104857600 = 100MB)
     stateMaxSizeBytes: "104857600"
-    
+
 ## DONT FORGET TO UPDATE THE PORT DEPENDING OF THE DATABASE BY DEFAULT IS USING THE POSTGRESQL PORT
-## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".   
+## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".
 ## Reference: https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/PGProperty.html#SSL_MODE
 
 # -- Executor properties
@@ -421,7 +421,7 @@ executor:
     traces:
       type: jaeger
       # -- endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
   # -- Container resource requests and limits
   resources: {}
   # -- Extra labels for the pods
@@ -517,7 +517,7 @@ registry:
     traces:
       type: jaeger
       # -- endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
   # -- Container resource requests and limits
   resources: {}
   # -- Extra annotations for the pods
@@ -628,7 +628,7 @@ ingress:
     # -- Custom annotations for UI ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-  
+
   api:
     # -- Enable API ingress (default: true)
     enabled: true
@@ -690,11 +690,11 @@ ingress:
     # -- Ingress class name (e.g., "nginx", "gce")
     ingressClassName: "nginx"
     # -- Kubernetes TLS secret name for Executor certificates
-    tlsSecretName: tls-secret-executor-terrakube    
+    tlsSecretName: tls-secret-executor-terrakube
     # -- Custom annotations for Executor ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-  
+
   # -- AWS specific configuration
   aws:
     # -- Enable AWS ALB ingress features (default: false)
@@ -731,7 +731,7 @@ ingress:
       kubernetes.io/ingress.class: gce
     # Per-service static IP names for individual load balancers
     # -- GCP static IP name for UI service
-    uiStaticIPName: ""         
+    uiStaticIPName: ""
     # -- GCP static IP name for API service
     apiStaticIPName: ""
     # -- GCP static IP name for Registry service
