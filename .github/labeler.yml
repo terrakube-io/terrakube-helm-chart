@@ -24,7 +24,7 @@ area/dependencies:
       - any-glob-to-any-file: ['charts/terrakube/Chart.lock', 'charts/terrakube/charts/**']
 area/docs:
   - changed-files:
-      - any-glob-to-any-file: ['README.md', 'examples/**', 'CONTRIBUTING.md', 'RELEASING.md', 'SECURITY.md']
+      - any-glob-to-any-file: ['README.md', 'docs/**', 'charts/terrakube/README.md*', 'examples/**', 'CONTRIBUTING.md', 'RELEASING.md', 'SECURITY.md']
 area/ci:
   - changed-files:
       - any-glob-to-any-file: ['.github/**', 'ct.yaml']
