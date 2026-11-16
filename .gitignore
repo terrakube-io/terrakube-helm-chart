@@ -4,3 +4,7 @@ secretFiles/*
 local_build.sh
 .cr-release-packages
 .DS_Store
+.oci-release-packages
+.idea/
+.vscode/
+*.swp

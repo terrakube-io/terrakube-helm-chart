@@ -1,0 +1,17 @@
+# External PostgreSQL, Redis and S3 with the bundled dependencies disabled.
+storage:
+  defaultStorage: false
+  aws:
+    accessKey: "AKIAEXAMPLE"
+    secretKey: "example"
+    bucketName: "terrakube"
+    region: "us-east-1"
+api:
+  defaultDatabase: false
+  defaultRedis: false
+  properties:
+    databaseType: "POSTGRESQL"
+    databaseHostname: "postgres.example.com"
+    databaseName: "terrakube"
+    databaseUser: "terrakube"
+    databasePassword: "example"

@@ -1,0 +1,18 @@
+ingress:
+  controller: "generic"
+  ui:
+    enabled: true
+    domain: "terrakube-ui.example.com"
+    ingressClassName: "nginx"
+    useTls: true
+    tlsSecretName: "terrakube-ui-tls"
+  api:
+    enabled: true
+    domain: "terrakube-api.example.com"
+    ingressClassName: "nginx"
+  registry:
+    enabled: true
+    domain: "terrakube-registry.example.com"
+    ingressClassName: "nginx"
+  executor:
+    enabled: false

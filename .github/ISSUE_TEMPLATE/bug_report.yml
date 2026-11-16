@@ -1,0 +1,74 @@
+name: Bug report
+description: The chart fails to install or upgrade, renders wrong manifests, or behaves differently from the README.
+labels: ["bug", "needs triage"]
+body:
+  - type: input
+    id: chart-version
+    attributes:
+      label: Chart version
+      placeholder: "4.7.18"
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Terrakube version (appVersion or image tags)
+      placeholder: "2.34.2"
+    validations:
+      required: true
+  - type: input
+    id: kube-version
+    attributes:
+      label: Kubernetes and Helm versions
+      placeholder: "Kubernetes 1.31 (EKS), Helm 3.17"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Ingress / Gateway API
+        - API
+        - Executor
+        - Registry
+        - UI
+        - Authentication (Dex / LDAP)
+        - Storage
+        - Bundled PostgreSQL / Valkey / MinIO
+        - Values schema
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: values
+    attributes:
+      label: Values
+      description: The values you pass to Helm, with tokens, passwords and secrets removed.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. helm install terrakube terrakube/terrakube -f values.yaml
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include the full Helm error or the relevant pod events and logs, with secrets removed.
+      render: shell
+    validations:
+      required: true

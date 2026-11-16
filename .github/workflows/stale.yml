@@ -1,0 +1,32 @@
+# Closes issues that are waiting on the reporter. Only issues with the
+# "needs repro" label are touched.
+name: Stale
+
+on:
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          only-labels: needs repro
+          days-before-issue-stale: 30
+          days-before-issue-close: 14
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          stale-issue-label: stale
+          stale-issue-message: >-
+            This issue needs your values file (secrets removed) and the chart, Terrakube,
+            Kubernetes and Helm versions. It will be closed in 14 days without them.
+          close-issue-message: >-
+            Closed because the requested details were not provided. Reopen with your
+            values and the versions in use.

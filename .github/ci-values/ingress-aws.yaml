@@ -1,0 +1,19 @@
+ingress:
+  controller: "aws"
+  ui:
+    enabled: true
+    hostname: "terrakube-ui.example.com"
+    domain: "terrakube-ui.example.com"
+  api:
+    enabled: true
+    hostname: "terrakube-api.example.com"
+    domain: "terrakube-api.example.com"
+  registry:
+    enabled: true
+    hostname: "terrakube-registry.example.com"
+    domain: "terrakube-registry.example.com"
+  executor:
+    enabled: false
+  aws:
+    enabled: true
+    certificateArn: "arn:aws:acm:us-east-1:000000000000:certificate/00000000-0000-0000-0000-000000000000"
