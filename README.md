@@ -11,7 +11,7 @@ Helm chart for [Terrakube](https://github.com/terrakube-io/terrakube), an open-s
 ## Quick start
 
 ```bash
-helm repo add terrakube https://terrakube-io.github.io/terrakube-helm-chart
+helm repo add terrakube https://charts.terrakube.io
 helm repo update
 kubectl create namespace terrakube
 helm install terrakube terrakube/terrakube -n terrakube

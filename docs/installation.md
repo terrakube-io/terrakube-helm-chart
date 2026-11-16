@@ -13,7 +13,7 @@ The chart bundles PostgreSQL, MinIO, Valkey and Dex for testing. Use external se
 ## Install
 
 ```bash
-helm repo add terrakube https://terrakube-io.github.io/terrakube-helm-chart
+helm repo add terrakube https://charts.terrakube.io
 helm repo update
 kubectl create namespace terrakube
 helm install terrakube terrakube/terrakube -n terrakube -f values.yaml

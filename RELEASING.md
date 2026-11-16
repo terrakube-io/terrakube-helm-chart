@@ -2,7 +2,7 @@
 
 Published to:
 
-- Helm repository: `https://terrakube-io.github.io/terrakube-helm-chart`
+- Helm repository: `https://charts.terrakube.io`
 - GitHub releases: `terrakube-<version>`
 - OCI registry: Docker Hub
 
