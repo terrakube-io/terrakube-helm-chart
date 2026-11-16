@@ -7,6 +7,7 @@ chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
   - dex=https://charts.dexidp.io
   - valkey=https://valkey.io/valkey-helm/
-check-version-increment: true
+# The version is bumped by the release PR, not by contributors.
+check-version-increment: false
 validate-maintainers: false
 lint-conf: .github/lintconf.yaml

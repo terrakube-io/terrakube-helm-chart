@@ -9,6 +9,8 @@
 - {name: invalid, color: "e4e669", description: "This doesn't seem right"}
 - {name: wontfix, color: "ffffff", description: "This will not be worked on"}
 - {name: dependencies, color: "0366d6", description: "Pull requests that update a dependency"}
+- {name: "autorelease: pending", color: "ededed", description: "Release PR waiting to be published"}
+- {name: "autorelease: tagged", color: "ededed", description: "Release PR that has been published"}
 - {name: github_actions, color: "000000", description: "Updates to GitHub Actions workflows"}
 - {name: area/chart, color: "1d76db", description: "Chart templates and Chart.yaml"}
 - {name: area/values, color: "1d76db", description: "values.yaml and values.schema.json"}
@@ -19,6 +21,7 @@
 - {name: area/ui, color: "1d76db", description: "Terrakube UI component"}
 - {name: area/dependencies, color: "1d76db", description: "Sub-charts: PostgreSQL, MinIO, Valkey, Dex"}
 - {name: area/docs, color: "0075ca", description: "README, examples and contributor docs"}
+- {name: area/release, color: "5319e7", description: "release-please, chart publishing, changelog"}
 - {name: area/ci, color: "5319e7", description: "Workflows, tooling, dependency updates"}
 - {name: breaking change, color: "b60205", description: "Requires users to change their values or upgrade steps"}
 - {name: needs triage, color: "fbca04", description: "Not yet reviewed by a maintainer"}

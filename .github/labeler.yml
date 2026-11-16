@@ -28,3 +28,6 @@ area/docs:
 area/ci:
   - changed-files:
       - any-glob-to-any-file: ['.github/**', 'ct.yaml']
+area/release:
+  - changed-files:
+      - any-glob-to-any-file: ['release-please-config.json', '.release-please-manifest.json', 'RELEASING.md', 'charts/terrakube/CHANGELOG.md']

@@ -1,6 +1,7 @@
 # Publishes the chart when a change under charts/ lands on main. The chart version in
 # charts/terrakube/Chart.yaml decides the release: versions that already exist are
-# skipped. See RELEASING.md.
+# skipped. The version is bumped by the release pull request from release-please.yml.
+# See RELEASING.md.
 name: Release Charts
 
 on:
@@ -25,6 +26,7 @@ jobs:
     # contents: write lets chart-releaser create the GitHub release and update gh-pages.
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -83,3 +85,14 @@ jobs:
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      # release-please waits for merged release PRs to be marked as tagged before it opens
+      # the next one. The tag is created by chart-releaser above.
+      - name: Mark release PRs as tagged
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --state merged --label "autorelease: pending" --json number --jq '.[].number' \
+            | while read -r number; do
+                gh pr edit "$number" --remove-label "autorelease: pending" --add-label "autorelease: tagged"
+              done

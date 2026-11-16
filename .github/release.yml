@@ -2,6 +2,8 @@
 changelog:
   exclude:
     labels:
+      - "autorelease: pending"
+      - "autorelease: tagged"
       - dependencies
       - github_actions
   categories:

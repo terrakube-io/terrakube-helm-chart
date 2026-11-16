@@ -1,0 +1,34 @@
+# Opens and updates the release pull request: the next chart version in Chart.yaml
+# and the CHANGELOG, from the conventional commit titles since the last release.
+# Merging it changes charts/, which runs release.yml to publish. See RELEASING.md.
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+# One run at a time, never cancelled mid-update.
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          # Pull requests created with GITHUB_TOKEN do not start other workflows, so CI
+          # does not run on the release PR. Set RELEASE_PLEASE_TOKEN (a PAT or GitHub App
+          # token with contents and pull-requests write) to run required checks on it.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
