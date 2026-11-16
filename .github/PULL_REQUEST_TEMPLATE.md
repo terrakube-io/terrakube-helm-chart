@@ -8,7 +8,7 @@ Closes #
 
 ## Checks
 
-- [ ] `Chart.yaml` `version` is bumped (patch for fixes, minor for new options, major for breaking changes)
+- [ ] `Chart.yaml` `version` is not changed (the release PR bumps it)
 - [ ] `values.yaml` and `values.schema.json` are updated together for new or changed options
 - [ ] New options have a `# -- description` comment and `charts/terrakube/README.md` is regenerated with helm-docs
 - [ ] Upgrade actions are in `docs/upgrading.md`
