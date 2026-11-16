@@ -1,0 +1,89 @@
+# Validates pull requests and pushes to main.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: actionlint
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+
+  lint:
+    name: Lint chart
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Validate values.yaml against values.schema.json
+        uses: cardinalby/schema-validator-action@2166123eb256fa40baef7e22ab1379708425efc7 # 3.1.1
+        with:
+          file: charts/terrakube/values.yaml
+          schema: charts/terrakube/values.schema.json
+
+      - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.x'
+
+      - uses: helm/chart-testing-action@720270857a28afd41e2426521a7801db09e9b510 # v2.9.0
+
+      - name: helm lint
+        run: |
+          for values in .github/ci-values/*.yaml; do
+            echo "::group::helm lint ${values}"
+            helm lint charts/terrakube --strict --values "${values}"
+            echo "::endgroup::"
+          done
+
+      # Fails when a chart changed without a version bump in Chart.yaml.
+      - name: chart-testing lint
+        run: ct lint --config ct.yaml --target-branch "${{ github.event.pull_request.base.ref || 'main' }}"
+
+  template:
+    name: Render (${{ matrix.values }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        values:
+          - default
+          - ingress-generic
+          - ingress-aws
+          - ingress-gke
+          - ingress-gatewayapi
+          - external-services
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0
+      - name: Install kubeconform
+        run: |
+          curl -fsSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz \
+            | tar -xz -C /usr/local/bin kubeconform
+      # CRDs without a published schema (Gateway API, GKE, OpenTelemetry) are skipped.
+      - name: helm template | kubeconform
+        run: |
+          helm template terrakube charts/terrakube \
+            --namespace terrakube \
+            --values ".github/ci-values/${{ matrix.values }}.yaml" \
+            | kubeconform -strict -summary -ignore-missing-schemas -kubernetes-version 1.30.0

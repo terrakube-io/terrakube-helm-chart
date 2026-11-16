@@ -1,17 +1,24 @@
 # Terrakube Helm Chart
 
-This Helm chart deploys Terrakube, an open-source Terraform management platform, on Kubernetes.
+[![Release](https://img.shields.io/github/v/release/terrakube-io/terrakube-helm-chart?label=chart)](https://github.com/terrakube-io/terrakube-helm-chart/releases)
+[![CI](https://github.com/terrakube-io/terrakube-helm-chart/actions/workflows/ci.yml/badge.svg)](https://github.com/terrakube-io/terrakube-helm-chart/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/terrakube-io/terrakube-helm-chart)](LICENSE)
 
-## ⚠️ Important Notice Bitnami images
+This Helm chart deploys [Terrakube](https://github.com/terrakube-io/terrakube), an open-source Terraform management platform, on Kubernetes.
 
-By default this helm chart is using bitnami containers, these images are only for testing/development, when deploying in a production cluster make sure to use an external postgresql, redis, minio, s3 storage and any external authentication provider like Azure Entra Id, Google Cloud Identity, Amazon Cognito, etc.
+## Table of contents
 
-## Quick deployment
+- [Important notice: bundled dependencies](#important-notice-bundled-dependencies)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Ingress configuration](#ingress-configuration)
+- [Advanced configuration](#advanced-configuration)
+- [Contributing and releases](#contributing-and-releases)
 
-To test Terrakube in minikube please follow this guide that explain how to deploy it.
+## Important notice: bundled dependencies
 
-https://docs.terrakube.io/getting-started/deployment/minikube-+-https
-
+The bundled PostgreSQL, MinIO and Valkey are for testing and development only. In production use an external PostgreSQL, Redis/Valkey, object storage (AWS S3, Azure Storage or GCP bucket) and an external authentication provider such as Microsoft Entra ID, Google Cloud Identity or Amazon Cognito.
 
 ## Features
 
@@ -26,7 +33,7 @@ https://docs.terrakube.io/getting-started/deployment/minikube-+-https
 - **Module Registry**: Private Terraform module registry
 - **Workspace Management**: Terraform workspace execution and management
 
-## Secret Files
+## Extra files (`otherFiles`)
 
 All files included in `otherFiles` directory  will be inside the kubernetes ConfigMap ***terrakube-other-files***. Kubernetes has a ConfigMap size limit of 1MB.
 
@@ -40,19 +47,30 @@ All files included in `otherFiles` directory  will be inside the kubernetes Conf
 
 ## Installation
 
-### Basic Installation
+Quick start with Minikube: follow the [Minikube + HTTPS guide](https://docs.terrakube.io/getting-started/deployment/minikube-+-https).
+
+[Helm](https://helm.sh) must be installed. See Helm's [documentation](https://helm.sh/docs) to get started. Add the repository and install the chart:
 
 ```bash
 helm repo add terrakube https://terrakube-io.github.io/terrakube-helm-chart
 helm repo update
-helm install terrakube terrakube/terrakube
+kubectl create namespace terrakube
+helm install terrakube terrakube/terrakube -n terrakube
 ```
 
-### Ingress Configuration
+Run `helm repo update` to retrieve the latest versions and `helm search repo terrakube --versions` to list them.
+
+To uninstall the chart:
+
+```bash
+helm uninstall terrakube -n terrakube
+```
+
+## Ingress configuration
 
 Terrakube supports four ingress controllers: `generic` (nginx), `aws` (ALB), `gke` (Google Cloud Load Balancer), and `gatewayapi` (HttpRoute).
 
-#### Generic Ingress (Default)
+### Generic Ingress (Default)
 
 Uses standard Kubernetes ingress with nginx controller:
 
@@ -75,7 +93,7 @@ ingress:
     enabled: false
 ```
 
-#### AWS ALB Ingress (WIP)
+### AWS ALB Ingress (WIP)
 
 Uses AWS Application Load Balancer for ingress:
 
@@ -95,7 +113,7 @@ ingress:
     enabled: false
 ```
 
-#### GKE Ingress
+### GKE Ingress
 
 Uses Google Cloud Load Balancer for ingress:
 
@@ -115,7 +133,7 @@ ingress:
     enabled: false
 ```
 
-### HttpRoute Gateway API
+### Gateway API (HTTPRoute)
 
 ```yaml
 ingress:
@@ -137,35 +155,7 @@ ingress:
     enabled: false
 ```
 
-## Helm Repository
-
-## Usage
-
-[Helm](https://helm.sh) must be installed to use the charts.  Please refer to
-Helm's [documentation](https://helm.sh/docs) to get started.
-
-Once Helm has been set up correctly, add the repo as follows:
-
-  helm repo add terrakube-repo https://terrakube-io.github.io/terrakube-helm-chart
-
-If you had already added this repo earlier, run `helm repo update` to retrieve
-the latest versions of the packages.  You can then run `helm search repo
-terrakube-repo` to see the charts.
-
-To install the chart:
-
-    kubectl create namespace terrakube
-    helm install terrakube terrakube-repo/terrakube -n terrakube
-
-To uninstall the chart:
-
-    helm delete terrakube -n terrrakube
-
-## Minikube
-
-To quickly test Terrakube in Minikube please follow [this](https://docs.terrakube.io/getting-started/deployment/minikube)
-
-## Advance Installation
+## Advanced configuration
 
 To install Terrakube in a Kubernetes cluster you will need the following:
 
@@ -179,17 +169,15 @@ To install Terrakube in a Kubernetes cluster you will need the following:
   - SQL Azure
   - PostgreSQL
   - Mysql
-- Create a YAML file with all the require parameters.
+- Create a YAML file with all the required parameters.
 
-## Installation
-
-## Requirements.
+### Requirements
 
 Please make sure to have a kubernetes setup with some ingress setup completed for example Nginx Ingress, but any other kubernetes ingress should work. Gateway API is also supported for example NGINX Gateway Fabric, but any other Gateway API implementation should work as well.
 
 ### 1. Authentication
 
-To handle authentication we use [DEX](https://dexidp.io/) to support different providers using [connectors]((https://dexidp.io/docs/connectors/)), you can use any connectors as long it supports the ***groups scope***.
+To handle authentication we use [DEX](https://dexidp.io/) to support different providers using [connectors](https://dexidp.io/docs/connectors/), you can use any connectors as long it supports the ***groups scope***.
 For example you can use the following connectors:
 - LDAP
 - GitHub
@@ -201,10 +189,10 @@ For example you can use the following connectors:
 - OpenShift
 - Etc.
 
-> DEX authentication is only supported from terrakube 2.6.0 and helm chart version 2.0.0 the helm chart values are not backward compatibly with lower version.
+> Dex authentication is only supported from Terrakube 2.6.0 and chart version 2.0.0. The chart values are not backward compatible with lower versions.
 
-Once we have decided which connectors we would like to us we can create Dex configuation.
-The following in an example of Dex configuration using Azure Active Directory, Google Cloud Identit, Github and Gitlab to handle authentication and groups:
+Once we have decided which connectors we would like to use we can create Dex configuration.
+The following in an example of Dex configuration using Azure Active Directory, Google Cloud Identity, Github and Gitlab to handle authentication and groups:
 
 ```yaml
     config:
@@ -291,7 +279,7 @@ To learn more about how to build the Dex configuration file please review the fo
 - [Github](https://dexidp.io/docs/connectors/github/)
 - [Gitlab](https://dexidp.io/docs/connectors/gitlab/)
 
-#### OIDC Discovery and JWKS Endpoints
+#### OIDC discovery and JWKS endpoints
 
 Terrakube exposes the following public OIDC endpoints through the API service for authentication and JWT token validation:
 
@@ -314,7 +302,7 @@ https://terrakube-api.example.com/.well-known/openid-configuration
 https://terrakube-api.example.com/.well-known/jwks
 ```
 
-### 2. Terrakube Admin Group and Internal Security
+### 2. Terrakube admin group and internal security
 
 In order to use Terrakube you will have to define the one administrator group, for example:
 - TERRAKUBE_ADMIN
@@ -323,7 +311,7 @@ Members of these groups are the only users inside terrakube that can create ***o
 
 Example:
 
-```
+```yaml
 security:
   adminGroup: "TERRAKUBE_ADMIN"
   patSecret: "<<CHANGE_THIS>>"  # Sample Key 32 characters z6QHX!y@Nep2QDT!53vgH43^PjRXyC3X
@@ -334,11 +322,11 @@ security:
 
 > For Google Cloud Identity groups name will be like "groupName@yourdomain.com", For Github Authentication will be like "organizationName:teamName"
 
-### 3. Terrakube Storage
+### 3. Terrakube storage
 
 #### 3.1 Azure Storage Account
 
-Terrakube require an Azure Storage account to save the state/output for the jobs and to save the terraform modules when using terraform CLI and it require the following containers:
+Terrakube requires an Azure Storage account to save the state/output for the jobs and to save the terraform modules when using terraform CLI and it require the following containers:
 - registry (blob)
 - tfstate (private)
 - tfoutput (private)
@@ -347,41 +335,41 @@ To create the Azure storage account you can use the following [terraform module]
 
 #### 3.2 AWS S3
 
-Terrakube require an Aws S3 to save the state/output for the jobs and to save the terraform modules when using terraform CLI, it could be a private bucket.
+Terrakube requires an AWS S3 to save the state/output for the jobs and to save the terraform modules when using terraform CLI, it could be a private bucket.
 
-To create the Aws S3 you can use the following [terraform module]() (Work in Progress).
+Creating the bucket with a Terraform module is a work in progress.
 
-#### 3.2 GCP Storage
+#### 3.3 GCP Storage
 
-Terrakube require an Storage bucket to save the state/output for the jobs and to save the terraform modules when using terraform CLI.
+Terrakube requires a storage bucket to save the state/output for the jobs and to save the terraform modules when using terraform CLI.
 
-To create the Gcp Storage you can use the following [terraform module]() (Work in Progress).
+Creating the bucket with a Terraform module is a work in progress.
 
-#### 3.3 MinIO
+#### 3.4 MinIO
 
-Terrakube require an Storage bucket to save the state/output for the jobs and to save the terraform modules when using terraform CLI.
+Terrakube requires a storage bucket to save the state/output for the jobs and to save the terraform modules when using terraform CLI.
 
-To create the MinIO Storage you can use the following [terraform module]() (Work in Progress).
+Creating the bucket with a Terraform module is a work in progress.
 
-### 4. Build Yaml file
+### 4. Build the values file
 
 Once you have completed the above steps you can complete the file values.yaml to deploy the helm chart, you can check the example folder:
 
 - Google Identity Authentication
-  - [Ngnix Ingress + H2 Database + GCP Storage Bucket](examples/GoogleAuthentication-Example1.md)
-  - [Ngnix Ingress + PostgreSQL +  GCP Storage Bucket](examples/GoogleAuthentication-Example3.md)
-  - [Ngnix Ingress + MySQL +  GCP Storage Bucket](examples/GoogleAuthentication-Example3.md)
+  - [NGINX Ingress + H2 Database + GCP Storage Bucket](examples/GoogleAuthentication-Example1.md)
+  - [NGINX Ingress + PostgreSQL +  GCP Storage Bucket](examples/GoogleAuthentication-Example2.md)
+  - [NGINX Ingress + MySQL +  GCP Storage Bucket](examples/GoogleAuthentication-Example3.md)
 - Azure Authentication
-  - [Ngnix Ingress + H2 Database + Azure Storage Account](examples/AzureAuthentication-Example1.md)
-  - [Ngnix Ingress + SQL Azure + Azure Storage Account](examples/AzureAuthentication-Example2.md)
-  - [Ngnix Ingress + PostgreSQL + Azure Storage Account](examples/AzureAuthentication-Example3.md)
+  - [NGINX Ingress + H2 Database + Azure Storage Account](examples/AzureAuthentication-Example1.md)
+  - [NGINX Ingress + SQL Azure + Azure Storage Account](examples/AzureAuthentication-Example2.md)
+  - [NGINX Ingress + PostgreSQL + Azure Storage Account](examples/AzureAuthentication-Example3.md)
   - [Amazon Load Balancer + PostgreSQL + S3 Bucket](examples/AzureAuthentication-Example4.md)
 - Github Authentication
-  - [Ngnix Ingress + H2 Database + Azure Storage Account](examples/GithubAuthentication-Example1.md)
+  - [NGINX Ingress + H2 Database + Azure Storage Account](examples/GithubAuthentication-Example1.md)
 - Amazon AWS Cognito
-  - [Ngnix Ingress + H2 Database + AWS S3 Bucket](examples/CognitoAuthentication-Example1.md)
+  - [NGINX Ingress + H2 Database + AWS S3 Bucket](examples/CognitoAuthentication-Example1.md)
 
-### 4.1 Helm Value Properties
+#### 4.1 Helm value properties
 
 | Key                                       | Required | Description                                                            |
 |:------------------------------------------|----------|------------------------------------------------------------------------|
@@ -407,7 +395,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ingress.ui.annotations                    | No       | Custom annotations for UI ingress                                       |
 | ingress.api.enabled                       | Yes      | Enable API ingress (default: true)                                     |
 | ingress.api.domain                        | Yes      | Domain name for API service                                            |
-| ingress.ui.port                           | No       | Custom port for API service                                            |
+| ingress.api.port                          | No       | Custom port for API service                                            |
 | ingress.api.path                          | Yes      | URL path for API service (default: "/")                                |
 | ingress.api.pathType                      | Yes      | Path matching type: "Prefix", "Exact", or "ImplementationSpecific"     |
 | ingress.api.ingressClassName              | No       | Ingress class name (e.g., "nginx", "gce")                             |
@@ -484,7 +472,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | dex.enabled                               | No       | Enable Dex OIDC authentication component                              |
 | dex.*                                     | No       | Setup based on https://github.com/dexidp/helm-charts                   |
 | minio.*                                   | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/minio    |
-| postgres.*                                | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/postgres |
+| postgresql.*                              | No       | Setup based on https://github.com/bitnami/charts/tree/main/bitnami/postgresql |
 | valkey.*                                  | No       | Setup based on https://github.com/valkey-io/valkey-helm                     |
 | api.enabled                               | Yes      | Enable API component deployment                                        |
 | api.defaultRedis                          | No       | Enable default Valkey using the official Valkey helm chart             |
@@ -549,35 +537,14 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ui.containerSecurityContext               | No       | Container security context for UI                                     |
 | ui.imagePullSecrets                       | No       | Specific Secret used to pull images from private repository            |
 | ui.initContainers                         | No       | Init containers for UI deployment                                      |
-| ingress.ui.ingressClassName               | Yes      | Default is set to nginx                                                |
-| ingress.ui.useTls                         | Yes      | true/false                                                             |
-| ingress.ui.enabled                        | Yes      | true/false                                                             |
-| ingress.ui.domain                         | Yes      |                                                                        |
-| ingress.ui.path                           | Yes      | ImplementationSpecific/Exact/Prefix                                    |
-| ingress.ui.pathType                       | Yes      |                                                                        |
-| ingress.ui.annotations                    | Yes      | Ingress annotations                                                    |
-| ingress.api.ingressClassName              | Yes      | Default is set to nginx                                                |
-| ingress.api.useTls                        | Yes      |                                                                        |
-| ingress.api.enabled                       | Yes      |                                                                        |
-| ingress.api.domain                        | Yes      |                                                                        |
-| ingress.api.path                          | Yes      |                                                                        |
-| ingress.api.pathType                      | Yes      | ImplementationSpecific/Exact/Prefix                                    |
-| ingress.api.annotations                   | Yes      | Ingress annotations                                                    |
-| ingress.registry.ingressClassName         | Yes      | Default is set to nginx                                                |
-| ingress.registry.useTls                   | Yes      |                                                                        |
-| ingress.registry.enabled                  | Yes      |                                                                        |
-| ingress.registry.domain                   | Yes      |                                                                        |
-| ingress.registry.path                     | Yes      |                                                                        |
-| ingress.registry.pathType                 | Yes      | ImplementationSpecific/Exact/Prefix                                    |
-| ingress.registry.annotations              | Yes      | Ingress annotations                                                    |
 | ingress.dex.enabled                       | Yes      |                                                                        |
 | ingress.dex.domain                        | Yes      |                                                                        |
 | ingress.dex.path                          | Yes      |                                                                        |
 | ingress.dex.pathType                      | Yes      | ImplementationSpecific/Exact/Prefix                                    |
-| ingress.dex.annontations                  | Yes      | Ingress annotations                                                    |
+| ingress.dex.annotations                   | Yes      | Ingress annotations                                                    |
 
 
-#### Per-Service Security Policies
+##### Per-service security policies
 
 You can apply Cloud Armor security policies to individual services:
 
@@ -595,11 +562,11 @@ ingress:
       # registrySecurityPolicy: ""     # Empty - module downloads need access
 ```
 
-### 4.2 Node Affinity, NodeSelector, Taints and Tolerations.
+#### 4.2 Node affinity, nodeSelector, taints and tolerations
 
 The API, Registry, Executor and UI support using affinity, taints and tolerations. Use the following examples as reference:
 
-#### Example API.
+##### Example: API
 
 ```yaml
 api:
@@ -635,11 +602,11 @@ api:
 
 ### 5. Custom CA certificates at runtime
 
-To add custom CA certificate to Terrakube components use the folowing configuration example:
+To add custom CA certificate to Terrakube components use the following configuration example:
 
 Example property ***security.caCerts***
 
-```
+```yaml
 security:
   .....
   caCerts:
@@ -742,12 +709,13 @@ registry:
 
 If the configuration is correct the pods log will show something like this:
 
-```
+```text
 Added 2 additional CA certificate(s) to system truststore
 ```
 
 
 ### 6. Enable OTEL for Terrakube components
+
 To enable OTEL for Terrakube components use the following configuration example:
 
 ```yaml
@@ -777,7 +745,7 @@ executor:
       port: 8081
       host:
     traces:
-      type: zupkin # or jaeger
+      type: zipkin # or jaeger
       endpoint: zipkin:9411/api/v2/spans
 
 ## Registry properties
@@ -791,7 +759,7 @@ registry:
       port: 8081
       host:
     traces:
-      type: zupkin # or jaeger
+      type: zipkin # or jaeger
       endpoint: zipkin:9411/api/v2/spans
 ```
 
@@ -799,7 +767,7 @@ registry:
 
 To enable the feature use the following:
 
-```
+```yaml
 api:
   dynamicCredentials:
     enabled: true
@@ -826,7 +794,7 @@ api:
     readOnly: true
 ```
 
-### 8. Deploy Terrakube using helm chart manually
+### 8. Deploy Terrakube from a local clone
 
 Now you have all the information to deploy Terrakube, you can use the following example:
 
@@ -848,3 +816,9 @@ helm install --debug --values ./values.yaml terrakube ./terrakube-helm-chart/cha
 ```
 
 After installing you should be able to view the app using ui domain inside the values.yaml.
+
+## Contributing and releases
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [RELEASING.md](RELEASING.md)
+- [SECURITY.md](SECURITY.md)

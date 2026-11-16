@@ -1,0 +1,25 @@
+ingress:
+  controller: "gke"
+  ui:
+    enabled: true
+    hostname: "terrakube-ui.example.com"
+    domain: "terrakube-ui.example.com"
+  api:
+    enabled: true
+    hostname: "terrakube-api.example.com"
+    domain: "terrakube-api.example.com"
+  registry:
+    enabled: true
+    hostname: "terrakube-registry.example.com"
+    domain: "terrakube-registry.example.com"
+  executor:
+    enabled: false
+  gke:
+    enabled: true
+    managedCertificate:
+      create: true
+    backendConfig:
+      create: true
+      timeout: 30
+    frontendConfig:
+      create: true
