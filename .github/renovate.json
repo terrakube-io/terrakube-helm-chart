@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "semanticCommits": "enabled",
+  "labels": ["dependencies"],
+  "schedule": ["before 6am on monday"],
+  "enabledManagers": ["github-actions", "helmv3", "custom.regex"],
+  "postUpdateOptions": ["helmUpdateSubChartArchives"],
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci",
+      "addLabels": ["github_actions", "area/ci"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Sub-chart updates change what users deploy. They need a chart version bump, so each one gets its own pull request that a maintainer approves from the dependency dashboard.",
+      "matchManagers": ["helmv3"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "deps",
+      "addLabels": ["area/dependencies"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Ignore pre-releases of Terrakube. appVersion is bumped together with the chart version.",
+      "matchPackageNames": ["terrakube-io/terrakube"],
+      "ignoreUnstable": true,
+      "dependencyDashboardApproval": true,
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "chart",
+      "addLabels": ["area/chart"]
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "appVersion in Chart.yaml tracks Terrakube releases.",
+      "customType": "regex",
+      "managerFilePatterns": ["/^charts/terrakube/Chart\\.yaml$/"],
+      "matchStrings": ["appVersion:\\s*\"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "terrakube-io/terrakube",
+      "datasourceTemplate": "github-releases"
+    }
+  ]
+}

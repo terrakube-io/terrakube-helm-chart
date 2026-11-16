@@ -1,20 +1,32 @@
+# Publishes the chart when a change under charts/ lands on main. The chart version in
+# charts/terrakube/Chart.yaml decides the release: versions that already exist are
+# skipped. See RELEASING.md.
 name: Release Charts
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'charts/**'
+  workflow_dispatch:
+
+# One release at a time, never cancelled mid-publish.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
 
 jobs:
   release:
-    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
-    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # contents: write lets chart-releaser create the GitHub release and update gh-pages.
     permissions:
       contents: write
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -23,13 +35,12 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Install Helm
-        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3
+      - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0
 
       - name: Add repositories
         run: |
-          for dir in $(ls -d charts/*/); do
-            helm dependency list $dir 2> /dev/null | tail +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read cmd; do $cmd; done
+          for dir in charts/*/; do
+            helm dependency list "$dir" 2> /dev/null | tail -n +2 | head -n -1 | awk '{ print "helm repo add " $1 " " $3 }' | while read -r cmd; do $cmd; done
           done
 
       - name: Log in to Docker Hub
@@ -44,8 +55,7 @@ jobs:
           DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE }}
         run: |
           mkdir -p .oci-release-packages
-          namespace="$DOCKERHUB_NAMESPACE"
-          namespace="${namespace,,}"
+          namespace="${DOCKERHUB_NAMESPACE,,}"
 
           if [ -z "$namespace" ]; then
             echo "Docker Hub namespace is required. Set DOCKERHUB_NAMESPACE repo variable."
@@ -68,6 +78,8 @@ jobs:
           done
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@be16258da8010256c6e82849661221415f031968 # v1.5.0
+        uses: helm/chart-releaser-action@92c6b97fa9f664492a2592e0d1d80bc6bf378957 # v1.9.0
+        with:
+          skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

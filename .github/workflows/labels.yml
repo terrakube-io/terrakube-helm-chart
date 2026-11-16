@@ -1,0 +1,47 @@
+# Keeps repository labels in sync with .github/labels.yml and labels pull requests
+# by the paths they change (.github/labeler.yml).
+name: Labels
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/labels.yml'
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions: {}
+
+jobs:
+  sync:
+    name: Sync labels
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
+        with:
+          config-file: .github/labels.yml
+          delete-other-labels: false
+
+  label-pr:
+    name: Label pull request
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      # Reads .github/labeler.yml from the base branch. No pull request code is run.
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
+        with:
+          sync-labels: true
