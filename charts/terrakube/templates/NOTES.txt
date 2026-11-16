@@ -1,0 +1,42 @@
+Terrakube {{ .Chart.AppVersion }} (chart {{ .Chart.Version }}) installed as release "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+
+Check that the pods are running:
+
+  kubectl -n {{ .Release.Namespace }} get pods
+
+URLs (from ingress.* values):
+{{- if .Values.ingress.ui.enabled }}
+  UI:       {{ ternary "https" "http" (default false .Values.ingress.ui.useTls) }}://{{ .Values.ingress.ui.domain }}
+{{- end }}
+{{- if .Values.ingress.api.enabled }}
+  API:      {{ ternary "https" "http" (default false .Values.ingress.api.useTls) }}://{{ .Values.ingress.api.domain }}
+{{- end }}
+{{- if .Values.ingress.registry.enabled }}
+  Registry: {{ ternary "https" "http" (default false .Values.ingress.registry.useTls) }}://{{ .Values.ingress.registry.domain }}
+{{- end }}
+  Dex:      {{ .Values.security.dexIssuerUri }}
+
+Log in with a user in the group "{{ .Values.security.adminGroup }}". Only members of that group can create organizations and manage team access.
+
+{{- $warnings := list }}
+{{- if or (eq .Values.security.patSecret "bAUaAojZP3XhkuE2rWBtR3gRAHPzQKkx") (eq .Values.security.internalSecret "AxxPdgpCi72f8WhMXCTGhtfMRp6AuBfj") }}
+{{- $warnings = append $warnings "security.patSecret or security.internalSecret still has the chart default. Anyone can sign tokens with the published value. Set your own 32 character secrets." }}
+{{- end }}
+{{- if or (contains "minikube.net" (default "" .Values.ingress.ui.domain)) (contains "minikube.net" (default "" .Values.ingress.api.domain)) }}
+{{- $warnings = append $warnings "ingress.*.domain and security.dexIssuerUri still use the minikube.net defaults. Set your own domains." }}
+{{- end }}
+{{- if .Values.security.useOpenLDAP }}
+{{- $warnings = append $warnings "security.useOpenLDAP deploys a test LDAP server with default users. Use an external identity provider in production." }}
+{{- end }}
+{{- if or .Values.api.defaultDatabase .Values.api.defaultRedis .Values.storage.defaultStorage }}
+{{- $warnings = append $warnings "The bundled PostgreSQL, Valkey or MinIO is enabled (api.defaultDatabase, api.defaultRedis, storage.defaultStorage). These are for testing only. Use external services in production." }}
+{{- end }}
+{{- if $warnings }}
+
+WARNINGS
+{{- range $warnings }}
+  - {{ . }}
+{{- end }}
+{{- end }}
+
+Documentation: https://github.com/terrakube-io/terrakube-helm-chart/tree/main/docs
