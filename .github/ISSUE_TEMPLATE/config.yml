@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Terrakube documentation
+    url: https://docs.terrakube.io/
+    about: Questions about how Terrakube itself works.
+  - name: Terrakube application issues
+    url: https://github.com/terrakube-io/terrakube/issues
+    about: Problems in the Terrakube API, executor, registry or UI rather than the Helm chart.
+  - name: Security vulnerability
+    url: https://github.com/terrakube-io/terrakube-helm-chart/security/advisories/new
+    about: Report vulnerabilities privately, see SECURITY.md.

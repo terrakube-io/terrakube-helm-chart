@@ -1,0 +1,13 @@
+# chart-testing configuration, used by `ct lint` in .github/workflows/ci.yml.
+remote: origin
+target-branch: main
+chart-dirs:
+  - charts
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami
+  - dex=https://charts.dexidp.io
+  - valkey=https://valkey.io/valkey-helm/
+# The version is bumped by the release PR, not by contributors.
+check-version-increment: false
+validate-maintainers: false
+lint-conf: .github/lintconf.yaml

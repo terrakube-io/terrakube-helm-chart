@@ -1,0 +1,11 @@
+# yamllint rules used by chart-testing for Chart.yaml and values.yaml.
+extends: relaxed
+rules:
+  line-length: disable
+  comments: disable
+  comments-indentation: disable
+  truthy: disable
+  document-start: disable
+  indentation:
+    spaces: consistent
+    indent-sequences: whatever

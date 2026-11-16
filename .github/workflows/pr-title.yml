@@ -1,0 +1,44 @@
+# Pull requests are squash-merged and the title becomes the commit message on main.
+# Requires the conventional commit format: type(scope): description. See CONTRIBUTING.md.
+name: PR Title
+
+on:
+  # pull_request_target runs the check on fork pull requests. No pull request code is
+  # checked out or run.
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  pull-requests: read
+
+jobs:
+  conventional-title:
+    name: Conventional commit title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: amannn/action-semantic-pull-request@2252a14e810aa9b85c2d560bd7070c802206ecf6 # v6.1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            perf
+            revert
+            refactor
+            docs
+            test
+            build
+            ci
+            chore
+          requireScope: false
+          # Lowercase first letter in the description.
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" must not start with an uppercase letter.
+            Example: "feat(api): expose custom release cache expiration"

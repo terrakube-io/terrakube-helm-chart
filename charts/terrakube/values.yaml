@@ -1,40 +1,58 @@
 ## Global Name
+# -- Use "Terrakube"
 name: "terrakube"
 
 global:
+  # -- Global Secret used to pull images from private repository
   imagePullSecrets: []
 
 enableIPv6: true
 
-## Azure Active Directory Security
+# -- Azure Active Directory Security
 security:
   useOpenLDAP: true
+  # -- Admin group inside Terrakube
   adminGroup: "TERRAKUBE_ADMIN"
+  # -- 32 Character secret to sign personal access token
   patSecret: "bAUaAojZP3XhkuE2rWBtR3gRAHPzQKkx"
+  # -- 32 Character secret to sing internal
   internalSecret: "AxxPdgpCi72f8WhMXCTGhtfMRp6AuBfj"
+  # -- Based on Dex config file
   dexClientId: "example-app"
+  # -- Use "email openid profile offline_access groups"
   dexClientScope: "email openid profile offline_access groups"
   dexIssuerUri: "http://terrakube-api.minikube.net/dex"
   existingSecret: false
   ldapConfigSecretName: terrakube-openldap-secrets
 
-## OpenLdap
+# -- OpenLdap
 openldap:
+  # -- LDAP deployment admin user
   adminUser: "admin"
+  # -- LDAP deployment admin password
   adminPass: "admin"
+  # -- LDAP baseDN (or suffix) of the LDAP tree
   baseRoot: "dc=example,dc=org"
+  # -- LDAP deployment image repository
   image: "bitnamilegacy/openldap"
+  # -- LDAP deployment image tag
   version: "latest"
+  # -- Secret used to pull images from private repository
   imagePullSecrets: []
+  # -- Init containers for LDAP deployment
   initContainers: []
+  # -- Pod labels for LDAP deployment
   podLabels: {}
   podAnnotations: {}
+  # -- Security context for LDAP deployment
   securityContext: {}
+  # -- Container security context for LDAP deployment
   containerSecurityContext: {}
   revisionHistoryLimit: 3
 
-## Dex
+# -- Dex
 dex:
+  # -- Enable Dex OIDC authentication component
   enabled: true
   existingSecret: false
   revisionHistoryLimit: 3
@@ -55,7 +73,7 @@ dex:
       name: OpenLDAP
       id: ldap
       config:
-        # The following configurations seem to work with OpenLDAP:
+        # -- The following configurations seem to work with OpenLDAP:
         #
         # 1) Plain LDAP, without TLS:
         host: terrakube-openldap-service:1389
@@ -73,7 +91,7 @@ dex:
         #rootCAData: 'CERT'
         # ...where CERT="$( base64 -w 0 your-cert.crt )"
 
-        # This would normally be a read-only user.
+        # -- This would normally be a read-only user
         bindDN: cn=admin,dc=example,dc=org
         bindPW: admin
 
@@ -83,7 +101,7 @@ dex:
           baseDN: ou=users,dc=example,dc=org
           filter: "(objectClass=person)"
           username: mail
-          # "DN" (case sensitive) is a special attribute name. It indicates that
+          # -- "DN" (case sensitive) is a special attribute name. It indicates that
           # this value should be taken from the entity's DN not an attribute on
           # the entity.
           idAttr: DN
@@ -100,7 +118,7 @@ dex:
           - userAttr: DN
             groupAttr: member
 
-          # The group name should be the "cn" value.
+          # -- The group name should be the "cn" value
           nameAttr: cn
 
     staticClients:
@@ -125,20 +143,28 @@ dex:
     readOnly: true
 
 
-## Terraform Storage
+# -- Terraform Storage
 storage:
+  # -- Enable default storage using minio helm chart
   defaultStorage: true
-  ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
-  ## When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API
+  # -- Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+  # When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API
   httpBackend: true
   azure:
+    # -- Azure storage account name
     storageAccountName: ""
+    # -- Azure storage resource group
     storageAccountResourceGroup: ""
+    # -- Azure storage access key
     storageAccountAccessKey: ""
   aws:
+    # -- Aws access key
     accessKey: ""
+    # -- Aws secret key
     secretKey: ""
+    # -- Aws bucket name
     bucketName: ""
+    # -- Aws region name (Example: us-east-1)
     region: ""
   minio:
     accessKey: ""
@@ -146,17 +172,18 @@ storage:
     bucketName: ""
     endpoint: ""
   gcp:
+    # -- GCP Project Id for the storage
     projectId: ""
+    # -- GCP Bucket name for the storage
     bucketName: ""
-    ## JSON service account key. Leave it empty to authenticate with Google Application Default Credentials
-    ## instead, for example GKE Workload Identity through the api, executor and registry service accounts
+    # -- GCP JSON Credentials for the storage. Leave it empty to use Google Application Default Credentials instead, for example GKE Workload Identity through the api, executor and registry service accounts
     credentials: ""
   default:
     region: "us-east-1"
     endpoint: ""
 
 
-# Default Storage Minio Configuration
+# -- Default Storage Minio Configuration
 minio:
   image:
     repository: bitnamilegacy/minio
@@ -171,7 +198,7 @@ minio:
     rootPassword: "superadmin"
   defaultBuckets: "terrakube"
 
-# Default Database Postgresql
+# -- Default Database Postgresql
 postgresql:
   image:
     repository: bitnamilegacy/postgresql
@@ -181,7 +208,7 @@ postgresql:
     password: "terrakubepassword"
     database: "terrakube"
 
-# Default Valkey Configuration
+# -- Default Valkey Configuration
 # Uses the official Valkey Helm chart (https://github.com/valkey-io/valkey-helm).
 # Authentication is ACL-based: the "default" user password is what Terrakube uses
 # to connect (see api.properties.redisPort / TerrakubeRedisPassword).
@@ -196,34 +223,51 @@ valkey:
         permissions: "~* &* +@all"
         password: "7p9iWVeRV4S944"
 
-## API properties
+# -- API properties
 api:
+  # -- Use an existing Secret instead of the one the chart creates
   existingSecret: false
+  # -- Enable API component deployment
   enabled: true
+  # -- API image repository
   image: azbuilder/api-server
+  # -- Terrakube API version
   version: ""
+  # -- Number of API pod replicas
   replicaCount: "1"
+  # -- Kubernetes service type (ClusterIP/NodePort/LoadBalancer)
   serviceType: ClusterIP
+  # -- Kubernetes Service Account name
   serviceAccountName: ""
+  # -- Annotations for the ServiceAccount
   serviceAccountAnnotations: {}
+  # -- Annotations for the Service
   serviceAnnotations: {}
+  # -- Number of old ReplicaSets to keep
   revisionHistoryLimit: 3
+  # -- Mount the ServiceAccount token into the pods
   automountServiceAccountToken: true
   dynamicCredentials:
+    # -- This will enable dyanmic credentials secret
     enabled: false
+    # -- Public key for dynamic credentials
     publicKey: ""
+    # -- Default value /etc/terrakube/credentials/public-key.pem
     publicKeyPath: "/etc/terrakube/credentials/public-key.pem"
+    # -- Private key for dynamic credentials
     privateKey: ""
+    # -- Default value /etc/terrakube/credentials/private-key.pem
     privateKeyPath: "/etc/terrakube/credentials/private-key.pem"
   otel:
+    # -- Enable OpenTelemetry
     enabled: false
     metrics:
       port: "9464"
       host: "0.0.0.0"
     traces:
       type: ""
-      # endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      # -- endpoint its just example, change it to your jaeger endpoint
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
   rbac:
     create: false
     roleName: "terrakube-api-role"
@@ -234,46 +278,62 @@ api:
       - terrakube-executor-secrets
     configMapName: ""
     podAnnotations: {}
-    ## Seconds the ephemeral job is allowed to run before Kubernetes terminates it; unset means unbounded (today's behaviour).
+    # -- Seconds the ephemeral job is allowed to run before Kubernetes terminates it; unset means unbounded (today's behaviour)
     activeDeadlineSeconds: ""
-    ## Number of retries before the ephemeral job is marked failed; unset means Kubernetes' own default (6). Set to "0" for at-most-once execution.
+    # -- Number of retries before the ephemeral job is marked failed; unset means Kubernetes' own default (6). Set to "0" for at-most-once execution
     backoffLimit: ""
-    ## Seconds after completion before the ephemeral job is automatically deleted; unset means 30.
+    # -- Seconds after completion before the ephemeral job is automatically deleted; unset means 30
     ttlSecondsAfterFinished: ""
-    ## Seconds the ephemeral pod gets to shut down cleanly after SIGTERM before Kubernetes SIGKILLs it; unset means 60.
+    # -- Seconds the ephemeral pod gets to shut down cleanly after SIGTERM before Kubernetes SIGKILLs it; unset means 60
     terminationGracePeriodSeconds: ""
-    ## Controls whether ephemeral job mounts secrets via emptyDir initContainer (defaults to executor.emptyDirSecret)
+    # -- Controls whether ephemeral job mounts secrets via emptyDir initContainer (defaults to executor.emptyDirSecret)
     emptyDirSecret: true
-    ## Init image used when emptyDirSecret is true (defaults to executor.initSecretImage)
+    # -- Init image used when emptyDirSecret is true (defaults to executor.initSecretImage)
     initSecretImage: ""
+  # -- Secrets loaded into the container environment
   secrets:
    - terrakube-api-secrets
+  # -- ConfigMaps loaded into the container environment
   configMaps:
    - terrakube-api-config
+  # -- Container resource requests and limits
   resources: {}
+  # -- Extra labels for the pods
   podLabels: {}
+  # -- Extra annotations for the pods
   podAnnotations: {}
+  # -- Enable default database using postgresql helm chart
   defaultDatabase: true
+  # -- Enable default Valkey using the official Valkey helm chart
   defaultRedis: true
   loadSampleData: true
   terraformReleasesUrl: "https://releases.hashicorp.com/terraform/index.json"
   tofuReleasesUrl: "https://api.github.com/repos/opentofu/opentofu/releases"
+  # -- Pod security context for API
   securityContext: {}
+  # -- Container security context for API
   containerSecurityContext: {}
+  # -- Specific Secret used to pull images from private repository
   imagePullSecrets: []
+  # -- Init containers for API deployment
   initContainers: []
   podDisruptionBudget:
+    # -- Create a PodDisruptionBudget
     enabled: false
     ## minAvailable and maxUnavailable are mutually exclusive, use only one.
     ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    # -- Minimum available pods, integer or percentage. Mutually exclusive with maxUnavailable
     minAvailable: 1
     # maxUnavailable: 1
+  # -- Startup probe settings
   startupProbe:
     initialDelaySeconds: 30
     failureThreshold: 30
     periodSeconds: 5
+  # -- Readiness probe settings
   readinessProbe:
     periodSeconds: 10
+  # -- Liveness probe settings
   livenessProbe:
     periodSeconds: 10
   cache:
@@ -282,15 +342,20 @@ api:
     moduleCacheMinIdle: "64"
     moduleCacheTimeout: "600000"
     moduleCacheSchedule: "0 */3 * ? * *"
-    # Minutes the terraform/tofu release lists are cached in Redis.
+    # -- Minutes the terraform/tofu release lists are cached in Redis
     # Every expiration triggers one outbound call per API replica.
     releaseCacheExpirationMinutes: "30"
   properties:
+    # -- Database type: H2/SQL_AZURE/POSTGRESQL/MYSQL
     databaseType: "POSTGRESQL"
+    # -- External database hostname
     databaseHostname: ""
+    # -- External database name
     databaseName: ""
+    # -- External database username
     databaseUser: ""
     databaseSchema: "public"
+    # -- External database password
     databasePassword: ""
     databaseSslMode: "disable"
     databasePort: "5432"
@@ -298,14 +363,14 @@ api:
     redisPassword: ""
     redisPort: "6379"
     executorUrl: "http://terrakube-executor-service:8090"
-    ## Maximum state file size accepted by the Terraform HTTP backend endpoint in bytes (default: 104857600 = 100MB)
+    # -- Maximum state file size accepted by the Terraform HTTP backend endpoint in bytes (default: 104857600 = 100MB)
     stateMaxSizeBytes: "104857600"
-    
+
 ## DONT FORGET TO UPDATE THE PORT DEPENDING OF THE DATABASE BY DEFAULT IS USING THE POSTGRESQL PORT
-## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".   
+## SslMode values are disable, allow, prefer, require, verify-ca, verify-full. Default mode is "disable".
 ## Reference: https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/PGProperty.html#SSL_MODE
 
-## Executor properties
+# -- Executor properties
 executor:
   # Load executor secrets via initContainer and writable in-memory emptyDir volume (mandatory in Terrakube 2.34.0+).
   # NOTE: When emptyDirSecret is true, secrets are excluded from envFrom and loaded from an in-memory volume at startup.
@@ -321,44 +386,60 @@ executor:
   ## On clusters < 1.29 (or when set to "" or null), the template automatically falls back to a one-shot init container
   ## (pass --kube-version when running offline 'helm template' against < 1.29 clusters).
   initRestartPolicy: "Always"
+  # -- Use an existing Secret instead of the one the chart creates
   existingSecret: false
+  # -- Enable Executor component deployment
   enabled: true
+  # -- Executor image repository
   image: "azbuilder/executor"
+  # -- Terrakube Executor version
   version: ""
   # Static pool size - no autoscaling. Size this to your expected peak concurrent job count,
   # since each pod only runs one job at a time (see executor readiness/watchdog notes above).
+  # -- Number of Executor pod replicas
   replicaCount: "1"
+  # -- ClusterIP/NodePort/LoadBalancer/ExternalName
   serviceType: ClusterIP
+  # -- Kubernetes Service Account name
   serviceAccountName: ""
+  # -- Number of old ReplicaSets to keep
   revisionHistoryLimit: 3
   # Multiple secrets are projected into a single volume. Keys across secrets must be unique;
   # in case of conflicting keys, the last projected secret listed takes precedence.
+  # -- Secrets loaded into the container environment
   secrets:
    - terrakube-executor-secrets
+  # -- ConfigMaps loaded into the container environment
   configMaps:
    - terrakube-executor-config
   otel:
+    # -- Enable OpenTelemetry
     enabled: false
     metrics:
       port: "9464"
       host: "0.0.0.0"
     traces:
       type: jaeger
-      # endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      # -- endpoint its just example, change it to your jaeger endpoint
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
+  # -- Container resource requests and limits
   resources: {}
+  # -- Extra labels for the pods
   podLabels: {}
+  # -- Extra annotations for the pods
   podAnnotations: {}
   apiServiceUrl: "http://terrakube-api-service:8080"
   properties:
+    # -- Example: https://github.com/terrakube-io/terrakube-extensions
     toolsRepository: "https://github.com/terrakube-io/terrakube-extensions"
+    # -- Example: main
     toolsBranch: "main"
-    # Longest a single job may run before this pod is marked unhealthy (liveness) so
+    # -- Longest a single job may run before this pod is marked unhealthy (liveness) so
     # Kubernetes restarts it - covers a hung terraform process or infinite-looping hook script.
     maxJobDurationMinutes: "360"
-    ## Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
-    ## When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
-    ## and passes scoped workspace access tokens for state synchronization and locking.
+    # -- Enable Terraform HTTP state backend (requires Terrakube 2.34.0+)
+    # When enabled, Terrakube executor generates a terraform HTTP backend override pointing to Terrakube API,
+    # and passes scoped workspace access tokens for state synchronization and locking.
     httpBackend: true
     ## Token TTL in minutes for the scoped workspace HTTP backend access token.
     ## By default, this is omitted so it automatically inherits maxJobDurationMinutes (default 360m / 6h).
@@ -369,165 +450,256 @@ executor:
   # allowing standard POSIX group write permissions under fsGroup: 1000.
   # Both ARM images (running as heroku:1000) and AMD64 images (running as cnb:1002 with group 1000) can read and shred secrets.
   # Any custom executor image must be compatible with group 1000 (which the pod receives via fsGroup: 1000).
+  # -- Fill securityContext field
   securityContext:
     fsGroup: 1000
+  # -- Fill securityContext field in the container spec
   containerSecurityContext: {}
+  # -- Specific Secret used to pull images from private repository
   imagePullSecrets: []
+  # -- Init containers for executor deployment
   initContainers: []
   podDisruptionBudget:
+    # -- Create a PodDisruptionBudget
     enabled: false
     ## minAvailable and maxUnavailable are mutually exclusive, use only one.
     ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    # -- Minimum available pods, integer or percentage. Mutually exclusive with maxUnavailable
     minAvailable: 1
     # maxUnavailable: 1
+  # -- Startup probe settings
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
+  # -- Readiness probe settings
   readinessProbe:
-    # Low periodSeconds/failureThreshold so a pod that just started a job is pulled out of
+    # -- Low periodSeconds/failureThreshold so a pod that just started a job is pulled out of
     # the Service's endpoints almost immediately, instead of the Kubernetes default of 3
     # consecutive failures (~2 extra probe cycles of routing new jobs to a busy pod).
     periodSeconds: 2
     failureThreshold: 1
+  # -- Liveness probe settings
   livenessProbe:
     periodSeconds: 10
 
-## Registry properties
+# -- Registry properties
 registry:
+  # -- Enable Registry component deployment
   enabled: true
+  # -- Use an existing Secret instead of the one the chart creates
   existingSecret: false
+  # -- Registry image repository
   image: azbuilder/open-registry
+  # -- Terrakube Registry version
   version: ""
+  # -- Number of Registry pod replicas
   replicaCount: "1"
+  # -- Kubernetes service type (ClusterIP/NodePort/LoadBalancer)
   serviceType: ClusterIP
+  # -- Kubernetes Service Account name
   serviceAccountName: ""
+  # -- Annotations for the Service
   serviceAnnotations: {}
+  # -- Number of old ReplicaSets to keep
   revisionHistoryLimit: 3
+  # -- Secrets loaded into the container environment
   secrets:
    - terrakube-registry-secrets
+  # -- ConfigMaps loaded into the container environment
   configMaps:
    - terrakube-registry-config
   otel:
+    # -- Enable OpenTelemetry
     enabled: false
     metrics:
       port: "9464"
       host: "0.0.0.0"
     traces:
       type: jaeger
-      # endpoint its just example, change it to your jaeger endpoint
-      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans" 
+      # -- endpoint its just example, change it to your jaeger endpoint
+      endpoint: "http://terrakube-api.minikube.net:9411/api/v2/spans"
+  # -- Container resource requests and limits
   resources: {}
+  # -- Extra annotations for the pods
   podAnnotations: {}
+  # -- Extra labels for the pods
   podLabels: {}
+  # -- Pod security context for Registry
   securityContext: {}
+  # -- Container security context for Registry
   containerSecurityContext: {}
+  # -- Specific Secret used to pull images from private repository
   imagePullSecrets: []
+  # -- Init containers for registry deployment
   initContainers: []
   podDisruptionBudget:
+    # -- Create a PodDisruptionBudget
     enabled: false
     ## minAvailable and maxUnavailable are mutually exclusive, use only one.
     ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    # -- Minimum available pods, integer or percentage. Mutually exclusive with maxUnavailable
     minAvailable: 1
     # maxUnavailable: 1
+  # -- Startup probe settings
   startupProbe:
     failureThreshold: 30
     periodSeconds: 5
+  # -- Readiness probe settings
   readinessProbe:
     periodSeconds: 10
+  # -- Liveness probe settings
   livenessProbe:
     periodSeconds: 10
 
-## UI Properties
+# -- UI Properties
 ui:
+  # -- Enable UI component deployment
   enabled: true
+  # -- Use an existing Secret instead of the one the chart creates
   existingSecret: false
+  # -- UI image repository
   image: azbuilder/terrakube-ui
+  # -- Terrakube UI version
   version: ""
+  # -- Number of UI pod replicas
   replicaCount: "1"
+  # -- Kubernetes service type (ClusterIP/NodePort/LoadBalancer)
   serviceType: ClusterIP
+  # -- Kubernetes Service Account name
   serviceAccountName: ""
+  # -- Annotations for the Service
   serviceAnnotations: {}
+  # -- Number of old ReplicaSets to keep
   revisionHistoryLimit: 3
+  # -- Container resource requests and limits
   resources: {}
+  # -- Extra labels for the pods
   podLabels: {}
+  # -- Extra annotations for the pods
   podAnnotations: {}
+  # -- Pod security context for UI
   securityContext: {}
+  # -- Container security context for UI
   containerSecurityContext: {}
+  # -- Specific Secret used to pull images from private repository
   imagePullSecrets: []
+  # -- Init containers for UI deployment
   initContainers: []
   podDisruptionBudget:
+    # -- Create a PodDisruptionBudget
     enabled: false
     ## minAvailable and maxUnavailable are mutually exclusive, use only one.
     ## Can be an integer (e.g. 1) or a percentage string (e.g. "50%")
+    # -- Minimum available pods, integer or percentage. Mutually exclusive with maxUnavailable
     minAvailable: 1
     # maxUnavailable: 1
 
-## Ingress properties
+# -- Ingress properties
 ingress:
   useTls: false
+  # -- Include TLS hosts in ingress configuration (default: true)
   includeTlsHosts: true
+  # -- Ingress controller type: "generic", "aws", or "gke" and "gatewayapi"
   controller: "generic"  # Options: "generic", "aws", "gke, gatewayapi"
 
   gatewayapi:
     apiVersion: v1beta1
+    # -- Enable Gateway API features (default: false)
     enabled: false
+    # -- Gateway API gateway references
     gateways: []
     annotations: {}
 
   ui:
+    # -- Enable UI ingress (default: true)
     enabled: true
+    # -- Domain name for UI service
     domain: "terrakube-ui.minikube.net"
+    # -- URL path for UI service (default: "/")
     path: "/"
+    # -- Path matching type: "Prefix", "Exact", or "ImplementationSpecific"
     pathType: "Prefix"
+    # -- Ingress class name (e.g., "nginx", "gce")
     ingressClassName: "nginx"
+    # -- Enable TLS/SSL for UI (default: false)
     useTls: true
+    # -- Kubernetes TLS secret name for UI certificates
     tlsSecretName: tls-secret-ui-terrakube
+    # -- Custom annotations for UI ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-  
+
   api:
+    # -- Enable API ingress (default: true)
     enabled: true
+    # -- Domain name for API service
     domain: "terrakube-api.minikube.net"
+    # -- URL path for API service (default: "/")
     path: "/"
+    # -- Path matching type: "Prefix", "Exact", or "ImplementationSpecific"
     pathType: "Prefix"
+    # -- Ingress class name (e.g., "nginx", "gce")
     ingressClassName: "nginx"
+    # -- Enable TLS/SSL for API (default: false)
     useTls: false
+    # -- Kubernetes TLS secret name for API certificates
     tlsSecretName: tls-secret-api-terrakube
+    # -- Custom annotations for API ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
 
   registry:
+    # -- Enable Registry ingress (default: true)
     enabled: true
+    # -- Domain name for Registry service
     domain: "terrakube-reg.minikube.net"
+    # -- URL path for Registry service (default: "/")
     path: "/"
+    # -- Path matching type: "Prefix", "Exact", or "ImplementationSpecific"
     pathType: "Prefix"
+    # -- Ingress class name (e.g., "nginx", "gce")
     ingressClassName: "nginx"
+    # -- Enable TLS/SSL for Registry (default: false)
     useTls: false
+    # -- Kubernetes TLS secret name for Registry certificates
     tlsSecretName: tls-secret-reg-terrakube
+    # -- Custom annotations for Registry ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
   dex:
     enabled: true
+    # -- URL path for Dex OIDC service (default: "/dex")
     path: "/dex/"
+    # -- ImplementationSpecific/Exact/Prefix
     pathType: "Prefix"
+    # -- Ingress annotations
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/proxy-set-headers: "terrakube/custom-headers"
   executor:
+    # -- Enable Executor ingress (default: false, usually internal-only)
     enabled: false
+    # -- Domain name for Executor service
     domain: "terrakube-executor.minikube.net"
+    # -- URL path for Executor service (default: "/")
     path: "/"
+    # -- Path matching type: "Prefix", "Exact", or "ImplementationSpecific"
     pathType: "Prefix"
+    # -- Ingress class name (e.g., "nginx", "gce")
     ingressClassName: "nginx"
-    tlsSecretName: tls-secret-executor-terrakube    
+    # -- Kubernetes TLS secret name for Executor certificates
+    tlsSecretName: tls-secret-executor-terrakube
+    # -- Custom annotations for Executor ingress
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-  
-  # AWS specific configuration
+
+  # -- AWS specific configuration
   aws:
+    # -- Enable AWS ALB ingress features (default: false)
     enabled: false
+    # -- Global AWS ALB annotations applied to all ingresses
     annotations:
       # AWS ALB annotations
       kubernetes.io/ingress.class: alb
@@ -535,6 +707,7 @@ ingress:
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
       alb.ingress.kubernetes.io/ssl-redirect: '443'
+    # -- AWS ACM certificate ARN for SSL termination
     certificateArn: ""
     targetGroupBinding:
       create: false
@@ -542,40 +715,61 @@ ingress:
       uiTargetGroupARN: ""
       registryTargetGroupARN: ""
     sharedLoadBalancer:
+      # -- Use shared ALB across multiple ingresses (default: false)
       enabled: false
+      # -- ALB group name for shared load balancer
       groupName: ""
     securityGroups: []
     subnets: []
 
-  # GKE specific configuration
+  # -- GKE specific configuration
   gke:
+    # -- Enable GKE ingress features (default: false)
     enabled: false
+    # -- Global GKE annotations applied to all ingresses
     annotations:
       kubernetes.io/ingress.class: gce
     # Per-service static IP names for individual load balancers
-    uiStaticIPName: ""         
+    # -- GCP static IP name for UI service
+    uiStaticIPName: ""
+    # -- GCP static IP name for API service
     apiStaticIPName: ""
+    # -- GCP static IP name for Registry service
     registryStaticIPName: ""
+    # -- GCP static IP name for Executor service
     executorStaticIPName: ""
     managedCertificate:
+      # -- Create GCP managed SSL certificates (default: false)
       create: false
     backendConfig:
+      # -- Create BackendConfig resources for health checks (default: false)
       create: false
+      # -- Backend timeout in seconds (default: 30)
       timeout: 30
       # Per-service security policies (optional)
+      # -- Cloud Armor security policy for UI service (restrict user access)
       uiSecurityPolicy: ""        # Cloud Armor policy for UI (user access restriction)
+      # -- Cloud Armor security policy for API service (usually empty)
       apiSecurityPolicy: ""       # Cloud Armor policy for API (usually empty - external access needed)
+      # -- Cloud Armor security policy for Registry service (usually empty)
       registrySecurityPolicy: ""  # Cloud Armor policy for Registry (usually empty - external access needed)
+      # -- Cloud Armor security policy for Executor service (usually empty)
       executorSecurityPolicy: ""  # Cloud Armor policy for Executor (usually empty if exposed)
     frontendConfig:
+      # -- Create FrontendConfig resources (default: false)
       create: false
       redirectToHttps: true
       # Per-service SSL policies (optional)
+      # -- SSL policy for UI service
       uiSslPolicy: ""       # SSL policy for UI
+      # -- SSL policy for API service
       apiSslPolicy: ""      # SSL policy for API
+      # -- SSL policy for Registry service
       registrySslPolicy: "" # SSL policy for Registry
+      # -- SSL policy for Executor service
       executorSslPolicy: "" # SSL policy for Executor
     externalDNS:
+      # -- Per-service Cloudflare proxy settings
       perIngressProxy:         # Control whether ExternalDNS creates proxy records (Cloudflare)
         ui: false
         api: false
