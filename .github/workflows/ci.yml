@@ -86,6 +86,7 @@ jobs:
           - ingress-gke
           - ingress-gatewayapi
           - external-services
+          - storage-aws-role
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0

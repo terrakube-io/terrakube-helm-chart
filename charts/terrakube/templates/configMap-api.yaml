@@ -50,6 +50,9 @@ data:
   AwsStorageBucketName: '{{ .Values.storage.aws.bucketName }}'
   AwsStorageRegion: '{{ .Values.storage.aws.region }}'
   AwsEndpoint: ''
+  {{- if (.Values.storage.aws).enableRoleAuth }}
+  AwsEnableRoleAuth: 'true'
+  {{- end }}
   {{- end }}
 
   {{- if and (.Values.storage.minio).bucketName (.Values.storage.minio).accessKey (.Values.storage.minio).secretKey (.Values.storage.minio).endpoint }}

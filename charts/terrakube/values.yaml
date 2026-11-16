@@ -166,6 +166,8 @@ storage:
     bucketName: ""
     # -- Aws region name (Example: us-east-1)
     region: ""
+    # -- Connect to S3 with the AWS SDK default credentials (for example EKS Pod Identity or IRSA) instead of the access and secret keys. Sets `AwsEnableRoleAuth` on the api, registry and executor, and `AwsIncludeBackendKeys: false` on the executor. When true, the access and secret keys are not used for S3
+    enableRoleAuth: false
   minio:
     accessKey: ""
     secretKey: ""

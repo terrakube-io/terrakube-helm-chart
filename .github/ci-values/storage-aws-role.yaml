@@ -1,0 +1,7 @@
+# S3 with role authentication (EKS Pod Identity or IRSA) and no access keys.
+storage:
+  defaultStorage: false
+  aws:
+    bucketName: "terrakube"
+    region: "us-east-1"
+    enableRoleAuth: true

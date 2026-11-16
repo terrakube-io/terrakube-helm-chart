@@ -217,9 +217,10 @@ Deploys [Terrakube](https://github.com/terrakube-io/terrakube) on Kubernetes.
 | security.dexClientScope | string | `"email openid profile offline_access groups"` | Use "email openid profile offline_access groups" |
 | security.internalSecret | string | `"AxxPdgpCi72f8WhMXCTGhtfMRp6AuBfj"` | 32 Character secret to sing internal |
 | security.patSecret | string | `"bAUaAojZP3XhkuE2rWBtR3gRAHPzQKkx"` | 32 Character secret to sign personal access token |
-| storage | object | `{"aws":{"accessKey":"","bucketName":"","region":"","secretKey":""},"azure":{"storageAccountAccessKey":"","storageAccountName":"","storageAccountResourceGroup":""},"default":{"endpoint":"","region":"us-east-1"},"defaultStorage":true,"gcp":{"bucketName":"","credentials":"","projectId":""},"httpBackend":true,"minio":{"accessKey":"","bucketName":"","endpoint":"","secretKey":""}}` | Terraform Storage |
+| storage | object | `{"aws":{"accessKey":"","bucketName":"","enableRoleAuth":false,"region":"","secretKey":""},"azure":{"storageAccountAccessKey":"","storageAccountName":"","storageAccountResourceGroup":""},"default":{"endpoint":"","region":"us-east-1"},"defaultStorage":true,"gcp":{"bucketName":"","credentials":"","projectId":""},"httpBackend":true,"minio":{"accessKey":"","bucketName":"","endpoint":"","secretKey":""}}` | Terraform Storage |
 | storage.aws.accessKey | string | `""` | Aws access key |
 | storage.aws.bucketName | string | `""` | Aws bucket name |
+| storage.aws.enableRoleAuth | bool | `false` | Connect to S3 with the AWS SDK default credentials (for example EKS Pod Identity or IRSA) instead of the access and secret keys. Sets `AwsEnableRoleAuth` on the api, registry and executor, and `AwsIncludeBackendKeys: false` on the executor. When true, the access and secret keys are not used for S3 |
 | storage.aws.region | string | `""` | Aws region name (Example: us-east-1) |
 | storage.aws.secretKey | string | `""` | Aws secret key |
 | storage.azure.storageAccountAccessKey | string | `""` | Azure storage access key |
