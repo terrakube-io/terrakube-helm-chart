@@ -1,4 +1,4 @@
-{{- if .Values.ingress.api.enabled }}
+{{- if and .Values.ingress.api.enabled (not (include "terrakube.singleDomain" .)) }}
 {{- if eq .Values.ingress.controller "generic" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
