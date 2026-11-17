@@ -63,6 +63,10 @@ data:
   AwsTerraformOutputBucketName: '{{ .Values.storage.aws.bucketName }}'
   AwsTerraformOutputRegion: '{{ .Values.storage.aws.region }}'
   AwsEndpoint: ''
+  {{- if (.Values.storage.aws).enableRoleAuth }}
+  AwsEnableRoleAuth: 'true'
+  AwsIncludeBackendKeys: 'false'
+  {{- end }}
   {{- end }}
 
   {{- if and (.Values.storage.minio).bucketName (.Values.storage.minio).accessKey (.Values.storage.minio).secretKey (.Values.storage.minio).endpoint }}

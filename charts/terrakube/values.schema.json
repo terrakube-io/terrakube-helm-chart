@@ -1397,6 +1397,9 @@
                         "bucketName": {
                             "type": "string"
                         },
+                        "enableRoleAuth": {
+                            "type": "boolean"
+                        },
                         "region": {
                             "type": "string"
                         },
