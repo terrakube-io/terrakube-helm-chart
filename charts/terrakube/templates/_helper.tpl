@@ -89,3 +89,16 @@ UI labels
 app.kubernetes.io/component: terrakube-ui
 {{ include "terrakube.selectorLabels" . }}
 {{- end }}
+{{/*
+Single-domain deployment: public URL of the shared host, e.g. https://terrakube.example.com.
+*/}}
+{{- define "terrakube.publicUrl" -}}
+{{- if .Values.ingress.singleDomain.useTls }}https{{ else }}http{{ end }}://{{ .Values.ingress.singleDomain.domain }}{{- if .Values.ingress.singleDomain.port }}:{{ .Values.ingress.singleDomain.port }}{{- end }}
+{{- end }}
+
+{{/*
+True when single-domain mode is on; per-component ingresses and routes are then skipped.
+*/}}
+{{- define "terrakube.singleDomain" -}}
+{{- if and .Values.ingress.singleDomain .Values.ingress.singleDomain.enabled }}true{{ end }}
+{{- end }}

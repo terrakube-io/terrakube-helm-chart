@@ -1,0 +1,10 @@
+ingress:
+  singleDomain:
+    enabled: true
+    domain: "terrakube.example.com"
+    useTls: true
+    tlsSecretName: "terrakube-tls"
+    ingressClassName: "nginx"
+dex:
+  config:
+    issuer: https://terrakube.example.com/dex
