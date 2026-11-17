@@ -176,7 +176,7 @@ storage:
     projectId: ""
     # -- GCP Bucket name for the storage
     bucketName: ""
-    # -- GCP JSON Credentials for the storage
+    # -- GCP JSON Credentials for the storage. Leave it empty to use Google Application Default Credentials instead, for example GKE Workload Identity through the api, executor and registry service accounts
     credentials: ""
   default:
     region: "us-east-1"

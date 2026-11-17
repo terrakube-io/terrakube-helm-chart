@@ -76,7 +76,7 @@ data:
   AwsEndpoint: '{{ .Values.storage.minio.endpoint }}'
   {{- end }}
 
-  {{- if and (.Values.storage.gcp).projectId (.Values.storage.gcp).bucketName (.Values.storage.gcp).credentials }}
+  {{- if and (.Values.storage.gcp).projectId (.Values.storage.gcp).bucketName }}
   #GCP Storage Bucket
   TerraformStateType: 'GcpTerraformStateImpl'
   GcpTerraformStateProjectId: '{{ .Values.storage.gcp.projectId }}'

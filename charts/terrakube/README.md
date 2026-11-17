@@ -234,7 +234,7 @@ Deploys [Terrakube](https://github.com/terrakube-io/terrakube) on Kubernetes.
 | storage.azure.storageAccountResourceGroup | string | `""` | Azure storage resource group |
 | storage.defaultStorage | bool | `true` | Enable default storage using minio helm chart |
 | storage.gcp.bucketName | string | `""` | GCP Bucket name for the storage |
-| storage.gcp.credentials | string | `""` | GCP JSON Credentials for the storage |
+| storage.gcp.credentials | string | `""` | GCP JSON Credentials for the storage. Leave it empty to use Google Application Default Credentials instead, for example GKE Workload Identity through the api, executor and registry service accounts |
 | storage.gcp.projectId | string | `""` | GCP Project Id for the storage |
 | storage.httpBackend | bool | `true` | Enable Terraform HTTP state backend (requires Terrakube 2.34.0+) When true, executor wraps state storage with HttpTerraformStateImpl and delegates state sync to Terrakube API |
 | ui | object | `{"containerSecurityContext":{},"enabled":true,"existingSecret":false,"image":"azbuilder/terrakube-ui","imagePullSecrets":[],"initContainers":[],"podAnnotations":{},"podDisruptionBudget":{"enabled":false,"minAvailable":1},"podLabels":{},"replicaCount":"1","resources":{},"revisionHistoryLimit":3,"securityContext":{},"serviceAccountName":"","serviceAnnotations":{},"serviceType":"ClusterIP","version":""}` | UI Properties |
