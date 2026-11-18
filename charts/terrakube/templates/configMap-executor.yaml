@@ -97,6 +97,20 @@ data:
   TerraformStateHttpTokenTtlMinutes: '{{ .Values.executor.properties.httpTokenTtlMinutes }}'
   {{- end }}
 
+  {{- with .Values.executor.properties.providerMirror }}
+  {{- if .enabled }}
+
+  #Install providers through the registry provider mirror (requires Terrakube 2.35.0+)
+  TerrakubeProviderMirrorEnabled: 'true'
+  {{- if .only }}
+  TerrakubeProviderMirrorOnly: 'true'
+  {{- end }}
+  {{- if .registryUrl }}
+  TerrakubeProviderMirrorRegistryUrl: {{ .registryUrl | quote }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+
   {{- if .Values.executor.emptyDirSecret }}
   ExecutorSecretsDirectory: '/etc/terrakube/secrets'
   {{- end }}

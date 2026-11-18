@@ -624,6 +624,20 @@
                         "httpTokenTtlMinutes": {
                             "type": "integer"
                         },
+                        "providerMirror": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "only": {
+                                    "type": "boolean"
+                                },
+                                "registryUrl": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "toolsBranch": {
                             "type": "string"
                         },
