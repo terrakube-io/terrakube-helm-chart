@@ -151,6 +151,24 @@ If the configuration is correct the pods log will show something like this:
 Added 2 additional CA certificate(s) to system truststore
 ```
 
+## Provider mirror for runs
+
+Requires Terrakube 2.35.0 or later. With the mirror enabled, the executor adds a `provider_installation` block for the job's organization to the CLI configuration it writes for each run, so `terraform init` and `tofu init` install providers through the registry provider network mirror.
+
+```yaml
+executor:
+  properties:
+    providerMirror:
+      enabled: true
+      # only: true
+      # registryUrl: "https://registry.example.com"
+```
+
+- `only: true` removes the fallback to the provider's origin, for installs that cannot reach the internet. Without it, a provider the mirror does not have is installed from its origin.
+- An unreachable registry fails `init` in both modes.
+- `registryUrl` is optional. By default the chart's registry domain is used, or `<public URL>/api/private-registry` with single-domain ingress.
+- The mirror itself, and pull-through caching of providers it does not have yet, are configured on the registry. See `registry-provider-mirror.md` in the Terrakube operations docs.
+
 ## Enable OTEL for Terrakube components
 
 To enable OTEL for Terrakube components use the following configuration example:
