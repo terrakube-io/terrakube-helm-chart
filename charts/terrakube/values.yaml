@@ -313,6 +313,8 @@ api:
   securityContext: {}
   # -- Container security context for API
   containerSecurityContext: {}
+  # -- Container lifecycle hooks for API, e.g. `preStop: {sleep: {seconds: 10}}` so an evicted pod keeps serving until it is out of the Service endpoints
+  lifecycle: {}
   # -- Specific Secret used to pull images from private repository
   imagePullSecrets: []
   # -- Init containers for API deployment
