@@ -459,6 +459,27 @@ executor:
   imagePullSecrets: []
   # -- Init containers for executor deployment
   initContainers: []
+  # Cloud CLI tools to install into the executor at runtime via init containers.
+  # Each enabled tool is downloaded and installed into a shared emptyDir volume at /opt/terrakube-tools,
+  # which is then mounted into the executor container with /opt/terrakube-tools/bin prepended to PATH.
+  # Init container images should match the executor's libc variant (glibc vs musl/Alpine).
+  # Defaults assume a glibc-based executor (Debian/Ubuntu). For Alpine-based executors, override initImage.
+  cliTools:
+    awsCli:
+      # -- Install AWS CLI v2 into the executor via an init container
+      enabled: false
+      # -- Init container image used to install AWS CLI v2
+      initImage: "debian:bookworm-slim"
+    gcloud:
+      # -- Install Google Cloud CLI into the executor via an init container
+      enabled: false
+      # -- Init container image used to install Google Cloud CLI
+      initImage: "debian:bookworm-slim"
+    azureCli:
+      # -- Install Azure CLI into the executor via an init container
+      enabled: false
+      # -- Init container image used to install Azure CLI
+      initImage: "python:3.14-slim-bookworm"
   podDisruptionBudget:
     # -- Create a PodDisruptionBudget
     enabled: false
