@@ -1,6 +1,6 @@
 # terrakube
 
-![Version: 4.7.19](https://img.shields.io/badge/Version-4.7.19-informational?style=flat-square) ![AppVersion: 2.34.1](https://img.shields.io/badge/AppVersion-2.34.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 4.7.19](https://img.shields.io/badge/Version-4.7.19-informational?style=flat-square) ![AppVersion: 2.34.3](https://img.shields.io/badge/AppVersion-2.34.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Deploys [Terrakube](https://github.com/terrakube-io/terrakube) on Kubernetes.
 
