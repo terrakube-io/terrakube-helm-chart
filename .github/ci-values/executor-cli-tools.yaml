@@ -1,0 +1,9 @@
+# Executor with the cloud CLI tools installed by init containers.
+executor:
+  cliTools:
+    awsCli:
+      enabled: true
+    gcloud:
+      enabled: true
+    azureCli:
+      enabled: true

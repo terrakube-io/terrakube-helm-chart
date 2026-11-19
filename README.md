@@ -40,6 +40,7 @@ Requires Kubernetes 1.21+ and Helm 3. For Minikube see the [Minikube + HTTPS gui
 - **AWS Integration**: ALB ingress with shared load balancer support
 - **Authentication**: Dex OIDC integration with GitHub, Google, and other providers
 - **Public OIDC/JWKS Endpoints**: Publicly accessible `.well-known/openid-configuration` and `.well-known/jwks` endpoints for OIDC discovery and JWT validation
+- **Cloud CLI Tools**: Optional AWS CLI, Google Cloud CLI, and Azure CLI installation into the executor at runtime via init containers, without requiring a custom image
 - **Storage**: MinIO S3-compatible storage or external S3
 - **Database**: PostgreSQL support with optional external database
 - **Module Registry**: Private Terraform module registry
