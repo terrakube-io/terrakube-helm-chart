@@ -2,6 +2,46 @@ apiVersion: v1
 entries:
   terrakube:
   - apiVersion: v2
+    appVersion: 2.34.3
+    created: "2026-11-20T12:50:26.817051742Z"
+    dependencies:
+    - condition: storage.defaultStorage
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.0.21
+    - condition: api.defaultDatabase
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.7.27
+    - condition: dex.enabled
+      name: dex
+      repository: https://charts.dexidp.io
+      version: 0.24.0
+    - condition: api.defaultRedis
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.9.4
+    description: Terrakube, an open-source Terraform management platform
+    digest: f042b74f634c499c5314859590e3963fd0cfa8c36433671d2435c1520cb239ab
+    home: https://terrakube.io
+    icon: https://raw.githubusercontent.com/terrakube-io/terrakube/main/ui/public/logo192.png
+    keywords:
+    - terrakube
+    - terraform
+    - opentofu
+    - tacos
+    maintainers:
+    - name: terrakube-io
+      url: https://github.com/terrakube-io
+    name: terrakube
+    sources:
+    - https://github.com/terrakube-io/terrakube
+    - https://github.com/terrakube-io/terrakube-helm-chart
+    type: application
+    urls:
+    - https://github.com/terrakube-io/terrakube-helm-chart/releases/download/terrakube-4.7.20/terrakube-4.7.20.tgz
+    version: 4.7.20
+  - apiVersion: v2
     appVersion: 2.34.1
     created: "2026-11-16T02:01:52.224633236Z"
     dependencies:
@@ -3591,4 +3631,4 @@ entries:
     urls:
     - https://github.com/AzBuilder/terrakube-helm-chart/releases/download/terrakube-0.1.0/terrakube-0.1.0.tgz
     version: 0.1.0
-generated: "2026-11-16T02:01:52.22487647Z"
+generated: "2026-11-20T12:50:26.817279604Z"
