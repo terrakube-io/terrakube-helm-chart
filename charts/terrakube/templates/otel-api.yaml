@@ -10,18 +10,18 @@ data:
    OTEL_SERVICE_NAME: TERRAKUBE-API
 {{- if .Values.api.otel.metrics }}
    OTEL_METRICS_EXPORTER: prometheus
-   OTEL_EXPORTER_PROMETHEUS_PORT: {{ quote .Values.api.otel.metrics.port | default "9464" }}
-   OTEL_EXPORTER_PROMETHEUS_HOST: {{ quote .Values.api.otel.metrics.host | default "0.0.0.0"}}
+   OTEL_EXPORTER_PROMETHEUS_PORT: {{ .Values.api.otel.metrics.port | default "9464" | quote }}
+   OTEL_EXPORTER_PROMETHEUS_HOST: {{ .Values.api.otel.metrics.host | default "0.0.0.0" | quote }}
 {{- end }}
 {{- if .Values.api.otel.traces }}
 {{- if eq .Values.api.otel.traces.type "zipkin" }}
    OTEL_TRACES_EXPORTER: zipkin
-   OTEL_EXPORTER_ZIPKIN_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint | default "http://localhost:9411/api/v2/spans" }}
+   OTEL_EXPORTER_ZIPKIN_ENDPOINT: {{ .Values.api.otel.traces.endpoint | default "http://localhost:9411/api/v2/spans" | quote }}
 {{- end }}
 {{- if eq .Values.api.otel.traces.type "jaeger" }}
    OTEL_TRACES_EXPORTER: jaeger
-   OTEL_EXPORTER_JAEGER_ENDPOINT: {{ quote .Values.api.otel.traces.endpoint | default "http://localhost:14268/api/traces" }}
-   OTEL_EXPORTER_JAEGER_TIMEOUT: {{ quote .Values.api.otel.traces.timeout | default "10000" }}
+   OTEL_EXPORTER_JAEGER_ENDPOINT: {{ .Values.api.otel.traces.endpoint | default "http://localhost:14268/api/traces" | quote }}
+   OTEL_EXPORTER_JAEGER_TIMEOUT: {{ .Values.api.otel.traces.timeout | default "10000" | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}
